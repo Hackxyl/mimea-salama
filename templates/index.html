@@ -364,6 +364,81 @@
     .camera-btn { display: flex; }
   }
   .camera-btn:active { background: var(--lime); }
+
+/* ── HISTORY MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 300;
+    background: rgba(15,31,24,0.85); backdrop-filter: blur(6px);
+    align-items: flex-start; justify-content: center;
+    padding: 60px 16px 20px; overflow-y: auto;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--white); border-radius: 24px;
+    width: 100%; max-width: 680px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+  .modal-header {
+    background: var(--forest); padding: 20px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-header h2 { color: var(--white); font-family: 'Fraunces', serif; font-size: 20px; }
+  .modal-close {
+    background: rgba(255,255,255,0.15); border: none; color: white;
+    width: 32px; height: 32px; border-radius: 50%; font-size: 16px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .modal-body { padding: 20px; max-height: 70vh; overflow-y: auto; }
+  .history-empty {
+    text-align: center; padding: 40px 20px;
+    color: var(--gray); font-size: 15px;
+  }
+  .history-empty div { font-size: 48px; margin-bottom: 12px; }
+  .scan-card {
+    border: 1px solid #e8f0ea; border-radius: 16px;
+    margin-bottom: 14px; overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .scan-card:hover { box-shadow: 0 4px 16px rgba(26,60,46,0.1); }
+  .scan-card-header {
+    padding: 14px 16px; display: flex;
+    align-items: center; justify-content: space-between;
+    background: var(--cream); cursor: pointer;
+  }
+  .scan-card-left { display: flex; align-items: center; gap: 12px; }
+  .scan-status-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .dot-healthy { background: #2d6a4f; }
+  .dot-diseased { background: var(--red); }
+  .dot-caution { background: var(--amber); }
+  .scan-plant { font-weight: 600; font-size: 15px; color: var(--forest); }
+  .scan-date { font-size: 12px; color: var(--gray); margin-top: 2px; }
+  .scan-card-body { padding: 14px 16px; display: none; border-top: 1px solid #f0ede8; }
+  .scan-card-body.open { display: block; }
+  .scan-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .scan-detail { background: var(--cream); border-radius: 10px; padding: 10px 12px; }
+  .scan-detail label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); font-weight: 600; }
+  .scan-detail p { font-size: 13px; font-weight: 600; color: var(--forest); margin-top: 3px; }
+  .scan-steps { font-size: 13px; color: #2d3d35; line-height: 1.6; }
+  .scan-steps li { margin-bottom: 4px; }
+  .scan-delete {
+    background: #fde8e8; border: none; color: var(--red);
+    padding: 6px 14px; border-radius: 8px; font-size: 12px;
+    font-weight: 600; cursor: pointer; margin-top: 12px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .modal-footer {
+    padding: 14px 20px; border-top: 1px solid #f0ede8;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .clear-btn {
+    background: #fde8e8; border: none; color: var(--red);
+    padding: 8px 16px; border-radius: 10px; font-size: 13px;
+    font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+  .scan-count { font-size: 13px; color: var(--gray); }
 </style>
 </head>
 <body>
@@ -373,6 +448,7 @@
   <span style="color:rgba(255,255,255,0.5);font-size:12px;margin-right:6px;" data-en="Language:" data-sw="Lugha:">Language:</span>
   <button class="lang-btn active" onclick="setLang('en')">English</button>
   <button class="lang-btn" onclick="setLang('sw')">Kiswahili</button>
+  <button class="lang-btn" onclick="openHistory()" style="margin-left:12px;" data-en="📋 History" data-sw="📋 Historia">📋 History</button>
 </div>
 
 <!-- HERO -->
@@ -485,6 +561,28 @@
   <strong>Mimea Salama</strong> · Built by Meshack Muindi ·
   <span data-en="Empowering farmers across East Africa 🌍" data-sw="Kuwawezesha wakulima kote Afrika Mashariki 🌍">Empowering farmers across East Africa 🌍</span>
 </footer>
+
+
+<!-- HISTORY MODAL -->
+<div class="modal-overlay" id="historyModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 data-en="📋 Scan History" data-sw="📋 Historia ya Uchunguzi">📋 Scan History</h2>
+      <button class="modal-close" onclick="closeHistory()">✕</button>
+    </div>
+    <div class="modal-body" id="historyBody">
+      <div class="history-empty">
+        <div>🌱</div>
+        <span data-en="No scans yet. Analyze a plant to get started!" data-sw="Hakuna uchunguzi bado. Chunguza mmea kuanza!">No scans yet. Analyze a plant to get started!</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <span class="scan-count" id="scanCount"></span>
+      <button class="clear-btn" onclick="clearHistory()" data-en="🗑️ Clear All" data-sw="🗑️ Futa Yote">🗑️ Clear All</button>
+    </div>
+  </div>
+</div>
+
 
 <!-- LOADING OVERLAY -->
 <div class="loading-overlay" id="loadingOverlay">
@@ -684,6 +782,95 @@ function fileToBase64(file) {
     r.onerror = rej;
     r.readAsDataURL(file);
   });
+}
+
+// ── HISTORY ──────────────────────────────────────────────────
+
+async function openHistory() {
+  document.getElementById('historyModal').classList.add('active');
+  await loadHistory();
+}
+
+function closeHistory() {
+  document.getElementById('historyModal').classList.remove('active');
+}
+
+async function loadHistory() {
+  const body = document.getElementById('historyBody');
+  body.innerHTML = '<div class="history-empty"><div>⏳</div>Loading...</div>';
+
+  try {
+    const res = await fetch('/history');
+    const scans = await res.json();
+
+    document.getElementById('scanCount').textContent =
+      currentLang === 'sw' ? `Uchunguzi ${scans.length}` : `${scans.length} scan${scans.length !== 1 ? 's' : ''}`;
+
+    if (scans.length === 0) {
+      body.innerHTML = `<div class="history-empty">
+        <div>🌱</div>
+        <span>${currentLang === 'sw' ? 'Hakuna uchunguzi bado.' : 'No scans yet. Analyze a plant to get started!'}</span>
+      </div>`;
+      return;
+    }
+
+    body.innerHTML = scans.map(s => `
+      <div class="scan-card" id="card-${s.id}">
+        <div class="scan-card-header" onclick="toggleCard('${s.id}')">
+          <div class="scan-card-left">
+            <div class="scan-status-dot dot-${s.status}"></div>
+            <div>
+              <div class="scan-plant">${s.plant} — ${s.condition}</div>
+              <div class="scan-date">🕐 ${s.scanned_at} ${s.farmer_name ? '· 👤 ' + s.farmer_name : ''}</div>
+            </div>
+          </div>
+          <span style="color:var(--gray);font-size:12px;">▼</span>
+        </div>
+        <div class="scan-card-body" id="body-${s.id}">
+          <div class="scan-detail-grid">
+            <div class="scan-detail"><label>${currentLang === 'sw' ? 'Sababu' : 'Cause'}</label><p>${s.cause || '—'}</p></div>
+            <div class="scan-detail"><label>${currentLang === 'sw' ? 'Ukali' : 'Severity'}</label><p>${s.severity || '—'}</p></div>
+            <div class="scan-detail" style="grid-column:1/-1"><label>${currentLang === 'sw' ? 'Dalili' : 'Symptoms'}</label><p>${s.symptoms || '—'}</p></div>
+          </div>
+          ${s.treatment?.length ? `
+            <p style="font-weight:600;font-size:13px;color:var(--forest);margin-bottom:6px;">
+              💊 ${currentLang === 'sw' ? 'Matibabu' : 'Treatment'}
+            </p>
+            <ul class="scan-steps">${s.treatment.map(t => `<li>• ${t}</li>`).join('')}</ul>
+          ` : ''}
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
+            <span style="font-size:12px;color:var(--gray);">
+              🤖 ${currentLang === 'sw' ? 'Uhakika' : 'Confidence'}: ${s.confidence}%
+            </span>
+            <button class="scan-delete" onclick="deleteScan('${s.id}')">
+              🗑️ ${currentLang === 'sw' ? 'Futa' : 'Delete'}
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+  } catch (err) {
+    body.innerHTML = '<div class="history-empty"><div>❌</div>Could not load history.</div>';
+  }
+}
+
+function toggleCard(id) {
+  const body = document.getElementById('body-' + id);
+  body.classList.toggle('open');
+}
+
+async function deleteScan(id) {
+  if (!confirm(currentLang === 'sw' ? 'Futa uchunguzi huu?' : 'Delete this scan?')) return;
+  await fetch(`/history/${id}`, { method: 'DELETE' });
+  document.getElementById('card-' + id).remove();
+  await loadHistory();
+}
+
+async function clearHistory() {
+  if (!confirm(currentLang === 'sw' ? 'Futa uchunguzi wote?' : 'Delete ALL scans? This cannot be undone.')) return;
+  await fetch('/history/clear', { method: 'DELETE' });
+  await loadHistory();
 }
 </script>
 </body>
