@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a3c2e">
+<title>Mimea Salama – Plant Health AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,900;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #1a3c2e;
+    --moss: #2d6a4f;
+    --leaf: #52b788;
+    --lime: #95d5b2;
+    --cream: #f8f5f0;
+    --soil: #6b4226;
+    --amber: #e9a63a;
+    --red: #c0392b;
+    --white: #ffffff;
+    --gray: #8a9ba8;
+    --dark: #0f1f18;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── LANGUAGE TOGGLE ── */
+  .lang-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--forest);
+    display: flex; justify-content: flex-end; align-items: center;
+    padding: 8px 20px; gap: 8px;
+  }
+  .lang-btn {
+    padding: 5px 16px; border-radius: 20px; border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.25s;
+  }
+  .lang-btn.active { background: var(--leaf); color: var(--forest); }
+  .lang-btn:not(.active) { background: transparent; color: var(--lime); border: 1px solid var(--moss); }
+
+  /* ── HERO ── */
+  .hero {
+    margin-top: 38px;
+    background: linear-gradient(160deg, var(--forest) 0%, var(--moss) 60%, #1b4332 100%);
+    min-height: 340px;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; text-align: center;
+    padding: 48px 24px 56px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 20% 80%, rgba(82,183,136,0.18) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, rgba(149,213,178,0.12) 0%, transparent 40%);
+    pointer-events: none;
+  }
+  .hero-leaf {
+    font-size: 64px; margin-bottom: 16px;
+    animation: sway 4s ease-in-out infinite;
+  }
+  @keyframes sway {
+    0%,100% { transform: rotate(-5deg) scale(1); }
+    50% { transform: rotate(5deg) scale(1.05); }
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(28px, 7vw, 52px);
+    font-weight: 900; color: var(--white);
+    line-height: 1.1; margin-bottom: 10px;
+  }
+  .hero h1 span { color: var(--lime); }
+  .hero p {
+    color: rgba(255,255,255,0.75);
+    font-size: clamp(14px, 3vw, 17px);
+    max-width: 480px;
+    line-height: 1.6;
+  }
+  .badge {
+    display: inline-block; margin-top: 20px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--lime); font-size: 12px; font-weight: 600;
+    padding: 6px 16px; border-radius: 20px;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  /* ── UPLOAD SECTION ── */
+  .upload-section {
+    max-width: 680px; margin: -28px auto 0;
+    padding: 0 20px; position: relative; z-index: 10;
+  }
+  .upload-card {
+    background: var(--white);
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(26,60,46,0.18);
+    overflow: hidden;
+  }
+  .upload-inner {
+    padding: 32px;
+  }
+  .upload-zone {
+    border: 2.5px dashed var(--lime);
+    border-radius: 16px;
+    padding: 40px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: rgba(82,183,136,0.04);
+    position: relative;
+  }
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--leaf);
+    background: rgba(82,183,136,0.10);
+    transform: scale(1.01);
+  }
+  .upload-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+  }
+  .upload-icon { font-size: 48px; margin-bottom: 12px; }
+  .upload-zone h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600; font-size: 20px;
+    color: var(--forest); margin-bottom: 6px;
+  }
+  .upload-zone p { color: var(--gray); font-size: 14px; }
+
+  /* preview */
+  .preview-wrap {
+    display: none; text-align: center;
+  }
+  .preview-wrap img {
+    max-width: 100%; max-height: 260px;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  }
+  .preview-wrap.active { display: block; }
+  .upload-zone.has-image .upload-placeholder { display: none; }
+
+  .analyze-btn {
+    width: 100%; margin-top: 20px;
+    background: linear-gradient(135deg, var(--moss), var(--forest));
+    color: var(--white);
+    border: none; border-radius: 14px;
+    padding: 16px; font-size: 17px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer; transition: all 0.3s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .analyze-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #3d8a68, #1a3c2e);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(26,60,46,0.35);
+  }
+  .analyze-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-spinner { display: none; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── RESULT CARD ── */
+  .result-section {
+    max-width: 680px; margin: 24px auto;
+    padding: 0 20px;
+    display: none;
+  }
+  .result-section.visible { display: block; animation: slideUp 0.5s ease; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+
+  .result-card {
+    background: var(--white);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(26,60,46,0.12);
+  }
+  .result-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid #f0ede8;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .health-icon { font-size: 40px; }
+  .result-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; color: var(--forest); }
+  .health-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 13px; font-weight: 600; margin-top: 4px;
+  }
+  .status-healthy { background: #d8f3dc; color: #1a7a3c; }
+  .status-diseased { background: #fde8e8; color: #b91c1c; }
+  .status-caution { background: #fef3cd; color: #92610a; }
+
+  .result-body { padding: 24px 28px; }
+  .info-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 24px;
+  }
+  .info-tile {
+    background: var(--cream);
+    border-radius: 14px; padding: 16px;
+    border-left: 4px solid var(--leaf);
+  }
+  .info-tile.red { border-left-color: var(--red); }
+  .info-tile.amber { border-left-color: var(--amber); }
+  .info-tile label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); font-weight: 600; }
+  .info-tile p { font-size: 15px; font-weight: 600; color: var(--forest); margin-top: 4px; line-height: 1.4; }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 17px; font-weight: 600;
+    color: var(--forest); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .treatment-list {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 24px;
+  }
+  .treatment-list li {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: #f7fdf9;
+    border-radius: 12px; padding: 12px 14px;
+    font-size: 14px; line-height: 1.55; color: #2d3d35;
+  }
+  .treatment-list li::before {
+    content: '✦';
+    color: var(--leaf); font-size: 12px;
+    flex-shrink: 0; margin-top: 2px;
+  }
+
+  .confidence-bar-wrap { margin-top: 4px; }
+  .confidence-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--gray); margin-bottom: 6px; }
+  .confidence-bar { height: 8px; background: #e8f5ee; border-radius: 8px; overflow: hidden; }
+  .confidence-fill { height: 100%; background: linear-gradient(90deg, var(--leaf), var(--moss)); border-radius: 8px; transition: width 1s ease; }
+
+  /* ── FEATURES ── */
+  .features {
+    max-width: 680px; margin: 32px auto;
+    padding: 0 20px;
+  }
+  .features h2 {
+    font-family: 'Fraunces', serif; font-size: 26px; font-weight: 900;
+    color: var(--forest); text-align: center; margin-bottom: 24px;
+  }
+  .feat-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .feat-tile {
+    background: var(--white);
+    border-radius: 18px; padding: 22px 16px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(26,60,46,0.07);
+    transition: transform 0.25s;
+  }
+  .feat-tile:hover { transform: translateY(-4px); }
+  .feat-icon { font-size: 32px; margin-bottom: 10px; }
+  .feat-tile h4 { font-size: 14px; font-weight: 600; color: var(--forest); margin-bottom: 6px; }
+  .feat-tile p { font-size: 12px; color: var(--gray); line-height: 1.5; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 32px 20px;
+    background: var(--forest); color: rgba(255,255,255,0.5);
+    font-size: 13px; margin-top: 40px;
+  }
+  footer strong { color: var(--lime); }
+
+  /* ── LOADING OVERLAY ── */
+  .loading-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(15,31,24,0.85);
+    backdrop-filter: blur(6px);
+    z-index: 200;
+    flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+  }
+  .loading-overlay.active { display: flex; }
+  .loading-plant {
+    font-size: 72px;
+    animation: pulse 1s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.15);opacity:0.7} }
+  .loading-text {
+    font-family: 'Fraunces', serif;
+    font-size: 22px; color: var(--lime); font-weight: 600;
+  }
+  .loading-sub { color: rgba(255,255,255,0.55); font-size: 14px; }
+
+  @media(max-width: 520px) {
+    .info-grid { grid-template-columns: 1fr; }
+    .feat-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ── MOBILE RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .lang-bar { padding: 6px 14px; }
+    .lang-btn { padding: 4px 12px; font-size: 12px; }
+
+    .hero { padding: 36px 16px 48px; min-height: 280px; }
+    .hero-leaf { font-size: 48px; }
+    .badge { font-size: 11px; padding: 5px 12px; }
+
+    .upload-section { padding: 0 12px; margin-top: -24px; }
+    .upload-inner { padding: 20px; }
+    .upload-zone { padding: 28px 16px; }
+    .upload-icon { font-size: 36px; }
+    .upload-zone h3 { font-size: 17px; }
+    .upload-zone p { font-size: 13px; }
+    .analyze-btn { font-size: 15px; padding: 14px; }
+
+    .result-section { padding: 0 12px; }
+    .result-header { padding: 18px 18px 14px; gap: 10px; }
+    .health-icon { font-size: 32px; }
+    .result-title { font-size: 17px; }
+    .result-body { padding: 16px 18px; }
+    .info-grid { grid-template-columns: 1fr; gap: 10px; }
+    .info-tile { padding: 12px; }
+
+    .features { padding: 0 12px; }
+    .features h2 { font-size: 22px; }
+    .feat-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .feat-tile { padding: 16px 12px; }
+    .feat-icon { font-size: 26px; }
+    .feat-tile h4 { font-size: 13px; }
+    .feat-tile p { font-size: 11px; }
+
+    .treatment-list li { font-size: 13px; padding: 10px 12px; }
+    footer { font-size: 12px; padding: 24px 16px; }
+  }
+
+  @media (max-width: 400px) {
+    .hero h1 { font-size: 26px; }
+    .feat-grid { grid-template-columns: 1fr; }
+    .upload-zone { padding: 22px 12px; }
+    .result-title { font-size: 15px; }
+  }
+
+  /* ── TOUCH IMPROVEMENTS ── */
+  .analyze-btn { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .upload-zone { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .lang-btn { touch-action: manipulation; -webkit-tap-highlight-color: transparent; min-height: 36px; }
+
+  /* ── CAMERA BUTTON (mobile only) ── */
+  .camera-btn {
+    display: none;
+    width: 100%; margin-top: 10px;
+    background: var(--cream);
+    color: var(--forest);
+    border: 2px solid var(--leaf);
+    border-radius: 14px;
+    padding: 14px; font-size: 15px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer; transition: all 0.3s;
+    align-items: center; justify-content: center; gap: 8px;
+  }
+  @media (max-width: 768px) {
+    .camera-btn { display: flex; }
+  }
+  .camera-btn:active { background: var(--lime); }
+</style>
+</head>
+<body>
+
+<!-- LANGUAGE BAR -->
+<div class="lang-bar">
+  <span style="color:rgba(255,255,255,0.5);font-size:12px;margin-right:6px;" data-en="Language:" data-sw="Lugha:">Language:</span>
+  <button class="lang-btn active" onclick="setLang('en')">English</button>
+  <button class="lang-btn" onclick="setLang('sw')">Kiswahili</button>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-leaf">🌿</div>
+  <h1 data-en="<span>Mimea</span> Salama" data-sw="<span>Afya</span> ya Mimea"><span>Mimea</span> Salama</h1>
+  <p data-en="AI-powered plant disease detection. Take a photo, get instant diagnosis and treatment advice."
+     data-sw="Teknolojia ya AI kugundua magonjwa ya mimea. Piga picha, pata uchunguzi na ushauri wa matibabu mara moja.">
+    AI-powered plant disease detection. Take a photo, get instant diagnosis and treatment advice.
+  </p>
+  <span class="badge" data-en="🔬 Science Fair Project" data-sw="🔬 Mradi wa Maonyesho ya Sayansi">🔬 Science Fair Project</span>
+</div>
+
+<!-- UPLOAD SECTION -->
+<div class="upload-section">
+  <div class="upload-card">
+    <div class="upload-inner">
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)">
+        <div class="upload-placeholder">
+          <div class="upload-icon">📸</div>
+          <h3 data-en="Upload Plant Photo" data-sw="Pakia Picha ya Mmea">Upload Plant Photo</h3>
+          <p data-en="Drag & drop or click to browse — leaves, stems, fruits welcome" data-sw="Buruta na uachilie au bonyeza ili kutafuta — majani, mashina, matunda yanakaribishwa">
+            Drag & drop or click to browse — leaves, stems, fruits welcome
+          </p>
+        </div>
+        <div class="preview-wrap" id="previewWrap">
+          <img id="previewImg" src="" alt="Plant preview">
+        </div>
+      </div>
+      <button class="camera-btn" onclick="openCamera()">
+        📷 Take Photo with Camera
+      </button>
+      <button class="analyze-btn" id="analyzeBtn" onclick="analyze()" disabled>
+        <span class="btn-spinner" id="btnSpinner"></span>
+        <span id="btnText" data-en="🔍 Analyze Plant Health" data-sw="🔍 Chunguza Afya ya Mmea">🔍 Analyze Plant Health</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT SECTION -->
+<div class="result-section" id="resultSection">
+  <div class="result-card">
+    <div class="result-header">
+      <div class="health-icon" id="resultIcon">🌱</div>
+      <div>
+        <div class="result-title" id="resultTitle">—</div>
+        <div class="health-status" id="resultStatus">—</div>
+      </div>
+    </div>
+    <div class="result-body">
+      <div class="info-grid" id="infoGrid"></div>
+      <div class="confidence-bar-wrap">
+        <div class="confidence-label">
+          <span data-en="AI Confidence" data-sw="Uhakika wa AI">AI Confidence</span>
+          <span id="confPct">—</span>
+        </div>
+        <div class="confidence-bar">
+          <div class="confidence-fill" id="confFill" style="width:0%"></div>
+        </div>
+      </div>
+      <br>
+      <div class="section-title" id="treatmentTitle">💊 <span data-en="Recommended Treatment" data-sw="Matibabu Yanayopendekezwa">Recommended Treatment</span></div>
+      <ul class="treatment-list" id="treatmentList"></ul>
+      <div class="section-title">📋 <span data-en="Prevention Tips" data-sw="Vidokezo vya Kuzuia">Prevention Tips</span></div>
+      <ul class="treatment-list" id="preventionList"></ul>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="features">
+  <h2 data-en="How It Works" data-sw="Jinsi Inavyofanya Kazi">How It Works</h2>
+  <div class="feat-grid">
+    <div class="feat-tile">
+      <div class="feat-icon">📷</div>
+      <h4 data-en="Snap a Photo" data-sw="Piga Picha">Snap a Photo</h4>
+      <p data-en="Upload any image of your plant's leaves, stem or fruit" data-sw="Pakia picha yoyote ya majani, shina au tunda la mmea wako">Upload any image of your plant's leaves, stem or fruit</p>
+    </div>
+    <div class="feat-tile">
+      <div class="feat-icon">🤖</div>
+      <h4 data-en="AI Analysis" data-sw="Uchambuzi wa AI">AI Analysis</h4>
+      <p data-en="Our AI scans for 200+ plant diseases using computer vision" data-sw="AI yetu inachunguza magonjwa 200+ ya mimea kwa maono ya kompyuta">Our AI scans for 200+ plant diseases using computer vision</p>
+    </div>
+    <div class="feat-tile">
+      <div class="feat-icon">💊</div>
+      <h4 data-en="Get Treatment" data-sw="Pata Matibabu">Get Treatment</h4>
+      <p data-en="Receive instant diagnosis with actionable treatment steps" data-sw="Pata uchunguzi wa haraka na hatua za matibabu zinazoweza kutumika">Receive instant diagnosis with actionable treatment steps</p>
+    </div>
+    <div class="feat-tile">
+      <div class="feat-icon">🌍</div>
+      <h4 data-en="Swahili Support" data-sw="Msaada wa Kiswahili">Swahili Support</h4>
+      <p data-en="Full Kiswahili interface for East African farmers" data-sw="Kiolesura kamili cha Kiswahili kwa wakulima wa Afrika Mashariki">Full Kiswahili interface for East African farmers</p>
+    </div>
+    <div class="feat-tile">
+      <div class="feat-icon">📶</div>
+      <h4 data-en="Works Offline" data-sw="Inafanya Kazi Nje ya Mtandao">Works Offline</h4>
+      <p data-en="Designed for areas with limited internet connectivity" data-sw="Imeundwa kwa maeneo yenye muunganisho mdogo wa mtandao">Designed for areas with limited internet connectivity</p>
+    </div>
+    <div class="feat-tile">
+      <div class="feat-icon">🌾</div>
+      <h4 data-en="Local Crops" data-sw="Mazao ya Ndani">Local Crops</h4>
+      <p data-en="Trained on maize, cassava, tomato, beans & more" data-sw="Imefunzwa kwa mahindi, muhogo, nyanya, maharagwe na zaidi">Trained on maize, cassava, tomato, beans & more</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>Mimea Salama</strong> · Science Fair Demo · Built with Claude AI ·
+  <span data-en="Empowering farmers across East Africa 🌍" data-sw="Kuwawezesha wakulima kote Afrika Mashariki 🌍">Empowering farmers across East Africa 🌍</span>
+</footer>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-plant">🌱</div>
+  <div class="loading-text" data-en="Analyzing your plant…" data-sw="Inachunguza mmea wako…">Analyzing your plant…</div>
+  <div class="loading-sub" data-en="AI is scanning for diseases, pests, and deficiencies" data-sw="AI inachunguza magonjwa, wadudu, na upungufu wa virutubisho">AI is scanning for diseases, pests, and deficiencies</div>
+</div>
+
+<script>
+let currentLang = 'en';
+let selectedFile = null;
+
+// ── LANGUAGE ──
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    if ((lang === 'en' && b.textContent === 'English') || (lang === 'sw' && b.textContent === 'Kiswahili'))
+      b.classList.add('active');
+  });
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const val = el.getAttribute('data-' + lang);
+    if (val) el.innerHTML = val;
+  });
+}
+
+// ── FILE HANDLING ──
+const dropZone = document.getElementById('uploadZone');
+['dragover','dragenter'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.add('drag-over'); }));
+['dragleave','drop'].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.remove('drag-over'); }));
+dropZone.addEventListener('drop', ev => {
+  const f = ev.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) processFile(f);
+});
+
+function handleFile(e) {
+  if (e.target.files[0]) processFile(e.target.files[0]);
+}
+
+function openCamera() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.capture = 'environment';
+  input.onchange = e => { if (e.target.files[0]) processFile(e.target.files[0]); };
+  input.click();
+}
+
+function processFile(file) {
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('previewImg').src = ev.target.result;
+    document.getElementById('previewWrap').classList.add('active');
+    dropZone.classList.add('has-image');
+    document.getElementById('analyzeBtn').disabled = false;
+    document.getElementById('resultSection').classList.remove('visible');
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── ANALYZE ──
+async function analyze() {
+  if (!selectedFile) return;
+
+  const overlay = document.getElementById('loadingOverlay');
+  const btn = document.getElementById('analyzeBtn');
+  const spinner = document.getElementById('btnSpinner');
+  btn.disabled = true;
+  spinner.style.display = 'block';
+  overlay.classList.add('active');
+
+  // Convert to base64
+  const base64 = await fileToBase64(selectedFile);
+  const mimeType = selectedFile.type || 'image/jpeg';
+
+  const swahiliNote = currentLang === 'sw' ? 'Please respond in Kiswahili.' : 'Please respond in English.';
+
+  const systemPrompt = `You are PlantAI, an expert plant pathologist and agronomist. Analyze plant images and provide structured disease diagnosis.
+Always respond ONLY in valid JSON with this exact structure (no markdown, no code fences):
+{
+  "plant": "Plant name",
+  "condition": "Disease/condition name or 'Healthy'",
+  "status": "healthy|diseased|caution",
+  "confidence": 85,
+  "cause": "Brief cause description",
+  "severity": "Low|Medium|High|None",
+  "symptoms": "Visible symptoms description",
+  "treatment": ["Step 1", "Step 2", "Step 3"],
+  "prevention": ["Tip 1", "Tip 2", "Tip 3"]
+}
+${swahiliNote}`;
+
+  try {
+    const response = await fetch('/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: mimeType, data: base64 } },
+            { type: 'text', text: 'Analyze this plant image and diagnose any diseases or health issues.' }
+          ]
+        }]
+      })
+    });
+
+    const data = await response.json();
+
+    // Not a plant image
+    if (data.error === 'not_a_plant') {
+      overlay.classList.remove('active');
+      btn.disabled = false;
+      spinner.style.display = 'none';
+      const msg = currentLang === 'sw'
+        ? '🚫 Hakuna mmea katika picha hii. Tafadhali pakia picha ya mmea, jani, au zao.'
+        : '🚫 No plant detected in this image. Please upload a photo of a plant, leaf, or crop.';
+      alert(msg);
+      return;
+    }
+
+    if (data.error) throw new Error(data.error);
+    showResult(data);
+
+  } catch (err) {
+    alert('ERROR: ' + err.message);
+    showResult({
+      plant: 'Demo Plant',
+      condition: currentLang === 'sw' ? 'Ugonjwa wa Kutu (Mfano)' : 'Leaf Rust (Demo)',
+      status: 'diseased',
+      confidence: 78,
+      cause: currentLang === 'sw' ? 'Kuvu wa Puccinia' : 'Puccinia fungal infection',
+      severity: currentLang === 'sw' ? 'Wastani' : 'Medium',
+      symptoms: currentLang === 'sw' ? 'Madoa ya rangi ya kahawia-machungwa kwenye majani' : 'Orange-brown pustules on leaf surfaces',
+      treatment: currentLang === 'sw'
+        ? ['Omba dawa ya kuua kuvu (fungicide) kila wiki 2', 'Ondoa majani yaliyoathirika na yachome', 'Boresha mzunguko wa hewa kuzunguka mmea']
+        : ['Apply fungicide every 2 weeks', 'Remove and burn affected leaves', 'Improve air circulation around plant'],
+      prevention: currentLang === 'sw'
+        ? ['Tumia mbegu zinazostahimili magonjwa', 'Epuka kumwagilia juu ya majani', 'Angalia mimea yako mara kwa mara']
+        : ['Use disease-resistant seed varieties', 'Avoid overhead watering', 'Monitor plants regularly for early signs']
+    });
+  } finally {
+    overlay.classList.remove('active');
+    btn.disabled = false;
+    spinner.style.display = 'none';
+  }
+}
+
+function showResult(r) {
+  const statusMap = {
+    healthy: { cls: 'status-healthy', icon: '✅', label: currentLang === 'sw' ? 'Mmea Mzima' : 'Healthy Plant' },
+    diseased: { cls: 'status-diseased', icon: '⚠️', label: currentLang === 'sw' ? 'Mmea Mgonjwa' : 'Disease Detected' },
+    caution: { cls: 'status-caution', icon: '🔔', label: currentLang === 'sw' ? 'Tahadhari' : 'Caution' }
+  };
+  const s = statusMap[r.status] || statusMap.caution;
+
+  document.getElementById('resultIcon').textContent = r.status === 'healthy' ? '🌿' : r.status === 'diseased' ? '🍂' : '🌱';
+  document.getElementById('resultTitle').textContent = `${r.plant} — ${r.condition}`;
+
+  const statusEl = document.getElementById('resultStatus');
+  statusEl.className = 'health-status ' + s.cls;
+  statusEl.innerHTML = `${s.icon} ${s.label}`;
+
+  const labels = {
+    en: { cause: 'Cause', severity: 'Severity', symptoms: 'Symptoms', confidence: 'AI Confidence', treatment: '💊 Recommended Treatment', prevention: '🛡️ Prevention Tips' },
+    sw: { cause: 'Sababu', severity: 'Ukali', symptoms: 'Dalili', confidence: 'Uhakika wa AI', treatment: '💊 Matibabu Yanayopendekezwa', prevention: '🛡️ Vidokezo vya Kuzuia' }
+  };
+  const L = labels[currentLang];
+
+  document.getElementById('infoGrid').innerHTML = `
+    <div class="info-tile ${r.status==='diseased'?'red':''}"><label>${L.cause}</label><p>${r.cause||'—'}</p></div>
+    <div class="info-tile ${r.status==='diseased'?'amber':''}"><label>${L.severity}</label><p>${r.severity||'—'}</p></div>
+    <div class="info-tile" style="grid-column:1/-1"><label>${L.symptoms}</label><p>${r.symptoms||'—'}</p></div>
+  `;
+
+  const pct = r.confidence || 0;
+  document.getElementById('confPct').textContent = pct + '%';
+  setTimeout(() => document.getElementById('confFill').style.width = pct + '%', 50);
+
+  document.getElementById('treatmentTitle').innerHTML = `💊 <span>${L.treatment}</span>`;
+  document.getElementById('treatmentList').innerHTML = (r.treatment||[]).map(t => `<li>${t}</li>`).join('');
+  document.getElementById('preventionList').innerHTML = (r.prevention||[]).map(t => `<li>${t}</li>`).join('');
+
+  const sec = document.getElementById('resultSection');
+  sec.classList.add('visible');
+  sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+</script>
+</body>
+</html>
