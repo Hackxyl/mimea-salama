@@ -9,6 +9,8 @@
 <meta name="theme-color" content="#1a3c2e">
 <title>Mimea Salama – Plant Health AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,900;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   :root {
     --forest: #1a3c2e;
@@ -439,6 +441,87 @@
     font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
   }
   .scan-count { font-size: 13px; color: var(--gray); }
+
+  /* ── AUTH MODAL ── */
+  .auth-tabs { display: flex; border-bottom: 2px solid #f0ede8; }
+  .auth-tab {
+    flex: 1; padding: 14px; text-align: center;
+    font-weight: 600; font-size: 15px; cursor: pointer;
+    color: var(--gray); border: none; background: none;
+    font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  }
+  .auth-tab.active { color: var(--forest); border-bottom: 3px solid var(--leaf); margin-bottom: -2px; }
+  .auth-form { padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+  .auth-form.hidden { display: none; }
+  .auth-input {
+    width: 100%; padding: 13px 16px;
+    border: 2px solid #e0ebe3; border-radius: 12px;
+    font-size: 15px; font-family: 'DM Sans', sans-serif;
+    color: var(--forest); outline: none; transition: border 0.2s;
+  }
+  .auth-input:focus { border-color: var(--leaf); }
+  .auth-btn {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, var(--moss), var(--forest));
+    color: white; border: none; border-radius: 12px;
+    font-size: 16px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer;
+  }
+  .auth-btn:hover { opacity: 0.9; }
+  .auth-error {
+    background: #fde8e8; color: var(--red);
+    padding: 10px 14px; border-radius: 10px;
+    font-size: 13px; display: none;
+  }
+  .auth-error.visible { display: block; }
+  .logout-section { padding: 24px; text-align: center; }
+  .logout-section h3 { font-family: 'Fraunces', serif; font-size: 20px; color: var(--forest); margin-bottom: 6px; }
+  .logout-section p { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  .logout-btn {
+    background: #fde8e8; color: var(--red); border: none;
+    padding: 12px 28px; border-radius: 12px; font-size: 15px;
+    font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ── DASHBOARD ── */
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 12px; margin-bottom: 20px;
+  }
+  .stat-tile {
+    background: var(--cream); border-radius: 14px;
+    padding: 16px; text-align: center;
+  }
+  .stat-number { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 900; color: var(--forest); }
+  .stat-label { font-size: 12px; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+  .stat-tile.green .stat-number { color: #2d6a4f; }
+  .stat-tile.red   .stat-number { color: var(--red); }
+  .stat-tile.amber .stat-number { color: #92610a; }
+  .chart-bar-wrap { margin-bottom: 20px; }
+  .chart-title { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; color: var(--forest); margin-bottom: 12px; }
+  .chart-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .chart-bar-label { font-size: 13px; color: var(--forest); width: 140px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chart-bar-bg { flex: 1; height: 22px; background: #e8f5ee; border-radius: 6px; overflow: hidden; }
+  .chart-bar-fill { height: 100%; background: linear-gradient(90deg, var(--leaf), var(--moss)); border-radius: 6px; transition: width 1s ease; display: flex; align-items: center; padding-left: 8px; }
+  .chart-bar-count { font-size: 12px; font-weight: 700; color: white; }
+
+  /* ── MAP ── */
+  #mapContainer { height: 400px; border-radius: 16px; overflow: hidden; }
+  .map-legend { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--forest); }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+  /* ── PDF BUTTON ── */
+  .pdf-btn {
+    width: 100%; padding: 12px;
+    background: linear-gradient(135deg, #c0392b, #922b21);
+    color: white; border: none; border-radius: 12px;
+    font-size: 15px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer;
+    margin-top: 12px; display: flex; align-items: center;
+    justify-content: center; gap: 8px;
+  }
+  .pdf-btn:hover { opacity: 0.9; }
 </style>
 </head>
 <body>
@@ -449,6 +532,9 @@
   <button class="lang-btn active" onclick="setLang('en')">English</button>
   <button class="lang-btn" onclick="setLang('sw')">Kiswahili</button>
   <button class="lang-btn" onclick="openHistory()" style="margin-left:12px;" data-en="📋 History" data-sw="📋 Historia">📋 History</button>
+  <button class="lang-btn" onclick="openDashboard()" data-en="📊 Stats" data-sw="📊 Takwimu">📊 Stats</button>
+  <button class="lang-btn" onclick="openMap()" data-en="🗺️ Map" data-sw="🗺️ Ramani">🗺️ Map</button>
+  <button class="lang-btn" id="authBtn" onclick="openAuth()" style="margin-left:4px;">👤 Login</button>
 </div>
 
 <!-- HERO -->
@@ -459,6 +545,7 @@
      data-sw="Teknolojia ya AI kugundua magonjwa ya mimea. Piga picha, pata uchunguzi na ushauri wa matibabu mara moja.">
     AI-powered plant disease detection. Take a photo, get instant diagnosis and treatment advice.
   </p>
+  <div id="farmerGreeting" style="display:none;margin-top:14px;background:rgba(255,255,255,0.12);border-radius:20px;padding:8px 20px;color:var(--lime);font-size:14px;font-weight:600;"></div>
   <span class="badge" data-en="💡AI & Agriculture Innovation" data-sw="💡Ubunifu wa AI & Kilimo">💡AI & Agriculture Innovation</span>
 </div>
 
@@ -563,6 +650,54 @@
 </footer>
 
 
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="authModalTitle">👤 Farmer Login</h2>
+      <button class="modal-close" onclick="closeAuth()">✕</button>
+    </div>
+
+    <!-- Logged out: show login/register tabs -->
+    <div id="authForms">
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchTab('login')" id="tab-login"
+          data-en="Login" data-sw="Ingia">Login</button>
+        <button class="auth-tab" onclick="switchTab('register')" id="tab-register"
+          data-en="Register" data-sw="Jisajili">Register</button>
+      </div>
+
+      <!-- Login form -->
+      <div class="auth-form" id="loginForm">
+        <div class="auth-error" id="loginError"></div>
+        <input class="auth-input" id="loginPhone" type="tel" placeholder="📱 Phone Number e.g. 0712345678">
+        <input class="auth-input" id="loginPin" type="password" placeholder="🔒 PIN (4 digits)" maxlength="6">
+        <button class="auth-btn" onclick="doLogin()"
+          data-en="Login →" data-sw="Ingia →">Login →</button>
+      </div>
+
+      <!-- Register form -->
+      <div class="auth-form hidden" id="registerForm">
+        <div class="auth-error" id="registerError"></div>
+        <input class="auth-input" id="regName" type="text" placeholder="👤 Full Name">
+        <input class="auth-input" id="regPhone" type="tel" placeholder="📱 Phone Number e.g. 0712345678">
+        <input class="auth-input" id="regPin" type="password" placeholder="🔒 Create PIN (4 digits)" maxlength="6">
+        <button class="auth-btn" onclick="doRegister()"
+          data-en="Create Account →" data-sw="Fungua Akaunti →">Create Account →</button>
+      </div>
+    </div>
+
+    <!-- Logged in: show profile + logout -->
+    <div class="logout-section" id="logoutSection" style="display:none;">
+      <h3 id="loggedInName"></h3>
+      <p id="loggedInPhone"></p>
+      <button class="logout-btn" onclick="doLogout()"
+        data-en="🚪 Logout" data-sw="🚪 Toka">🚪 Logout</button>
+    </div>
+  </div>
+</div>
+
+
 <!-- HISTORY MODAL -->
 <div class="modal-overlay" id="historyModal">
   <div class="modal">
@@ -579,6 +714,48 @@
     <div class="modal-footer">
       <span class="scan-count" id="scanCount"></span>
       <button class="clear-btn" onclick="clearHistory()" data-en="🗑️ Clear All" data-sw="🗑️ Futa Yote">🗑️ Clear All</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- DASHBOARD MODAL -->
+<div class="modal-overlay" id="dashboardModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 data-en="📊 My Statistics" data-sw="📊 Takwimu Zangu">📊 My Statistics</h2>
+      <button class="modal-close" onclick="document.getElementById('dashboardModal').classList.remove('active')">✕</button>
+    </div>
+    <div class="modal-body" id="dashboardBody">
+      <div class="history-empty"><div>⏳</div>Loading...</div>
+    </div>
+    <div style="padding:0 20px 16px;">
+      <button class="pdf-btn" onclick="exportPDF()">
+        📄 <span data-en="Download PDF Report" data-sw="Pakua Ripoti ya PDF">Download PDF Report</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MAP MODAL -->
+<div class="modal-overlay" id="mapModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 data-en="🗺️ Disease Map" data-sw="🗺️ Ramani ya Magonjwa">🗺️ Disease Map</h2>
+      <button class="modal-close" onclick="document.getElementById('mapModal').classList.remove('active')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--gray);margin-bottom:12px;"
+         data-en="Shows locations where you scanned plants. Enable location when scanning for pins to appear."
+         data-sw="Inaonyesha maeneo ulipopiga picha za mimea.">
+        Shows locations where you scanned plants. Enable location when scanning for pins to appear.
+      </p>
+      <div id="mapContainer"></div>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#2d6a4f"></div> <span data-en="Healthy" data-sw="Mzima">Healthy</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div> <span data-en="Diseased" data-sw="Mgonjwa">Diseased</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e9a63a"></div> <span data-en="Caution" data-sw="Tahadhari">Caution</span></div>
+      </div>
     </div>
   </div>
 </div>
@@ -711,6 +888,21 @@ ${swahiliNote}`;
     if (data.error) throw new Error(data.error);
     showResult(data);
 
+    // Capture GPS location silently
+    if (data.scan_id && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        fetch('/save-location', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            scan_id: data.scan_id,
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude
+          })
+        });
+      });
+    }
+
   } catch (err) {
     alert('ERROR: ' + err.message);
     showResult({
@@ -803,6 +995,23 @@ async function loadHistory() {
     const res = await fetch('/history');
     const scans = await res.json();
 
+    // Not logged in — show login prompt
+    if (scans.error === 'login_required') {
+      body.innerHTML = `<div class="history-empty">
+        <div>🔒</div>
+        <p style="font-weight:600;color:var(--forest);margin-bottom:8px;">
+          ${currentLang === 'sw' ? 'Tafadhali ingia kwanza' : 'Login required'}
+        </p>
+        <p style="font-size:13px;margin-bottom:16px;">
+          ${currentLang === 'sw' ? 'Unahitaji akaunti kuona historia yako.' : 'You need an account to view your scan history.'}
+        </p>
+        <button class="analyze-btn" style="width:auto;padding:10px 24px;font-size:14px;" onclick="closeHistory();openAuth();">
+          👤 ${currentLang === 'sw' ? 'Ingia / Jisajili' : 'Login / Register'}
+        </button>
+      </div>`;
+      return;
+    }
+
     document.getElementById('scanCount').textContent =
       currentLang === 'sw' ? `Uchunguzi ${scans.length}` : `${scans.length} scan${scans.length !== 1 ? 's' : ''}`;
 
@@ -871,6 +1080,304 @@ async function clearHistory() {
   if (!confirm(currentLang === 'sw' ? 'Futa uchunguzi wote?' : 'Delete ALL scans? This cannot be undone.')) return;
   await fetch('/history/clear', { method: 'DELETE' });
   await loadHistory();
+}
+
+// ── AUTH ─────────────────────────────────────────────────────
+
+let currentFarmer = null;
+
+async function checkAuth() {
+  const res  = await fetch('/me');
+  const data = await res.json();
+  if (data.logged_in) {
+    currentFarmer = data;
+    updateAuthUI();
+  }
+}
+
+function updateAuthUI() {
+  const btn      = document.getElementById('authBtn');
+  const greeting = document.getElementById('farmerGreeting');
+  if (currentFarmer) {
+    btn.textContent = '👤 ' + currentFarmer.name.split(' ')[0];
+    greeting.style.display = 'block';
+    greeting.textContent = currentLang === 'sw'
+      ? `🌿 Karibu, ${currentFarmer.name}!`
+      : `🌿 Welcome back, ${currentFarmer.name}!`;
+  } else {
+    btn.textContent = '👤 Login';
+    greeting.style.display = 'none';
+  }
+}
+
+function openAuth() {
+  document.getElementById('authModal').classList.add('active');
+  if (currentFarmer) {
+    document.getElementById('authForms').style.display = 'none';
+    document.getElementById('logoutSection').style.display = 'block';
+    document.getElementById('loggedInName').textContent = '👤 ' + currentFarmer.name;
+    document.getElementById('loggedInPhone').textContent = '📱 ' + currentFarmer.phone;
+  } else {
+    document.getElementById('authForms').style.display = 'block';
+    document.getElementById('logoutSection').style.display = 'none';
+  }
+}
+
+function closeAuth() {
+  document.getElementById('authModal').classList.remove('active');
+}
+
+function switchTab(tab) {
+  document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+}
+
+async function doLogin() {
+  const phone = document.getElementById('loginPhone').value.trim();
+  const pin   = document.getElementById('loginPin').value.trim();
+  const err   = document.getElementById('loginError');
+  err.classList.remove('visible');
+
+  if (!phone || !pin) { err.textContent = 'Please enter phone and PIN.'; err.classList.add('visible'); return; }
+
+  const res  = await fetch('/login', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ phone, pin })
+  });
+  const data = await res.json();
+  if (data.error) { err.textContent = data.error; err.classList.add('visible'); return; }
+
+  currentFarmer = { name: data.name, phone };
+  updateAuthUI();
+  closeAuth();
+}
+
+async function doRegister() {
+  const name  = document.getElementById('regName').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const pin   = document.getElementById('regPin').value.trim();
+  const err   = document.getElementById('registerError');
+  err.classList.remove('visible');
+
+  if (!name || !phone || !pin) { err.textContent = 'All fields are required.'; err.classList.add('visible'); return; }
+  if (pin.length < 4) { err.textContent = 'PIN must be at least 4 digits.'; err.classList.add('visible'); return; }
+
+  const res  = await fetch('/register', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ name, phone, pin })
+  });
+  const data = await res.json();
+  if (data.error) { err.textContent = data.error; err.classList.add('visible'); return; }
+
+  currentFarmer = { name: data.name, phone };
+  updateAuthUI();
+  closeAuth();
+}
+
+async function doLogout() {
+  await fetch('/logout', { method: 'POST' });
+  currentFarmer = null;
+  updateAuthUI();
+  closeAuth();
+}
+
+// Check login on page load
+checkAuth();
+
+
+// ── DASHBOARD ─────────────────────────────────────────────────
+
+async function openDashboard() {
+  if (!currentFarmer) {
+    alert(currentLang === 'sw' ? 'Tafadhali ingia kwanza.' : 'Please login first.');
+    openAuth(); return;
+  }
+  document.getElementById('dashboardModal').classList.add('active');
+  await loadStats();
+}
+
+async function loadStats() {
+  const body = document.getElementById('dashboardBody');
+  body.innerHTML = '<div class="history-empty"><div>⏳</div>Loading...</div>';
+
+  const res   = await fetch('/stats');
+  const data  = await res.json();
+
+  if (data.error === 'login_required') {
+    body.innerHTML = '<div class="history-empty"><div>🔒</div>Please login first.</div>';
+    return;
+  }
+
+  if (data.total === 0) {
+    body.innerHTML = '<div class="history-empty"><div>📊</div>' +
+      (currentLang === 'sw' ? 'Hakuna data bado. Chunguza mimea kwanza!' : 'No data yet. Scan some plants first!') + '</div>';
+    return;
+  }
+
+  const healthPct = Math.round((data.healthy / data.total) * 100);
+
+  body.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-tile">
+        <div class="stat-number">${data.total}</div>
+        <div class="stat-label">${currentLang === 'sw' ? 'Jumla ya Uchunguzi' : 'Total Scans'}</div>
+      </div>
+      <div class="stat-tile green">
+        <div class="stat-number">${data.healthy}</div>
+        <div class="stat-label">${currentLang === 'sw' ? 'Mimea Mizima' : 'Healthy Plants'}</div>
+      </div>
+      <div class="stat-tile red">
+        <div class="stat-number">${data.diseased}</div>
+        <div class="stat-label">${currentLang === 'sw' ? 'Mimea Mgonjwa' : 'Diseased Plants'}</div>
+      </div>
+      <div class="stat-tile amber">
+        <div class="stat-number">${healthPct}%</div>
+        <div class="stat-label">${currentLang === 'sw' ? 'Kiwango cha Afya' : 'Health Rate'}</div>
+      </div>
+    </div>
+
+    ${data.diseases.length ? `
+    <div class="chart-bar-wrap">
+      <div class="chart-title">🦠 ${currentLang === 'sw' ? 'Magonjwa ya Kawaida' : 'Most Common Diseases'}</div>
+      ${data.diseases.map(d => `
+        <div class="chart-bar-row">
+          <div class="chart-bar-label" title="${d.name}">${d.name}</div>
+          <div class="chart-bar-bg">
+            <div class="chart-bar-fill" style="width:${Math.round((d.count/data.diseased)*100)}%">
+              <span class="chart-bar-count">${d.count}</span>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>` : ''}
+
+    ${data.plants.length ? `
+    <div class="chart-bar-wrap">
+      <div class="chart-title">🌿 ${currentLang === 'sw' ? 'Mimea Iliyochunguzwa' : 'Most Scanned Plants'}</div>
+      ${data.plants.map(p => `
+        <div class="chart-bar-row">
+          <div class="chart-bar-label" title="${p.name}">${p.name}</div>
+          <div class="chart-bar-bg">
+            <div class="chart-bar-fill" style="width:${Math.round((p.count/data.total)*100)}%">
+              <span class="chart-bar-count">${p.count}</span>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>` : ''}
+  `;
+}
+
+// ── MAP ───────────────────────────────────────────────────────
+
+let mapInstance = null;
+
+async function openMap() {
+  if (!currentFarmer) {
+    alert(currentLang === 'sw' ? 'Tafadhali ingia kwanza.' : 'Please login first.');
+    openAuth(); return;
+  }
+  document.getElementById('mapModal').classList.add('active');
+  setTimeout(async () => {
+    if (!mapInstance) {
+      // Default center: Kenya
+      mapInstance = L.map('mapContainer').setView([-0.0236, 37.9062], 6);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+      }).addTo(mapInstance);
+    }
+    mapInstance.invalidateSize();
+
+    const res   = await fetch('/map-data');
+    const scans = await res.json();
+
+    const colors = { healthy: '#2d6a4f', diseased: '#c0392b', caution: '#e9a63a' };
+
+    scans.forEach(s => {
+      const color = colors[s.status] || '#888';
+      const marker = L.circleMarker([s.lat, s.lng], {
+        radius: 10, fillColor: color, color: '#fff',
+        weight: 2, opacity: 1, fillOpacity: 0.9
+      }).addTo(mapInstance);
+      marker.bindPopup(`
+        <strong>${s.plant}</strong><br>
+        ${s.condition}<br>
+        <small>${s.date}</small>
+      `);
+    });
+
+    if (scans.length > 0) {
+      const bounds = L.latLngBounds(scans.map(s => [s.lat, s.lng]));
+      mapInstance.fitBounds(bounds, { padding: [30, 30] });
+    }
+  }, 300);
+}
+
+// ── PDF EXPORT ────────────────────────────────────────────────
+
+async function exportPDF() {
+  const res   = await fetch('/history');
+  const scans = await res.json();
+  const sData = await fetch('/stats').then(r => r.json());
+
+  const date = new Date().toLocaleDateString('en-KE', { year:'numeric', month:'long', day:'numeric' });
+
+  const rows = scans.map(s => `
+    <tr>
+      <td>${s.scanned_at}</td>
+      <td>${s.plant}</td>
+      <td>${s.condition}</td>
+      <td style="color:${s.status==='healthy'?'#2d6a4f':s.status==='diseased'?'#c0392b':'#92610a'};font-weight:600">
+        ${s.status.toUpperCase()}
+      </td>
+      <td>${s.severity || '—'}</td>
+      <td>${s.confidence}%</td>
+    </tr>`).join('');
+
+  const html = `
+    <!DOCTYPE html><html><head><meta charset="UTF-8">
+    <style>
+      body { font-family: Arial, sans-serif; padding: 32px; color: #1a3c2e; }
+      h1 { color: #1a3c2e; font-size: 28px; margin-bottom: 4px; }
+      .subtitle { color: #8a9ba8; font-size: 14px; margin-bottom: 24px; }
+      .farmer { background: #f8f5f0; padding: 16px; border-radius: 10px; margin-bottom: 24px; font-size: 14px; }
+      .stats { display: flex; gap: 16px; margin-bottom: 24px; }
+      .stat { background: #f8f5f0; padding: 14px 20px; border-radius: 10px; text-align: center; flex: 1; }
+      .stat-n { font-size: 28px; font-weight: 900; color: #1a3c2e; }
+      .stat-l { font-size: 11px; color: #8a9ba8; text-transform: uppercase; letter-spacing: 1px; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th { background: #1a3c2e; color: white; padding: 10px 12px; text-align: left; }
+      td { padding: 9px 12px; border-bottom: 1px solid #f0ede8; }
+      tr:nth-child(even) td { background: #f8f5f0; }
+      .footer { margin-top: 32px; font-size: 12px; color: #8a9ba8; text-align: center; }
+    </style></head><body>
+    <h1>🌿 Mimea Salama — Scan Report</h1>
+    <div class="subtitle">Generated on ${date}</div>
+    <div class="farmer">
+      <strong>👤 Farmer:</strong> ${currentFarmer?.name || 'Unknown'} &nbsp;&nbsp;
+      <strong>📱 Phone:</strong> ${currentFarmer?.phone || '—'} &nbsp;&nbsp;
+      <strong>📊 Total Scans:</strong> ${sData.total}
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-n">${sData.total}</div><div class="stat-l">Total</div></div>
+      <div class="stat"><div class="stat-n" style="color:#2d6a4f">${sData.healthy}</div><div class="stat-l">Healthy</div></div>
+      <div class="stat"><div class="stat-n" style="color:#c0392b">${sData.diseased}</div><div class="stat-l">Diseased</div></div>
+      <div class="stat"><div class="stat-n" style="color:#92610a">${sData.caution}</div><div class="stat-l">Caution</div></div>
+    </div>
+    <table>
+      <thead><tr>
+        <th>Date</th><th>Plant</th><th>Condition</th>
+        <th>Status</th><th>Severity</th><th>Confidence</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="footer">Mimea Salama · AI Plant Disease Detection · Powered by Groq AI</div>
+    </body></html>`;
+
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  setTimeout(() => win.print(), 500);
 }
 </script>
 </body>

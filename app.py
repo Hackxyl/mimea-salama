@@ -9,6 +9,8 @@ import json
 import base64
 from groq import Groq
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import uuid
 from flask import Flask, request, jsonify, render_template
@@ -25,9 +27,26 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///scans.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mimea-salama-secret-2026')
+
+login_manager = LoginManager(app)
+login_manager.login_view = 'login_page'
+
+class Farmer(UserMixin, db.Model):
+    id         = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name       = db.Column(db.String(100), nullable=False)
+    phone      = db.Column(db.String(20), unique=True, nullable=False)
+    pin_hash   = db.Column(db.String(200), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    scans      = db.relationship('Scan', backref='farmer', lazy=True)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Farmer.query.get(user_id)
 
 class Scan(db.Model):
     id          = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    farmer_id   = db.Column(db.String(36), db.ForeignKey('farmer.id'), nullable=True)
     farmer_name = db.Column(db.String(100), nullable=True)
     plant       = db.Column(db.String(100))
     condition   = db.Column(db.String(200))
@@ -36,11 +55,13 @@ class Scan(db.Model):
     cause       = db.Column(db.String(200))
     severity    = db.Column(db.String(20))
     symptoms    = db.Column(db.Text)
-    treatment   = db.Column(db.Text)   # stored as JSON string
-    prevention  = db.Column(db.Text)   # stored as JSON string
-    image_b64   = db.Column(db.Text)   # thumbnail
+    treatment   = db.Column(db.Text)
+    prevention  = db.Column(db.Text)
+    image_b64   = db.Column(db.Text)
     language    = db.Column(db.String(5))
     scanned_at  = db.Column(db.DateTime, default=datetime.utcnow)
+    lat         = db.Column(db.Float, nullable=True)
+    lng         = db.Column(db.Float, nullable=True)
 
 with app.app_context():
     db.create_all()
@@ -156,7 +177,8 @@ def analyze():
         try:
             farmer_name = body.get("farmer_name", None)
             scan = Scan(
-                farmer_name = farmer_name,
+                farmer_id   = current_user.id if current_user.is_authenticated else None,
+                farmer_name = current_user.name if current_user.is_authenticated else None,
                 plant       = result.get("plant", "Unknown"),
                 condition   = result.get("condition", "Unknown"),
                 status      = result.get("status", "caution"),
@@ -205,15 +227,71 @@ def health():
     })
 
 
+# ── AUTH ROUTES ───────────────────────────────────────────────
+
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.get_json()
+    name  = data.get("name", "").strip()
+    phone = data.get("phone", "").strip()
+    pin   = data.get("pin", "").strip()
+
+    if not name or not phone or not pin:
+        return jsonify({"error": "Name, phone and PIN are required."}), 400
+    if len(pin) < 4:
+        return jsonify({"error": "PIN must be at least 4 digits."}), 400
+    if Farmer.query.filter_by(phone=phone).first():
+        return jsonify({"error": "Phone number already registered."}), 409
+
+    farmer = Farmer(
+        name     = name,
+        phone    = phone,
+        pin_hash = generate_password_hash(pin)
+    )
+    db.session.add(farmer)
+    db.session.commit()
+    login_user(farmer)
+    return jsonify({"success": True, "name": farmer.name, "id": farmer.id})
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    data  = request.get_json()
+    phone = data.get("phone", "").strip()
+    pin   = data.get("pin", "").strip()
+
+    farmer = Farmer.query.filter_by(phone=phone).first()
+    if not farmer or not check_password_hash(farmer.pin_hash, pin):
+        return jsonify({"error": "Wrong phone number or PIN."}), 401
+
+    login_user(farmer)
+    return jsonify({"success": True, "name": farmer.name, "id": farmer.id})
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    logout_user()
+    return jsonify({"success": True})
+
+
+@app.route("/me")
+def me():
+    if current_user.is_authenticated:
+        return jsonify({"logged_in": True, "name": current_user.name, "phone": current_user.phone})
+    return jsonify({"logged_in": False})
+
+
 # ── HISTORY ROUTES ────────────────────────────────────────────
 
 @app.route("/history")
 def history():
     """Return all saved scans, newest first."""
-    scans = Scan.query.order_by(Scan.scanned_at.desc()).all()
+    if not current_user.is_authenticated:
+        return jsonify({"error": "login_required", "message": "Please login to view your scan history."}), 401
+    scans = Scan.query.filter_by(farmer_id=current_user.id).order_by(Scan.scanned_at.desc()).all()
     return jsonify([{
         "id":           s.id,
-        "farmer_name":  s.farmer_name,
+        "farmer_name":  s.farmer.name if s.farmer else None,
         "plant":        s.plant,
         "condition":    s.condition,
         "status":       s.status,
@@ -245,6 +323,75 @@ def clear_history():
     Scan.query.delete()
     db.session.commit()
     return jsonify({"cleared": True})
+
+
+# ── DASHBOARD & MAP ROUTES ────────────────────────────────────
+
+@app.route("/stats")
+def stats():
+    """Return disease statistics for the dashboard."""
+    if not current_user.is_authenticated:
+        return jsonify({"error": "login_required"}), 401
+
+    scans = Scan.query.filter_by(farmer_id=current_user.id).all()
+    total = len(scans)
+    if total == 0:
+        return jsonify({"total": 0, "healthy": 0, "diseased": 0, "caution": 0, "diseases": [], "plants": []})
+
+    healthy  = sum(1 for s in scans if s.status == "healthy")
+    diseased = sum(1 for s in scans if s.status == "diseased")
+    caution  = sum(1 for s in scans if s.status == "caution")
+
+    # Top diseases
+    from collections import Counter
+    disease_counts = Counter(s.condition for s in scans if s.status != "healthy")
+    plant_counts   = Counter(s.plant for s in scans)
+
+    return jsonify({
+        "total":    total,
+        "healthy":  healthy,
+        "diseased": diseased,
+        "caution":  caution,
+        "diseases": [{"name": k, "count": v} for k, v in disease_counts.most_common(5)],
+        "plants":   [{"name": k, "count": v} for k, v in plant_counts.most_common(5)]
+    })
+
+
+@app.route("/save-location", methods=["POST"])
+def save_location():
+    """Save GPS location for a scan."""
+    data    = request.get_json()
+    scan_id = data.get("scan_id")
+    lat     = data.get("lat")
+    lng     = data.get("lng")
+
+    scan = Scan.query.get(scan_id)
+    if scan:
+        scan.lat = lat
+        scan.lng = lng
+        db.session.commit()
+    return jsonify({"success": True})
+
+
+@app.route("/map-data")
+def map_data():
+    """Return scan locations for the map."""
+    if not current_user.is_authenticated:
+        return jsonify({"error": "login_required"}), 401
+
+    scans = Scan.query.filter_by(farmer_id=current_user.id).filter(
+        Scan.lat != None, Scan.lng != None
+    ).all()
+
+    return jsonify([{
+        "id":        s.id,
+        "plant":     s.plant,
+        "condition": s.condition,
+        "status":    s.status,
+        "lat":       s.lat,
+        "lng":       s.lng,
+        "date":      s.scanned_at.strftime("%d %b %Y")
+    } for s in scans])
 
 
 # ── ENTRY POINT ───────────────────────────────────────────────
