@@ -188,7 +188,7 @@ def analyze():
                 symptoms    = result.get("symptoms", ""),
                 treatment   = json.dumps(result.get("treatment", [])),
                 prevention  = json.dumps(result.get("prevention", [])),
-                image_b64   = image_b64[:500] if image_b64 else "",
+                image_b64   = image_b64 if image_b64 else "",
                 language    = language
             )
             db.session.add(scan)
@@ -302,7 +302,8 @@ def history():
         "treatment":    json.loads(s.treatment or "[]"),
         "prevention":   json.loads(s.prevention or "[]"),
         "language":     s.language,
-        "scanned_at":   s.scanned_at.strftime("%d %b %Y, %I:%M %p")
+        "scanned_at":   s.scanned_at.strftime("%d %b %Y, %I:%M %p"),
+        "image_b64":    s.image_b64 or ""
     } for s in scans])
 
 
@@ -447,6 +448,135 @@ def notify_test():
         "body": "Disease outbreak detected in your area! Check your plants.",
         "icon": "/static/icon-192.png"
     })
+
+
+# ── CROP CALENDAR ─────────────────────────────────────────────
+
+CROP_CALENDAR = {
+    "maize": {
+        "name": "Maize / Mahindi",
+        "seasons": [
+            {"month": "March–April", "activity": "🌱 Plant long rains season", "tip": "Use certified seeds, plant 75cm × 25cm spacing"},
+            {"month": "April–May",   "activity": "💊 First fertilizer (DAP)",  "tip": "Apply DAP at planting, 50kg per acre"},
+            {"month": "May–June",    "activity": "🌿 Top dress with CAN",      "tip": "Apply CAN when plant is knee-high"},
+            {"month": "June–July",   "activity": "🔍 Scout for armyworm",      "tip": "Check leaves weekly, spray if >1 per plant"},
+            {"month": "August",      "activity": "🌾 Harvest short rains crop", "tip": "Harvest when husks turn brown and dry"},
+            {"month": "October",     "activity": "🌱 Plant short rains season", "tip": "Second planting window for short rains"}
+        ]
+    },
+    "tomato": {
+        "name": "Tomato / Nyanya",
+        "seasons": [
+            {"month": "January",     "activity": "🌱 Start seedbed",           "tip": "Use raised seedbed, cover with mulch"},
+            {"month": "February",    "activity": "🏡 Transplant seedlings",     "tip": "Transplant after 4 weeks, water well"},
+            {"month": "March",       "activity": "🪢 Stake plants",             "tip": "Use stakes 1.5m tall, tie loosely"},
+            {"month": "April",       "activity": "💊 Apply fertilizer",         "tip": "CAN top dressing every 2 weeks"},
+            {"month": "May",         "activity": "🔍 Watch for blight",         "tip": "Spray fungicide preventively in wet weather"},
+            {"month": "June",        "activity": "🍅 First harvest",            "tip": "Harvest when 50% red, store cool"}
+        ]
+    },
+    "beans": {
+        "name": "Beans / Maharagwe",
+        "seasons": [
+            {"month": "March",       "activity": "🌱 Plant with long rains",    "tip": "Plant 45cm × 15cm, 2 seeds per hole"},
+            {"month": "April",       "activity": "🌿 Weeding",                  "tip": "Weed twice in first 6 weeks"},
+            {"month": "May",         "activity": "🔍 Watch for rust disease",   "tip": "Look for orange spots, spray if found"},
+            {"month": "June",        "activity": "🫘 Harvest dry beans",        "tip": "Harvest when pods rattle, dry in shade"},
+            {"month": "October",     "activity": "🌱 Plant short rains",        "tip": "Second season, same spacing"}
+        ]
+    },
+    "cassava": {
+        "name": "Cassava / Muhogo",
+        "seasons": [
+            {"month": "March–April", "activity": "🌱 Plant stem cuttings",      "tip": "Use 25cm cuttings, plant at an angle"},
+            {"month": "May–June",    "activity": "🌿 Weeding",                  "tip": "Weed 3 times in first 3 months"},
+            {"month": "August",      "activity": "🔍 Check for mosaic virus",   "tip": "Remove and burn infected plants immediately"},
+            {"month": "Month 9–18",  "activity": "🍠 Harvest roots",            "tip": "Harvest when leaves start yellowing"}
+        ]
+    },
+    "banana": {
+        "name": "Banana / Ndizi",
+        "seasons": [
+            {"month": "Any month",   "activity": "🌱 Plant suckers",            "tip": "Use disease-free suckers, 3m × 3m spacing"},
+            {"month": "Month 2–3",   "activity": "💊 Apply manure",             "tip": "Apply 10kg compost per plant"},
+            {"month": "Month 4–6",   "activity": "🔍 Watch for Sigatoka",       "tip": "Remove lower leaves showing yellow spots"},
+            {"month": "Month 9–12",  "activity": "🍌 Harvest bunch",            "tip": "Harvest when fingers fill out and round"}
+        ]
+    }
+}
+
+@app.route("/crop-calendar")
+def crop_calendar():
+    crop = request.args.get("crop", "maize").lower()
+    if crop not in CROP_CALENDAR:
+        return jsonify({"error": "Crop not found", "available": list(CROP_CALENDAR.keys())}), 404
+    return jsonify(CROP_CALENDAR[crop])
+
+
+@app.route("/crops")
+def crops():
+    return jsonify([{"id": k, "name": v["name"]} for k, v in CROP_CALENDAR.items()])
+
+
+    # ── AGRO DEALER LOCATOR ───────────────────────────────────────
+
+@app.route("/agrodealers")
+def agrodealers():
+    """Return nearest agro-dealers using OpenStreetMap Overpass API."""
+    lat = request.args.get("lat", "-1.286389")
+    lng = request.args.get("lng", "36.817223")
+    try:
+        query = f"""
+        [out:json][timeout:10];
+        (
+          node["shop"="agrarian"](around:10000,{lat},{lng});
+          node["shop"="farm"](around:10000,{lat},{lng});
+          node["amenity"="marketplace"](around:10000,{lat},{lng});
+        );
+        out body 10;
+        """
+        res  = requests.post("https://overpass-api.de/api/interpreter", data=query, timeout=15)
+        data = res.json()
+        dealers = [{
+            "name": el.get("tags", {}).get("name", "Agro-dealer"),
+            "lat":  el["lat"],
+            "lng":  el["lon"],
+            "type": el.get("tags", {}).get("shop", el.get("tags", {}).get("amenity", "shop"))
+        } for el in data.get("elements", [])]
+
+        # If none found via OSM add known Kenyan agro networks
+        if not dealers:
+            dealers = [
+                {"name": "Kenya Seed Company", "lat": float(lat)+0.01, "lng": float(lng)+0.01, "type": "seeds"},
+                {"name": "Twiga Foods Hub",    "lat": float(lat)-0.01, "lng": float(lng)+0.02, "type": "market"},
+                {"name": "Farmer's Choice",    "lat": float(lat)+0.02, "lng": float(lng)-0.01, "type": "agrarian"}
+            ]
+        return jsonify(dealers)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# ── DISEASE ENCYCLOPEDIA ──────────────────────────────────────
+
+DISEASES = [
+    {"id":"maize-rust",    "plant":"Maize",   "name":"Maize Rust",          "emoji":"🌽", "cause":"Puccinia fungus",      "symptoms":"Orange/brown pustules on leaves","treatment":["Apply fungicide","Remove infected leaves","Improve air circulation"],"prevention":["Use resistant varieties","Avoid overhead irrigation","Rotate crops"],"severity":"Medium"},
+    {"id":"late-blight",   "plant":"Tomato",  "name":"Late Blight",         "emoji":"🍅", "cause":"Phytophthora infestans","symptoms":"Dark water-soaked lesions on leaves and fruit","treatment":["Spray copper fungicide","Remove infected parts","Improve drainage"],"prevention":["Avoid wet foliage","Use certified seeds","Stake plants for airflow"],"severity":"High"},
+    {"id":"bean-rust",     "plant":"Beans",   "name":"Bean Rust",           "emoji":"🫘", "cause":"Uromyces appendiculatus","symptoms":"Reddish-brown pustules on leaves","treatment":["Apply mancozeb","Remove leaves","Avoid working when wet"],"prevention":["Use resistant varieties","Crop rotation","Wide spacing"],"severity":"Medium"},
+    {"id":"mosaic-virus",  "plant":"Cassava", "name":"Cassava Mosaic",      "emoji":"🍠", "cause":"Cassava mosaic virus",  "symptoms":"Mosaic yellowing pattern on leaves","treatment":["Remove and burn infected plants","Use clean cuttings"],"prevention":["Use virus-free planting material","Control whiteflies"],"severity":"High"},
+    {"id":"sigatoka",      "plant":"Banana",  "name":"Black Sigatoka",      "emoji":"🍌", "cause":"Mycosphaerella fijiensis","symptoms":"Dark streaks expanding to leaf death","treatment":["Remove lower leaves","Apply systemic fungicide"],"prevention":["Good spacing","Remove dead leaves","Avoid waterlogging"],"severity":"High"},
+    {"id":"armyworm",      "plant":"Maize",   "name":"Fall Armyworm",       "emoji":"🌽", "cause":"Spodoptera frugiperda", "symptoms":"Holes in leaves, frass in whorl","treatment":["Apply neem extract","Use Bt pesticide","Hand-pick larvae"],"prevention":["Early planting","Intercrop with legumes","Scout weekly"],"severity":"High"},
+    {"id":"early-blight",  "plant":"Tomato",  "name":"Early Blight",        "emoji":"🍅", "cause":"Alternaria solani",     "symptoms":"Dark concentric rings on older leaves","treatment":["Apply chlorothalonil","Remove lower leaves","Mulch soil"],"prevention":["Crop rotation","Avoid wetting leaves","Use stakes"],"severity":"Medium"},
+    {"id":"root-rot",      "plant":"Beans",   "name":"Root Rot",            "emoji":"🫘", "cause":"Pythium/Fusarium fungi","symptoms":"Brown rotting roots, wilting plant","treatment":["Improve drainage","Apply Trichoderma","Remove affected plants"],"prevention":["Avoid waterlogging","Use raised beds","Treat seeds before planting"],"severity":"High"},
+]
+
+@app.route("/encyclopedia")
+def encyclopedia():
+    plant = request.args.get("plant", "").lower()
+    if plant:
+        filtered = [d for d in DISEASES if d["plant"].lower() == plant]
+        return jsonify(filtered)
+    return jsonify(DISEASES)
+
 
 
 # ── ENTRY POINT ───────────────────────────────────────────────
