@@ -572,22 +572,55 @@
     transition: all 0.2s;
   }
   .enc-filter-btn.active { background: var(--forest); color: white; border-color: var(--forest); }
+
+
+  /* ── NAV DROPDOWN ── */
+  .nav-menu-item {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; padding: 10px 14px; border-radius: 10px;
+    border: none; background: transparent; color: white;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    font-weight: 500; cursor: pointer; text-align: left;
+    transition: background 0.15s;
+  }
+  .nav-menu-item:hover { background: rgba(255,255,255,0.12); }
 </style>
 </head>
 <body>
 
 <!-- LANGUAGE BAR -->
 <div class="lang-bar">
+  <!-- Language toggles -->
   <span style="color:rgba(255,255,255,0.5);font-size:12px;margin-right:6px;" data-en="Language:" data-sw="Lugha:">Language:</span>
   <button class="lang-btn active" onclick="setLang('en')">English</button>
   <button class="lang-btn" onclick="setLang('sw')">Kiswahili</button>
-  <button class="lang-btn" onclick="openHistory()" style="margin-left:12px;" data-en="📋 History" data-sw="📋 Historia">📋 History</button>
-  <button class="lang-btn" onclick="openDashboard()" data-en="📊 Stats" data-sw="📊 Takwimu">📊 Stats</button>
-  <button class="lang-btn" onclick="openMap()" data-en="🗺️ Map" data-sw="🗺️ Ramani">🗺️ Map</button>
-  <button class="lang-btn" onclick="openCalendar()" data-en="🌱 Calendar" data-sw="🌱 Kalenda">🌱 Calendar</button>
-  <button class="lang-btn" onclick="openDealers()" data-en="🏪 Shops" data-sw="🏪 Maduka">🏪 Shops</button>
-  <button class="lang-btn" onclick="openEncyclopedia()" data-en="📚 Diseases" data-sw="📚 Magonjwa">📚 Diseases</button>
-  <button class="lang-btn" id="authBtn" onclick="openAuth()" style="margin-left:4px;">👤 Login</button>
+
+  <!-- Spacer -->
+  <div style="flex:1"></div>
+
+  <!-- Tools dropdown -->
+  <div style="position:relative;">
+    <button class="lang-btn" onclick="toggleNavMenu()" id="menuBtn" style="margin-right:6px;">
+      🛠️ Tools ▾
+    </button>
+    <div id="navMenu" style="
+      display:none;position:absolute;top:38px;right:0;
+      background:var(--forest);border:1px solid rgba(255,255,255,0.15);
+      border-radius:14px;padding:8px;min-width:190px;
+      box-shadow:0 12px 32px rgba(0,0,0,0.4);z-index:999;
+    ">
+      <button class="nav-menu-item" onclick="openHistory();closeNavMenu()">📋 <span data-en="Scan History" data-sw="Historia">Scan History</span></button>
+      <button class="nav-menu-item" onclick="openDashboard();closeNavMenu()">📊 <span data-en="Statistics" data-sw="Takwimu">Statistics</span></button>
+      <button class="nav-menu-item" onclick="openMap();closeNavMenu()">🗺️ <span data-en="Disease Map" data-sw="Ramani">Disease Map</span></button>
+      <div style="border-top:1px solid rgba(255,255,255,0.1);margin:6px 0;"></div>
+      <button class="nav-menu-item" onclick="openCalendar();closeNavMenu()">🌱 <span data-en="Crop Calendar" data-sw="Kalenda">Crop Calendar</span></button>
+      <button class="nav-menu-item" onclick="openDealers();closeNavMenu()">🏪 <span data-en="Agro-dealers" data-sw="Maduka">Agro-dealers</span></button>
+      <button class="nav-menu-item" onclick="openEncyclopedia();closeNavMenu()">📚 <span data-en="Disease Guide" data-sw="Magonjwa">Disease Guide</span></button>
+    </div>
+  </div>
+
+  <!-- Auth button -->
+  <button class="lang-btn" id="authBtn" onclick="openAuth()">👤 Login</button>
 </div>
 
 <!-- HERO -->
@@ -604,8 +637,12 @@
 
 
 <!-- WEATHER ALERT BAR -->
-<div id="weatherBar" style="display:none;max-width:680px;margin:12px auto 0;padding:0 20px;">
-  <div id="weatherInner" style="background:var(--forest);border-radius:14px;padding:14px 18px;color:white;font-size:13px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+<div id="weatherBar" style="display:none;max-width:680px;margin:16px auto;padding:0 20px;">
+  <div id="weatherInner" style="background:var(--forest);border-radius:16px;padding:16px 18px;color:white;font-size:13px;">
+    <!-- stats row -->
+    <div id="weatherStats" style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:0;" ></div>
+    <!-- risk rows injected below -->
+    <div id="weatherRisks"></div>
   </div>
 </div>
 
@@ -1583,12 +1620,21 @@ async function loadWeather() {
         ? data.risks.map(r => `<div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:6px 10px;margin-top:6px;width:100%">⚠️ ${r}</div>`).join('')
         : `<span style="color:#95d5b2">✅ ${currentLang === 'sw' ? 'Hali ya hewa nzuri leo' : 'Weather conditions look good today'}</span>`;
 
-      inner.innerHTML = `
-        <span>🌡️ ${data.temperature}°C</span>
-        <span>💧 ${data.humidity}% humidity</span>
-        <span>🌧️ ${data.rainfall}mm rain</span>
-        ${riskHtml}
+      document.getElementById('weatherStats').innerHTML = `
+        <span style="background:rgba(255,255,255,0.12);padding:5px 12px;border-radius:20px;">🌡️ ${data.temperature}°C</span>
+        <span style="background:rgba(255,255,255,0.12);padding:5px 12px;border-radius:20px;">💧 ${data.humidity}% RH</span>
+        <span style="background:rgba(255,255,255,0.12);padding:5px 12px;border-radius:20px;">🌧️ ${data.rainfall}mm</span>
       `;
+      document.getElementById('weatherRisks').innerHTML = data.risks.length
+        ? data.risks.map(r => `
+            <div style="background:rgba(233,166,58,0.2);border-left:3px solid var(--amber);
+                        border-radius:8px;padding:8px 12px;margin-top:10px;font-size:12px;line-height:1.5;">
+              ⚠️ ${r}
+            </div>`).join('')
+        : `<div style="background:rgba(82,183,136,0.15);border-left:3px solid var(--leaf);
+                       border-radius:8px;padding:8px 12px;margin-top:10px;font-size:12px;">
+             ✅ ${currentLang === 'sw' ? 'Hali ya hewa nzuri leo — hatari ya magonjwa ni ndogo' : 'Weather looks good today — low disease risk'}
+           </div>`;
     } catch(e) {}
   });
 }
@@ -1757,6 +1803,26 @@ async function loadEncyclopedia(plant) {
     `).join('')}
   `;
 }
+
+
+// ── NAV DROPDOWN ──────────────────────────────────────────────
+function toggleNavMenu() {
+  const menu = document.getElementById('navMenu');
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+
+function closeNavMenu() {
+  document.getElementById('navMenu').style.display = 'none';
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', e => {
+  const btn  = document.getElementById('menuBtn');
+  const menu = document.getElementById('navMenu');
+  if (!btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.style.display = 'none';
+  }
+});
 </script>
 </body>
 </html>
