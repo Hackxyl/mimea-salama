@@ -3,7 +3,7 @@ Mimea Salama — Python/Flask Backend
 Plant disease detection powered by Google Gemini (FREE)
 1,500 free requests/day — no credit card needed
 """
-
+import requests
 import os
 import json
 import base64
@@ -392,6 +392,61 @@ def map_data():
         "lng":       s.lng,
         "date":      s.scanned_at.strftime("%d %b %Y")
     } for s in scans])
+
+
+@app.route("/static/sw.js")
+def service_worker():
+    return app.send_static_file('sw.js'), 200, {
+        'Content-Type': 'application/javascript',
+        'Service-Worker-Allowed': '/'
+    }
+
+
+@app.route("/weather")
+def weather():
+    """Fetch weather for given coordinates."""
+    lat = request.args.get("lat", "-1.286389")
+    lng = request.args.get("lng", "36.817223")
+    try:
+        url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lng}&current=temperature_2m,relative_humidity_2m,precipitation,weathercode&timezone=Africa/Nairobi"
+        res = requests.get(url, timeout=10)
+        data = res.json()
+        current = data["current"]
+
+        humidity = current["relative_humidity_2m"]
+        temp     = current["temperature_2m"]
+        rain     = current["precipitation"]
+
+        # Disease risk assessment
+        risks = []
+        if humidity > 80:
+            risks.append("High humidity — fungal disease risk is HIGH 🍄")
+        if rain > 5:
+            risks.append("Recent rainfall — watch for leaf blight and root rot 💧")
+        if temp > 30:
+            risks.append("High temperature — pest activity likely increased 🦗")
+        if humidity < 40:
+            risks.append("Low humidity — plants may be stressed 🌵")
+
+        return jsonify({
+            "temperature": temp,
+            "humidity":    humidity,
+            "rainfall":    rain,
+            "risks":       risks,
+            "safe":        len(risks) == 0
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/notify-test", methods=["POST"])
+def notify_test():
+    """Send a test notification payload."""
+    return jsonify({
+        "title": "🌿 Mimea Salama Alert",
+        "body": "Disease outbreak detected in your area! Check your plants.",
+        "icon": "/static/icon-192.png"
+    })
 
 
 # ── ENTRY POINT ───────────────────────────────────────────────

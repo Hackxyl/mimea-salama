@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#1a3c2e">
+<link rel="manifest" href="/manifest.json">
 <title>Mimea Salama – Plant Health AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,900;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -549,6 +550,14 @@
   <span class="badge" data-en="💡AI & Agriculture Innovation" data-sw="💡Ubunifu wa AI & Kilimo">💡AI & Agriculture Innovation</span>
 </div>
 
+
+<!-- WEATHER ALERT BAR -->
+<div id="weatherBar" style="display:none;max-width:680px;margin:12px auto 0;padding:0 20px;">
+  <div id="weatherInner" style="background:var(--forest);border-radius:14px;padding:14px 18px;color:white;font-size:13px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+  </div>
+</div>
+
+
 <!-- UPLOAD SECTION -->
 <div class="upload-section">
   <div class="upload-card">
@@ -582,9 +591,20 @@
   <div class="result-card">
     <div class="result-header">
       <div class="health-icon" id="resultIcon">🌱</div>
-      <div>
+      <div style="flex:1">
         <div class="result-title" id="resultTitle">—</div>
         <div class="health-status" id="resultStatus">—</div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button onclick="speakResult(lastResult)" style="background:#3b82f6;border:none;color:white;padding:8px 12px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;" title="Read aloud">
+          🔊
+        </button>
+        <button onclick="window.speechSynthesis.cancel()" style="background:#6b7280;border:none;color:white;padding:8px 12px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;" title="Stop reading">
+          ⏹️
+        </button>
+        <button onclick="shareWhatsApp()" style="background:#25D366;border:none;color:white;padding:8px 14px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">
+          📲 WhatsApp
+        </button>
       </div>
     </div>
     <div class="result-body">
@@ -887,6 +907,8 @@ ${swahiliNote}`;
 
     if (data.error) throw new Error(data.error);
     showResult(data);
+    lastResult = data;
+    askForNotifications();
 
     // Capture GPS location silently
     if (data.scan_id && navigator.geolocation) {
@@ -965,6 +987,9 @@ function showResult(r) {
   const sec = document.getElementById('resultSection');
   sec.classList.add('visible');
   sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Auto-read result
+  speakResult(r);
 }
 
 function fileToBase64(file) {
@@ -1378,6 +1403,122 @@ async function exportPDF() {
   win.document.write(html);
   win.document.close();
   setTimeout(() => win.print(), 500);
+}
+
+let lastResult = null;
+
+function shareWhatsApp() {
+  if (!lastResult) return;
+  const r = lastResult;
+  const msg = currentLang === 'sw'
+    ? `🌿 *Mimea Salama - Ripoti ya Mmea*\n\n` +
+      `🌱 Mmea: ${r.plant}\n` +
+      `🔍 Hali: ${r.condition}\n` +
+      `⚠️ Ukali: ${r.severity}\n` +
+      `🦠 Sababu: ${r.cause}\n\n` +
+      `💊 *Matibabu:*\n${(r.treatment||[]).map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\n` +
+      `🛡️ *Kuzuia:*\n${(r.prevention||[]).map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\n` +
+      `_Imechanganuliwa na Mimea Salama AI 🌍_`
+    : `🌿 *Mimea Salama - Plant Report*\n\n` +
+      `🌱 Plant: ${r.plant}\n` +
+      `🔍 Condition: ${r.condition}\n` +
+      `⚠️ Severity: ${r.severity}\n` +
+      `🦠 Cause: ${r.cause}\n\n` +
+      `💊 *Treatment:*\n${(r.treatment||[]).map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\n` +
+      `🛡️ *Prevention:*\n${(r.prevention||[]).map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\n` +
+      `_Analyzed by Mimea Salama AI 🌍_`;
+
+  const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
+
+// ── VOICE OUTPUT ──────────────────────────────────────────────
+
+let speaking = false;
+
+function speakResult(r) {
+  window.speechSynthesis.cancel();
+  const text = currentLang === 'sw'
+    ? `Mmea ni ${r.plant}. Hali ni ${r.condition}. Ukali ni ${r.severity}. ${r.cause}. Matibabu: ${(r.treatment||[]).join('. ')}`
+    : `Plant is ${r.plant}. Condition is ${r.condition}. Severity is ${r.severity}. ${r.cause}. Treatment: ${(r.treatment||[]).join('. ')}`;
+
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang  = currentLang === 'sw' ? 'sw-KE' : 'en-KE';
+  utter.rate  = 0.9;
+  utter.pitch = 1;
+
+  // Pick best available voice
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.lang.startsWith(currentLang === 'sw' ? 'sw' : 'en'));
+  if (preferred) utter.voice = preferred;
+
+  window.speechSynthesis.speak(utter);
+}
+
+
+// ── PWA SERVICE WORKER ────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/static/sw.js')
+      .then(() => console.log('✅ Mimea Salama offline ready'))
+      .catch(err => console.log('SW error:', err));
+  });
+}
+
+
+// ── WEATHER ───────────────────────────────────────────────────
+
+async function loadWeather() {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const { latitude: lat, longitude: lng } = pos.coords;
+    try {
+      const res  = await fetch(`/weather?lat=${lat}&lng=${lng}`);
+      const data = await res.json();
+      if (data.error) return;
+
+      const bar   = document.getElementById('weatherBar');
+      const inner = document.getElementById('weatherInner');
+      bar.style.display = 'block';
+
+      const riskHtml = data.risks.length
+        ? data.risks.map(r => `<div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:6px 10px;margin-top:6px;width:100%">⚠️ ${r}</div>`).join('')
+        : `<span style="color:#95d5b2">✅ ${currentLang === 'sw' ? 'Hali ya hewa nzuri leo' : 'Weather conditions look good today'}</span>`;
+
+      inner.innerHTML = `
+        <span>🌡️ ${data.temperature}°C</span>
+        <span>💧 ${data.humidity}% humidity</span>
+        <span>🌧️ ${data.rainfall}mm rain</span>
+        ${riskHtml}
+      `;
+    } catch(e) {}
+  });
+}
+
+// Load weather on startup
+loadWeather();
+
+
+// ── PUSH NOTIFICATIONS ────────────────────────────────────────
+
+async function requestNotifications() {
+  if (!('Notification' in window)) return;
+  const permission = await Notification.requestPermission();
+  if (permission === 'granted') {
+    new Notification('🌿 Mimea Salama', {
+      body: currentLang === 'sw'
+        ? 'Umewezeshwa kupokea arifa za magonjwa ya mimea!'
+        : 'You will now receive plant disease outbreak alerts!',
+      icon: '/static/icon-192.png'
+    });
+  }
+}
+
+// Ask for notification permission after first scan
+function askForNotifications() {
+  if (Notification.permission === 'default') {
+    setTimeout(requestNotifications, 3000);
+  }
 }
 </script>
 </body>

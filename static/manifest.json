@@ -1,0 +1,14 @@
+{
+  "name": "Mimea Salama",
+  "short_name": "Mimea",
+  "description": "AI Plant Disease Detection for East African Farmers",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a3c2e",
+  "theme_color": "#52b788",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/static/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/static/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
