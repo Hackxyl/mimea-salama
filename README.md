@@ -1,36 +1,63 @@
-# 🌿 Mimea Salama — Python/Flask + Gemini (FREE)
+# 🌿 Mimea Salama — AI Plant Disease Detection
 
-AI plant disease detection with Swahili support.
-Python + Flask backend · **Google Gemini (free tier)** · Deployable on Vercel.
-**No credit card needed · 1,500 free requests/day**
+AI-powered plant disease detection for East African farmers.
+**Python + Flask · Groq AI (FREE) · English & Kiswahili · Deployable on Vercel**
+
+---
+
+## ✨ Features
+
+| Feature | Description |
+|---|---|
+| 🤖 AI Diagnosis | Detects 200+ plant diseases using Llama 4 via Groq |
+| 🌍 Bilingual | Full English & Kiswahili support |
+| 📱 Mobile Ready | Responsive design + camera capture |
+| 🚫 Smart Validation | Rejects non-plant images automatically |
+| 👤 Farmer Accounts | Register/login with phone + PIN |
+| 📋 Scan History | Saves all scans with photos per farmer |
+| 📊 Dashboard | Disease stats and charts |
+| 🗺️ Disease Map | Plots scan locations on Kenya map |
+| 📄 PDF Export | Download full scan report |
+| 📲 WhatsApp Share | Share diagnosis instantly |
+| 🗣️ Voice Output | Reads diagnosis aloud in Kiswahili/English |
+| 🌐 Offline PWA | Works without internet, installs on phone |
+| 🌦️ Weather Alerts | Disease risk based on local weather |
+| 🔔 Notifications | Browser alerts for disease outbreaks |
+| 🌱 Crop Calendar | Planting & care schedule for 5 crops |
+| 🏪 Agro-dealer Locator | Find nearest shops for pesticides |
+| 📞 Expert Hotline | One-tap call/WhatsApp to agronomist |
+| 📚 Disease Encyclopedia | Offline guide to common plant diseases |
 
 ---
 
 ## 📁 Project Structure
-
 ```
 mimea-salama/
-├── app.py               ← Flask backend (talks to Gemini)
+├── app.py                  ← Flask backend (main server)
 ├── templates/
-│   └── index.html       ← The app frontend (served by Flask)
-├── static/              ← Put images/icons here if needed
-├── requirements.txt     ← Python packages
-├── vercel.json          ← Vercel deployment config
-├── .env                 ← Your secret Gemini key (NEVER commit this)
-├── .env.example         ← Safe template
-├── .gitignore           ← Keeps .env off GitHub
-└── README.md            ← This file
+│   └── index.html          ← Frontend app (served by Flask)
+├── static/
+│   ├── sw.js               ← Service worker (offline PWA)
+│   └── manifest.json       ← PWA manifest
+├── requirements.txt        ← Python packages
+├── vercel.json             ← Vercel deployment config
+├── runtime.txt             ← Python version for Vercel
+├── .env                    ← Your secret keys (NEVER commit)
+├── .env.example            ← Safe template
+├── .gitignore              ← Keeps .env off GitHub
+└── README.md               ← This file
 ```
 
 ---
 
-## 🔑 Step 1 — Get Your FREE Gemini API Key
+## 🔑 Step 1 — Get Your FREE Groq API Key
 
-1. Go to **https://aistudio.google.com**
-2. Sign in with your Google account
-3. Click **"Get API Key"** → **"Create API key"**
-4. Copy the key — it starts with `AIza...`
-5. No credit card, no billing setup needed ✅
+1. Go to **https://console.groq.com**
+2. Sign up with your Google or GitHub account
+3. Click **"API Keys"** → **"Create API Key"**
+4. Copy the key — it starts with `gsk_...`
+5. No credit card needed ✅
+6. Free tier: **14,400 requests/day**
 
 ---
 
@@ -42,83 +69,80 @@ code mimea-salama
 ```
 
 ### Create a virtual environment
-In the VSCode terminal (`Ctrl + `` ` ``):
+In VSCode terminal (`Ctrl + `` ` ``):
 ```bash
 python -m venv venv
 ```
+
 Activate it:
 - **Windows:**   `venv\Scripts\activate`
 - **Mac/Linux:** `source venv/bin/activate`
 
-You'll see `(venv)` in the terminal — that means it's active.
+You'll see `(venv)` in the terminal ✅
 
 ### Install packages
 ```bash
 pip install -r requirements.txt
 ```
 
-### Add your Gemini key
+### Add your API key
 ```bash
 cp .env.example .env
 ```
-Open `.env` and replace `your-gemini-key-here` with your real key:
+Open `.env` and fill in your real key:
 ```
-GEMINI_API_KEY=AIzaYOUR-REAL-KEY-HERE
+GROQ_API_KEY=gsk_YOUR-REAL-KEY-HERE
 FLASK_ENV=development
+SECRET_KEY=any-random-string-here
 ```
 
 ### Run the app
 ```bash
 python app.py
 ```
-Open **http://localhost:5000** — fully working! 🎉
+Open **http://localhost:5000** 🎉
 
-Check the server health at **http://localhost:5000/health**
+Check server health at **http://localhost:5000/health**
 
 ---
 
 ## 🌐 Step 3 — Deploy to Vercel (Free Hosting)
 
-### Install Vercel CLI
-```bash
-npm install -g vercel
-```
-
-### Push to GitHub first
+### Push to GitHub
 ```bash
 git init
 git add .
 git commit -m "Launch Mimea Salama"
 ```
-Go to https://github.com → New Repository → `mimea-salama`
-Follow GitHub's push instructions.
+Go to **https://github.com/new** → Create repo `mimea-salama` → push.
 
-### Deploy
-```bash
-vercel --prod
-```
+### Deploy via Vercel website
+1. Go to **https://vercel.com** → Sign up with GitHub
+2. Click **"Add New Project"** → Import `mimea-salama`
+3. Leave settings as default → click **"Deploy"**
 
-### Add your Gemini key to Vercel
-```bash
-vercel env add GEMINI_API_KEY
-# Paste your key → press A to select all environments → Enter
-```
+### Add environment variables on Vercel
+Go to your project → **Settings → Environment Variables** → add:
 
-### Redeploy
-```bash
-vercel --prod
-```
-Live at **https://mimea-salama.vercel.app** 🌍
+| Name | Value |
+|---|---|
+| `GROQ_API_KEY` | your Groq key |
+| `SECRET_KEY` | any random string |
+| `FLASK_ENV` | production |
+
+Click **Save** → go to **Deployments** → **Redeploy**
+
+Your app is live at **https://mimea-salama.vercel.app** 🌍
 
 ---
 
 ## ✅ Verify It's Working
 
-Visit http://localhost:5000/health and you should see:
+Visit **http://localhost:5000/health**:
 ```json
 {
   "status": "ok",
-  "ai_backend": "Google Gemini (gemini-1.5-flash)",
+  "ai_backend": "Groq (llama-4-scout)",
   "free_tier": true,
   "api_key_configured": true,
   "message": "Mimea Salama backend is running 🌿"
@@ -127,25 +151,69 @@ Visit http://localhost:5000/health and you should see:
 
 ---
 
+## 📱 Install on Phone (PWA)
+
+1. Open the app in Chrome on your phone
+2. Tap the **"Add to Home Screen"** banner
+3. The app installs like a native app
+4. Works offline after first load ✅
+
+---
+
 ## 💡 VSCode Tips
 
-- Install the **Python** extension (Microsoft) for syntax highlighting
+- Install **Python** extension (Microsoft) for syntax highlighting
 - Install **Pylance** for smart autocomplete
 - Press **F5** to run with the debugger
-- `Ctrl + Shift + P` → "Python: Select Interpreter" → pick your `venv`
+- `Ctrl + Shift + P` → **"Python: Select Interpreter"** → pick `venv`
+- Install **Thunder Client** to test API routes
 
 ---
 
-## 💰 Gemini Free Tier Limits
+## 🔧 API Routes
+
+| Method | Route | Description |
+|---|---|---|
+| GET | `/` | Serve the app |
+| GET | `/health` | Server health check |
+| POST | `/analyze` | Analyze plant image |
+| POST | `/register` | Create farmer account |
+| POST | `/login` | Login farmer |
+| POST | `/logout` | Logout farmer |
+| GET | `/me` | Current farmer info |
+| GET | `/history` | Get scan history |
+| DELETE | `/history/<id>` | Delete a scan |
+| DELETE | `/history/clear` | Clear all scans |
+| GET | `/stats` | Disease statistics |
+| GET | `/map-data` | Scan GPS locations |
+| POST | `/save-location` | Save scan GPS |
+| GET | `/weather` | Weather + disease risk |
+| GET | `/crops` | List of crops |
+| GET | `/crop-calendar` | Crop calendar data |
+| GET | `/agrodealers` | Nearest agro-dealers |
+| GET | `/encyclopedia` | Disease encyclopedia |
+
+---
+
+## 💰 Groq Free Tier
 
 | Metric | Free Limit |
-|--------|-----------|
-| Requests per day | 1,500 |
-| Requests per minute | 15 |
+|---|---|
+| Requests per day | 14,400 |
+| Requests per minute | 30 |
 | Cost | $0.00 |
-
-More than enough for a science fair or small farming community!
 
 ---
 
-Built with ❤️ for East African farmers · Powered by Google Gemini AI
+## 🗺️ Roadmap
+
+- [ ] SMS fallback for non-smartphone users
+- [ ] Community disease outbreak reports
+- [ ] Farm progress tracker
+- [ ] Marketplace for farmers
+- [ ] NGO/Government admin dashboard
+- [ ] More languages (Kikuyu, Luo, Kamba)
+
+---
+
+Built with ❤️ for East African farmers · Powered by Groq AI · Developed in Kenya 🇰🇪 by Meshack Muindi
