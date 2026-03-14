@@ -339,7 +339,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
     </div>
     <div class="hero-inner">
       <div class="welcome-chip" id="welcomeChip"></div>
-      <div class="hero-tag" data-en="👋 Good day, Farmer" data-sw="👋 Habari yako, Mkulima">👋 Good day, Farmer</div>
+      <div class="hero-tag" id="timeGreeting"></div>
       <div class="hero-title" data-en="Scan your plant,<br><em>know its health</em>" data-sw="Chunguza mmea wako,<br><em>jua afya yake</em>">Scan your plant,<br><em>know its health</em></div>
       <div class="hero-desc" data-en="AI plant doctor in your pocket. Take a photo and get instant diagnosis, treatment steps, and prevention tips — free." data-sw="Daktari wa mimea wa AI mfukoni mwako. Piga picha upate uchunguzi, hatua za matibabu na vidokezo vya kuzuia — bila malipo.">AI plant doctor in your pocket. Take a photo and get instant diagnosis, treatment steps, and prevention tips — free.</div>
       <div class="hero-steps">
@@ -575,7 +575,9 @@ function setLang(lang){
     if(v) el.innerHTML=v;
   });
   updateAuthUI();
+  setGreeting();
 }
+
 function openModal(id){document.getElementById(id).classList.add('on');}
 function closeModal(id){document.getElementById(id).classList.remove('on');}
 function toggleTools(){document.getElementById('toolsMenu').classList.toggle('open');}
@@ -842,7 +844,22 @@ async function loadEncyclopedia(plant){
   ${data.map(d=>`<div class="dis-card"><div class="dis-head" onclick="this.nextElementSibling.classList.toggle('open')"><span style="font-size:24px">${d.emoji}</span><div><div style="font-weight:700;color:var(--dark);font-size:14px;">${d.name}</div><div style="font-size:12px;color:var(--gray);">${d.plant} · ${d.cause}</div></div><span class="sev-badge sev-${d.severity}">${d.severity}</span></div><div class="dis-body"><div class="info-tile" style="margin-bottom:10px;"><label>Symptoms</label><p>${d.symptoms}</p></div><p style="font-weight:700;font-size:13px;color:var(--dark);margin-bottom:6px;">💊 Treatment</p><ul style="font-size:13px;color:#1a3020;padding-left:16px;margin-bottom:12px;">${d.treatment.map(t=>`<li>${t}</li>`).join('')}</ul><p style="font-weight:700;font-size:13px;color:var(--dark);margin-bottom:6px;">🛡️ Prevention</p><ul style="font-size:13px;color:#1a3020;padding-left:16px;">${d.prevention.map(p=>`<li>${p}</li>`).join('')}</ul></div></div>`).join('')}`;
 }
 if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/static/sw.js').then(()=>console.log('✅ Offline ready')).catch(e=>console.log('SW:',e));});}
-checkAuth();loadWeather();
+function setGreeting(){
+  const hour = new Date().getHours();
+  const greetings = {
+    en: hour < 12 ? '🌅 Good Morning, Farmer!'
+      : hour < 17 ? '☀️ Good Afternoon, Farmer!'
+      : hour < 21 ? '🌇 Good Evening, Farmer!'
+      : '🌙 Good Night, Farmer!',
+    sw: hour < 12 ? '🌅 Habari za Asubuhi, Mkulima!'
+      : hour < 17 ? '☀️ Habari za Mchana, Mkulima!'
+      : hour < 21 ? '🌇 Habari za Jioni, Mkulima!'
+      : '🌙 Habari za Usiku, Mkulima!'
+  };
+  const el = document.getElementById('timeGreeting');
+  if (el) el.textContent = greetings[currentLang] || greetings.en;
+}
+checkAuth();loadWeather();setGreeting();
 </script>
 </body>
 </html>
