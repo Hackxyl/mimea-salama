@@ -38,22 +38,34 @@
     font-family: 'Plus Jakarta Sans', sans-serif;
     background: var(--cream);
     min-height: 100vh;
-    max-width: 480px;
-    margin: 0 auto;
     position: relative;
     padding-bottom: 80px;
   }
 
+  /* Center content on large screens */
+  .top-nav, .bottom-nav, .main-wrapper {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding-top: 62px;
+  }
+
   /* ── TOP NAV ── */
   .top-nav {
-    position: fixed; top: 0; left: 50%; transform: translateX(-50%);
-    width: 100%; max-width: 480px;
+    position: fixed; top: 0; left: 0; right: 0;
     background: var(--white);
     z-index: 100;
-    padding: 12px 20px;
-    display: flex; align-items: center; justify-content: space-between;
     border-bottom: 1px solid rgba(0,0,0,0.06);
     box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .top-nav-inner {
+    max-width: 640px; margin: 0 auto;
+    padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
   }
   .nav-logo {
     display: flex; align-items: center; gap: 8px;
@@ -105,7 +117,7 @@
   /* ── TOOLS DROPDOWN ── */
   .tools-menu {
     display: none; position: fixed;
-    top: 62px; right: calc(50% - 240px + 12px);
+    top: 62px; right: 12px;
     background: var(--white);
     border-radius: 16px;
     padding: 8px;
@@ -522,13 +534,17 @@
 
   /* ── BOTTOM NAV ── */
   .bottom-nav {
-    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 100%; max-width: 480px;
+    position: fixed; bottom: 0; left: 0; right: 0;
     background: var(--white);
     border-top: 1px solid rgba(0,0,0,0.06);
-    display: flex; padding: 8px 0 12px;
+    display: flex; justify-content: center;
+    padding: 8px 0 12px;
     z-index: 100;
     box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+  }
+  .bottom-nav-inner {
+    width: 100%; max-width: 640px;
+    display: flex;
   }
   .bnav-item {
     flex: 1; display: flex; flex-direction: column;
@@ -562,7 +578,7 @@
   .modal {
     background: var(--white);
     border-radius: 24px 24px 0 0;
-    width: 100%; max-width: 480px;
+    width: 100%; max-width: 640px;
     max-height: 90vh;
     display: flex; flex-direction: column;
     animation: slideSheet 0.3s cubic-bezier(0.34,1.56,0.64,1);
@@ -868,12 +884,94 @@
     .tool-tile-label { font-size: 10px; }
     .hero-title { font-size: 26px; }
   }
+
+
+  /* ── LARGE SCREEN LAYOUT ── */
+  @media (min-width: 768px) {
+    body { background: #e8ede9; }
+
+    .top-nav {
+      background: var(--white);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    }
+
+    .main {
+      padding-top: 80px;
+      padding-bottom: 100px;
+    }
+
+    .top-nav-inner { padding: 14px 32px; }
+
+    .hero { border-radius: 20px; margin: 16px; }
+
+    .scan-card { margin: 16px; }
+    .result-section { margin: 0 16px 16px; }
+    .quick-tools { margin: 0 16px 16px; }
+    .hotline-card { margin: 0 16px 16px; }
+    .weather-bar { margin: 16px 16px 0; }
+
+    .tools-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .tool-tile { padding: 18px 10px; }
+    .tool-tile-icon { width: 48px; height: 48px; font-size: 24px; }
+    .tool-tile-label { font-size: 12px; }
+
+    .bottom-nav { padding: 10px 0 14px; }
+    .bnav-icon { width: 40px; height: 40px; font-size: 20px; }
+    .bnav-label { font-size: 11px; }
+
+    .modal { border-radius: 20px; margin-bottom: 40px; }
+    .modal-overlay { align-items: center; }
+
+    .hero-title { font-size: 36px; }
+    .upload-zone { padding: 40px 24px; }
+    .upload-icon-wrap { width: 80px; height: 80px; font-size: 36px; }
+    .analyze-btn { padding: 18px; font-size: 18px; }
+    .camera-btn { padding: 16px; font-size: 15px; }
+
+    .result-banner { padding: 20px; }
+    .result-banner-icon { width: 56px; height: 56px; font-size: 28px; }
+    .result-banner-title { font-size: 20px; }
+
+    .info-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .info-tile { padding: 14px; }
+    .info-tile p { font-size: 14px; }
+
+    .stats-grid { grid-template-columns: repeat(4, 1fr); }
+    .stat-number { font-size: 40px; }
+  }
+
+  @media (min-width: 1024px) {
+    .main { max-width: 720px; }
+    .top-nav-inner { max-width: 720px; }
+    .bottom-nav-inner { max-width: 720px; }
+    .modal { max-width: 720px; }
+  }
+
+  /* ── TABLET ── */
+  @media (min-width: 480px) and (max-width: 767px) {
+    .main { padding-top: 70px; }
+    .hero-title { font-size: 32px; }
+    .tools-grid { grid-template-columns: repeat(4, 1fr); }
+    .stats-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* ── SMALL PHONE ── */
+  @media (max-width: 360px) {
+    .nav-logo-text { font-size: 16px; }
+    .lang-pill-btn { padding: 4px 8px; font-size: 11px; }
+    .hero-title { font-size: 24px; }
+    .tool-tile { padding: 10px 4px; }
+    .tool-tile-icon { width: 36px; height: 36px; font-size: 18px; }
+    .tool-tile-label { font-size: 10px; }
+    .analyze-btn { font-size: 14px; padding: 13px; }
+  }
 </style>
 </head>
 <body>
 
 <!-- TOP NAV -->
 <nav class="top-nav">
+ <div class="top-nav-inner">
   <div class="nav-logo">
     <div class="nav-logo-icon">🌿</div>
     <div class="nav-logo-text">Mimea <span>Salama</span></div>
@@ -886,7 +984,9 @@
     <button class="nav-icon-btn" onclick="toggleNavMenu()" id="menuBtn" title="Tools">⚙️</button>
     <button class="nav-icon-btn" id="authBtn" onclick="openAuth()" title="Account">👤</button>
   </div>
+ </div>
 </nav>
+
 
 <!-- TOOLS DROPDOWN -->
 <div class="tools-menu" id="navMenu">
@@ -1050,6 +1150,7 @@
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
+ <div class="bottom-nav-inner">
   <button class="bnav-item active" onclick="scrollToTop()" id="bnav-home">
     <div class="bnav-icon">🏠</div>
     <div class="bnav-label" data-en="Home" data-sw="Nyumbani">Home</div>
@@ -1066,6 +1167,7 @@
     <div class="bnav-icon">👤</div>
     <div class="bnav-label" data-en="Account" data-sw="Akaunti">Account</div>
   </button>
+ </div>
 </nav>
 
 <!-- LOADING OVERLAY -->
