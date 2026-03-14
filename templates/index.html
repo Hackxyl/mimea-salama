@@ -298,6 +298,34 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
   .lbtn{padding:4px 8px;font-size:11px;}
   .qt-lbl{font-size:10px;}
 }
+
+
+/* ── ABOUT PAGE ── */
+.about-card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;}
+.about-sec-title{font-size:clamp(14px,3vw,16px);font-weight:700;color:var(--dark);margin-bottom:10px;}
+.about-text{font-size:clamp(13px,2.5vw,15px);color:var(--gray);line-height:1.7;}
+.how-steps{display:flex;flex-direction:column;gap:14px;}
+.how-step{display:flex;gap:14px;align-items:flex-start;}
+.how-num{width:32px;height:32px;border-radius:10px;background:var(--g1);color:white;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.how-title{font-size:clamp(13px,3vw,15px);font-weight:700;color:var(--dark);margin-bottom:3px;}
+.how-desc{font-size:clamp(12px,2.5vw,13px);color:var(--gray);line-height:1.6;}
+.feat-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.feat-chip{background:var(--mint);color:var(--g1);padding:6px 12px;border-radius:20px;font-size:clamp(11px,2.5vw,13px);font-weight:600;display:inline-flex;align-items:center;gap:5px;}
+.crop-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.crop-chip{background:var(--cream);color:var(--dark);padding:6px 12px;border-radius:20px;font-size:clamp(11px,2.5vw,13px);font-weight:600;border:1.5px solid var(--light);display:inline-flex;align-items:center;gap:5px;}
+.tip-list{display:flex;flex-direction:column;gap:10px;}
+.tip-item{background:var(--cream);border-radius:10px;padding:10px 14px;font-size:clamp(12px,2.5vw,14px);color:#1a3020;line-height:1.5;display:flex;gap:10px;align-items:flex-start;}
+.built-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.built-tile{background:var(--cream);border-radius:12px;padding:12px 8px;text-align:center;}
+.built-ico{font-size:24px;margin-bottom:6px;}
+.built-name{font-size:clamp(11px,2.5vw,13px);font-weight:700;color:var(--dark);}
+.built-desc{font-size:10px;color:var(--gray);margin-top:2px;}
+@media(max-width:400px){.built-grid{grid-template-columns:repeat(2,1fr);}}
+
+
+/* ── PAGE TRANSITIONS ── */
+.page-section{animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 </style>
 </head>
 <body>
@@ -330,6 +358,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
 </div>
 
 <div class="page">
+<div id="page-home">
 
   <div class="hero">
     <div class="hero-bg">
@@ -448,6 +477,129 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
     </div>
   </div>
 
+<!-- end page-home -->
+
+<!-- ABOUT PAGE -->
+<div id="page-about" style="display:none;">
+
+  <!-- ABOUT HEADER -->
+  <div class="hero" style="padding:28px 20px 40px;">
+    <div class="hero-bg"><div class="hcircle hc1"></div><div class="hcircle hc2"></div></div>
+    <div class="hero-inner">
+      <div class="hero-tag" data-en="ℹ️ About This App" data-sw="ℹ️ Kuhusu Programu Hii">ℹ️ About This App</div>
+      <div class="hero-title" style="font-size:clamp(22px,5vw,34px);" data-en="Mimea <em>Salama</em>" data-sw="Mimea <em>Salama</em>">Mimea <em>Salama</em></div>
+      <div class="hero-desc" data-en="AI Plant Doctor for East African Farmers — Free, Fast, in Kiswahili." data-sw="Daktari wa Mimea wa AI kwa Wakulima wa Afrika Mashariki — Bure, Haraka, kwa Kiswahili.">AI Plant Doctor for East African Farmers — Free, Fast, in Kiswahili.</div>
+    </div>
+  </div>
+
+  <div style="padding:16px;">
+
+    <!-- WHAT IS IT -->
+    <div class="about-card" style="margin-bottom:14px;">
+      <div class="about-sec-title">🌱 <span data-en="What is Mimea Salama?" data-sw="Mimea Salama ni Nini?">What is Mimea Salama?</span></div>
+      <p class="about-text" data-en="Mimea Salama is a free AI-powered plant health app designed for East African farmers. It instantly diagnoses plant diseases, pests, and nutrient deficiencies from a simple photo — no expert needed." data-sw="Mimea Salama ni programu ya bure ya afya ya mimea inayotumia AI, iliyoundwa kwa wakulima wa Afrika Mashariki. Inagundua magonjwa ya mimea, wadudu, na upungufu wa virutubisho mara moja kutoka kwa picha tu.">Mimea Salama is a free AI-powered plant health app designed for East African farmers. It instantly diagnoses plant diseases, pests, and nutrient deficiencies from a simple photo — no expert needed.</p>
+    </div>
+
+    <!-- HOW TO USE -->
+    <div class="about-card" style="margin-bottom:14px;">
+      <div class="about-sec-title">📱 <span data-en="How to Use the App" data-sw="Jinsi ya Kutumia Programu">How to Use the App</span></div>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-num">1</div>
+          <div>
+            <div class="how-title" data-en="Take or Upload a Photo" data-sw="Piga au Pakia Picha">Take or Upload a Photo</div>
+            <div class="how-desc" data-en="Take a clear photo of the affected plant leaf, stem, or fruit in good lighting." data-sw="Piga picha wazi ya jani, shina au tunda lililokuwa na tatizo katika mwanga mzuri.">Take a clear photo of the affected plant leaf, stem, or fruit in good lighting.</div>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-num">2</div>
+          <div>
+            <div class="how-title" data-en="Tap Analyze My Plant" data-sw="Bonyeza Chunguza Mmea Wangu">Tap Analyze My Plant</div>
+            <div class="how-desc" data-en="Press the green button and wait a few seconds while AI examines your plant." data-sw="Bonyeza kitufe cha kijani na subiri sekunde chache wakati AI inachunguza mmea wako.">Press the green button and wait a few seconds while AI examines your plant.</div>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-num">3</div>
+          <div>
+            <div class="how-title" data-en="Read Your Diagnosis" data-sw="Soma Uchunguzi Wako">Read Your Diagnosis</div>
+            <div class="how-desc" data-en="Get the disease name, cause, severity, and step-by-step treatment instructions." data-sw="Pata jina la ugonjwa, sababu, ukali, na maelekezo ya matibabu hatua kwa hatua.">Get the disease name, cause, severity, and step-by-step treatment instructions.</div>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-num">4</div>
+          <div>
+            <div class="how-title" data-en="Share via WhatsApp" data-sw="Shiriki kupitia WhatsApp">Share via WhatsApp</div>
+            <div class="how-desc" data-en="Send the diagnosis to family, fellow farmers, or your agro-dealer for help." data-sw="Tuma uchunguzi kwa familia, wakulima wenzako, au mfanyabiashara wa pembejeo.">Send the diagnosis to family, fellow farmers, or your agro-dealer for help.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="about-card" style="margin-bottom:14px;">
+      <div class="about-sec-title">⚡ <span data-en="Key Features" data-sw="Vipengele Vikuu">Key Features</span></div>
+      <div class="feat-chips">
+        <span class="feat-chip">🤖 <span data-en="AI Diagnosis" data-sw="Uchunguzi wa AI">AI Diagnosis</span></span>
+        <span class="feat-chip">🌍 <span data-en="English & Kiswahili" data-sw="Kiingereza & Kiswahili">English & Kiswahili</span></span>
+        <span class="feat-chip">📋 <span data-en="Scan History" data-sw="Historia">Scan History</span></span>
+        <span class="feat-chip">🗺️ <span data-en="Disease Map" data-sw="Ramani">Disease Map</span></span>
+        <span class="feat-chip">🌱 <span data-en="Crop Calendar" data-sw="Kalenda">Crop Calendar</span></span>
+        <span class="feat-chip">🏪 <span data-en="Agro-dealers" data-sw="Maduka">Agro-dealers</span></span>
+        <span class="feat-chip">📲 <span data-en="WhatsApp Share" data-sw="Shiriki WhatsApp">WhatsApp Share</span></span>
+        <span class="feat-chip">🔊 <span data-en="Voice Output" data-sw="Sauti">Voice Output</span></span>
+        <span class="feat-chip">📶 <span data-en="Works Offline" data-sw="Nje ya Mtandao">Works Offline</span></span>
+        <span class="feat-chip">💰 <span data-en="100% Free" data-sw="Bure Kabisa">100% Free</span></span>
+      </div>
+    </div>
+
+    <!-- SUPPORTED CROPS -->
+    <div class="about-card" style="margin-bottom:14px;">
+      <div class="about-sec-title">🌾 <span data-en="Supported Crops" data-sw="Mazao Yanayoungwa">Supported Crops</span></div>
+      <p class="about-text" data-en="Works on all plants, specializing in East African crops:" data-sw="Inafanya kazi kwa mimea yote, ikibobea katika mazao ya Afrika Mashariki:">Works on all plants, specializing in East African crops:</p>
+      <div class="crop-chips">
+        <span class="crop-chip">🌽 <span data-en="Maize" data-sw="Mahindi">Maize</span></span>
+        <span class="crop-chip">🍅 <span data-en="Tomato" data-sw="Nyanya">Tomato</span></span>
+        <span class="crop-chip">🫘 <span data-en="Beans" data-sw="Maharagwe">Beans</span></span>
+        <span class="crop-chip">🍠 <span data-en="Cassava" data-sw="Muhogo">Cassava</span></span>
+        <span class="crop-chip">🍌 <span data-en="Banana" data-sw="Ndizi">Banana</span></span>
+        <span class="crop-chip">🥬 <span data-en="Kale" data-sw="Sukuma Wiki">Kale</span></span>
+        <span class="crop-chip">🧅 <span data-en="Onion" data-sw="Kitunguu">Onion</span></span>
+        <span class="crop-chip">🌿 <span data-en="& Many More" data-sw="& Zaidi">& Many More</span></span>
+      </div>
+    </div>
+
+    <!-- TIPS -->
+    <div class="about-card" style="margin-bottom:14px;">
+      <div class="about-sec-title">💡 <span data-en="Tips for Best Results" data-sw="Vidokezo vya Matokeo Bora">Tips for Best Results</span></div>
+      <div class="tip-list">
+        <div class="tip-item">📸 <span data-en="Take photos in good natural light" data-sw="Piga picha katika mwanga mzuri wa asili">Take photos in good natural light</span></div>
+        <div class="tip-item">🔍 <span data-en="Focus on the most affected area of the plant" data-sw="Lenga sehemu inayoathirika zaidi ya mmea">Focus on the most affected area of the plant</span></div>
+        <div class="tip-item">📏 <span data-en="Get close enough to see symptoms clearly" data-sw="Karibia ili kuona dalili wazi">Get close enough to see symptoms clearly</span></div>
+        <div class="tip-item">🚫 <span data-en="Avoid blurry or dark photos for better accuracy" data-sw="Epuka picha zisizo wazi au za giza kwa usahihi zaidi">Avoid blurry or dark photos for better accuracy</span></div>
+        <div class="tip-item">👤 <span data-en="Create an account to save and track your scans" data-sw="Fungua akaunti ili kuhifadhi na kufuatilia uchunguzi wako">Create an account to save and track your scans</span></div>
+      </div>
+    </div>
+
+    <!-- BUILT WITH -->
+    <div class="about-card" style="margin-bottom:14px;">
+      <div class="about-sec-title">🛠️ <span data-en="Built With" data-sw="Imeundwa Kwa">Built With</span></div>
+      <div class="built-grid">
+        <div class="built-tile"><div class="built-ico">🤖</div><div class="built-name">Groq AI</div><div class="built-desc" data-en="Free AI engine" data-sw="Injini ya AI ya bure">Free AI engine</div></div>
+        <div class="built-tile"><div class="built-ico">🐍</div><div class="built-name">Python Flask</div><div class="built-desc" data-en="Backend server" data-sw="Seva ya nyuma">Backend server</div></div>
+        <div class="built-tile"><div class="built-ico">🗄️</div><div class="built-name">SQLite</div><div class="built-desc" data-en="Scan database" data-sw="Hifadhidata">Scan database</div></div>
+        <div class="built-tile"><div class="built-ico">🚀</div><div class="built-name">Vercel</div><div class="built-desc" data-en="Free hosting" data-sw="Uhifadhi wa bure">Free hosting</div></div>
+      </div>
+    </div>
+
+    <!-- START SCANNING CTA -->
+    <button class="analyze-btn" onclick="showPage('home')" style="margin-bottom:8px;">
+      🌿 <span data-en="Start Scanning My Plants" data-sw="Anza Kuchunguza Mimea Yangu">Start Scanning My Plants</span>
+    </button>
+
+  </div>
+</div>
+<!-- end page-about -->
+
   <div class="site-footer">
     <strong>Mimea Salama</strong> · Made in Kenya 🇰🇪<br>
     <span data-en="Empowering farmers with AI · Free forever 🌍" data-sw="Kuwawezesha wakulima kwa AI · Bila malipo 🌍">Empowering farmers with AI · Free forever 🌍</span>
@@ -456,10 +608,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
 </div>
 
 <nav class="botnav">
-  <button class="bnav on" id="bn-home" onclick="goHome()"><div class="bnav-ico">🏠</div><div class="bnav-lbl" data-en="Home" data-sw="Nyumbani">Home</div></button>
+  <nav class="botnav">
+  <button class="bnav on" id="bn-home" onclick="showPage('home')"><div class="bnav-ico">🏠</div><div class="bnav-lbl" data-en="Home" data-sw="Nyumbani">Home</div></button>
   <button class="bnav" id="bn-hist" onclick="openHistory()"><div class="bnav-ico">📋</div><div class="bnav-lbl" data-en="History" data-sw="Historia">History</div></button>
   <button class="bnav" id="bn-stats" onclick="openDashboard()"><div class="bnav-ico">📊</div><div class="bnav-lbl" data-en="Stats" data-sw="Takwimu">Stats</div></button>
+  <button class="bnav" id="bn-about" onclick="showPage('about')"><div class="bnav-ico">ℹ️</div><div class="bnav-lbl" data-en="About" data-sw="Kuhusu">About</div></button>
   <button class="bnav" id="bn-acct" onclick="openAuth()"><div class="bnav-ico">👤</div><div class="bnav-lbl" data-en="Account" data-sw="Akaunti">Account</div></button>
+</nav>
 </nav>
 
 <!-- HISTORY MODAL -->
@@ -586,7 +741,25 @@ document.addEventListener('click',e=>{
   const b=document.getElementById('toolsBtn'),m=document.getElementById('toolsMenu');
   if(!b.contains(e.target)&&!m.contains(e.target)) m.classList.remove('open');
 });
-function goHome(){window.scrollTo({top:0,behavior:'smooth'});setNav('bn-home');}
+function goHome(){showPage('home');}
+
+function showPage(page){
+  // Hide all pages
+  document.getElementById('page-home').style.display = page==='home' ? 'block' : 'none';
+  document.getElementById('page-about').style.display = page==='about' ? 'block' : 'none';
+
+  // Update bottom nav
+  setNav('bn-'+page);
+
+  // Scroll to top
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  // Add animation
+  const el = document.getElementById('page-'+page);
+  el.classList.remove('page-section');
+  void el.offsetWidth; // trigger reflow
+  el.classList.add('page-section');
+}
 function setNav(id){document.querySelectorAll('.bnav').forEach(b=>b.classList.remove('on'));document.getElementById(id)?.classList.add('on');}
 
 const dz=document.getElementById('uploadZone');
