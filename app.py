@@ -1,6 +1,6 @@
 """
 Mimea Salama — Python/Flask Backend
-Plant disease detection powered by Google Gemini (FREE)
+Plant disease detection powered by Groq AI (FREE)
 1,500 free requests/day — no credit card needed
 """
 import requests
@@ -24,10 +24,10 @@ app = Flask(__name__)
 CORS(app)
 
 # ── DATABASE ──────────────────────────────────────────────────
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mimea-salama-fixed-key-2026')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///scans.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mimea-salama-secret-2026')
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login_page'
