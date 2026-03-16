@@ -294,10 +294,11 @@ def me():
 @app.route("/history")
 def history():
     """Return all saved scans, newest first."""
+    from flask import make_response
     if not current_user.is_authenticated:
         return jsonify({"error": "login_required", "message": "Please login to view your scan history."}), 401
     scans = Scan.query.filter_by(farmer_id=current_user.id).order_by(Scan.scanned_at.desc()).all()
-    return jsonify([{
+    response = jsonify([{
         "id":           s.id,
         "farmer_name":  s.farmer.name if s.farmer else None,
         "plant":        s.plant,
@@ -313,6 +314,8 @@ def history():
         "scanned_at":   s.scanned_at.strftime("%d %b %Y, %I:%M %p"),
         "image_b64":    s.image_b64 or ""
     } for s in scans])
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate'
+    return response
 
 
 @app.route("/history/<scan_id>", methods=["DELETE"])

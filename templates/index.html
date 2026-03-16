@@ -899,8 +899,20 @@ async function loadHistory(){
   }catch(e){body.innerHTML='<div class="empty"><div class="empty-ico">❌</div>Could not load history.</div>';}
 }
 function toggleHist(id){document.getElementById('hb-'+id).classList.toggle('open');}
-async function deleteScan(id){if(!confirm(currentLang==='sw'?'Futa uchunguzi huu?':'Delete this scan?'))return;await fetch(`/history/${id}`,{method:'DELETE'});document.getElementById('card-'+id).remove();await loadHistory();}
-async function clearHistory(){if(!confirm(currentLang==='sw'?'Futa uchunguzi wote?':'Delete ALL scans?'))return;await fetch('/history/clear',{method:'DELETE'});await loadHistory();}
+async function deleteScan(id){
+  if(!confirm(currentLang==='sw'?'Futa uchunguzi huu?':'Delete this scan?'))return;
+  const res = await fetch(`/history/${id}`,{method:'DELETE'});
+  const d = await res.json();
+  if(d.error){alert('Error: '+d.error);return;}
+  await loadHistory();
+}
+async function clearHistory(){
+  if(!confirm(currentLang==='sw'?'Futa uchunguzi wote?':'Delete ALL scans? This cannot be undone.'))return;
+  const res = await fetch('/history/clear',{method:'DELETE'});
+  const d = await res.json();
+  if(d.error){alert('Error: '+d.error);return;}
+  await loadHistory();
+}
 
 async function openDashboard(){
   setNav('bn-stats');
