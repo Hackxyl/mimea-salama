@@ -176,6 +176,7 @@ def analyze():
         # ── Save to database ──
         try:
             farmer_name = body.get("farmer_name", None)
+            print(f"SAVING SCAN — farmer authenticated: {current_user.is_authenticated}, farmer_id: {current_user.id if current_user.is_authenticated else 'None'}")
             scan = Scan(
                 farmer_id   = current_user.id if current_user.is_authenticated else None,
                 farmer_name = current_user.name if current_user.is_authenticated else None,

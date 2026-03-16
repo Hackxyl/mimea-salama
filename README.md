@@ -216,4 +216,4 @@ Visit **http://localhost:5000/health**:
 
 ---
 
-Built with ❤️ for East African farmers · Powered by Groq AI · Developed in Kenya 🇰🇪 by Meshack Muindi
+Built with ❤️ for East African farmers · Powered by Groq AI · Developed in Kenya by Meshack Muindi
