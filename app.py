@@ -193,14 +193,17 @@ def analyze():
                 symptoms    = result.get("symptoms", ""),
                 treatment   = json.dumps(result.get("treatment", [])),
                 prevention  = json.dumps(result.get("prevention", [])),
-                image_b64   = image_b64 if image_b64 else "",
+                image_b64   = image_b64[:5000] if image_b64 else "",
                 language    = language
             )
             db.session.add(scan)
             db.session.commit()
             result["scan_id"] = scan.id
         except Exception as db_err:
-            print("DB save error:", db_err)
+            import traceback
+            print("DB SAVE ERROR:", db_err)
+            print(traceback.format_exc())
+            db.session.rollback()
 
         # Return diagnosis directly
         return jsonify(result), 200
