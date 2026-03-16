@@ -318,7 +318,9 @@ def history():
 @app.route("/history/<scan_id>", methods=["DELETE"])
 def delete_scan(scan_id):
     """Delete a single scan."""
-    scan = Scan.query.get(scan_id)
+    if not current_user.is_authenticated:
+        return jsonify({"error": "login_required"}), 401
+    scan = Scan.query.filter_by(id=scan_id, farmer_id=current_user.id).first()
     if not scan:
         return jsonify({"error": "Scan not found"}), 404
     db.session.delete(scan)
@@ -328,8 +330,10 @@ def delete_scan(scan_id):
 
 @app.route("/history/clear", methods=["DELETE"])
 def clear_history():
-    """Delete all scans."""
-    Scan.query.delete()
+    """Delete all scans for current farmer only."""
+    if not current_user.is_authenticated:
+        return jsonify({"error": "login_required"}), 401
+    Scan.query.filter_by(farmer_id=current_user.id).delete()
     db.session.commit()
     return jsonify({"cleared": True})
 
