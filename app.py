@@ -353,8 +353,8 @@ def stats():
         "healthy":  healthy,
         "diseased": diseased,
         "caution":  caution,
-        "diseases": [{"name": k, "count": v} for k, v in disease_counts.most_common(5)],
-        "plants":   [{"name": k, "count": v} for k, v in plant_counts.most_common(5)]
+        "diseases": [{"name": k, "count": v} for k, v in disease_counts.most_common()],
+        "plants":   [{"name": k, "count": v} for k, v in plant_counts.most_common()]
     })
 
 
