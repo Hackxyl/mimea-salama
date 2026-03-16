@@ -27,6 +27,10 @@ CORS(app)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'mimea-salama-fixed-key-2026')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///scans.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_SECURE'] = False
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['REMEMBER_COOKIE_DURATION'] = 86400 * 30
 db = SQLAlchemy(app)
 
 login_manager = LoginManager(app)
@@ -251,7 +255,7 @@ def register():
     )
     db.session.add(farmer)
     db.session.commit()
-    login_user(farmer)
+    login_user(farmer, remember=True)
     return jsonify({"success": True, "name": farmer.name, "id": farmer.id})
 
 
@@ -265,7 +269,7 @@ def login():
     if not farmer or not check_password_hash(farmer.pin_hash, pin):
         return jsonify({"error": "Wrong phone number or PIN."}), 401
 
-    login_user(farmer)
+    login_user(farmer, remember=True)
     return jsonify({"success": True, "name": farmer.name, "id": farmer.id})
 
 
