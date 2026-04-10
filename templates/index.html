@@ -1146,16 +1146,18 @@ function toggleDarkMode() {
 
 window.addEventListener("load", function () {
 
-  // keep logo visible first
+  const splash = document.getElementById("splash");
+  const app = document.getElementById("app");
+
   setTimeout(() => {
 
     // hide splash
-    document.getElementById("splash").style.display = "none";
+    splash.style.display = "none";
 
-    // show app AFTER splash
-    document.getElementById("app").style.display = "block";
+    // show app (THIS IS THE FIX)
+    app.style.display = "block";
 
-  }, 1500); // adjust time if needed
+  }, 1500);
 
 });
 </script>
