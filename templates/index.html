@@ -414,23 +414,50 @@ backdrop-filter: blur(12px);}
   to { opacity: 1; transform: translateY(0); }
 }
 
+.nav-brand img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
+#splashLogo {
+  width: 120px;
+  transition: all 0.8s ease;
+  position: relative;
+  z-index: 100000;
+}
+
+#navLogo {
+  width: 40px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.6s ease;
+}
+
+/* Animation class */
+.shrink-to-nav {
+  position: fixed !important;
+  top: 15px;
+  left: 20px;
+  width: 40px !important;
+  transform: scale(1);
+}
+
 </style>
 </head>
 <body>
 
-  <!-- SPLASH (shows first) -->
+   <!-- SPLASH (shows first) -->
 <div id="splash">
-  <img src="static/logo.png" class="splash-logo">
+  <img src="static/logo.png" id="splashLogo">
 </div>
 
-<!-- APP WRAPPER (IMPORTANT) -->
 <div id="app">
-
 <nav class="topnav">
   <div class="topnav-inner">
     <div class="nav-brand" onclick="goHome()" style="cursor:pointer;">
-    <div class="nav logo"></div>
-    <img src="static/logo.png" alt="Mimea Salama">
+    <div class="nav-logo"></div>
+    <img src="static/logo.png" id="navLogo" alt="Mimea Salama">
   </div>
   <div class="nav-name">Mimea <span>Salama</span></div>
 </div>
@@ -690,7 +717,7 @@ backdrop-filter: blur(12px);}
     <span data-en="Empowering farmers with AI · Free forever 🌍" data-sw="Kuwawezesha wakulima kwa AI · Bila malipo 🌍">Empowering farmers with AI · Free forever 🌍</span>
   </div>
 
-  </div>
+ </div> 
 </div><!-- end page-about -->
 
   
@@ -807,9 +834,7 @@ backdrop-filter: blur(12px);}
   <div class="load-sub" data-en="AI scanning for diseases & deficiencies" data-sw="AI inachunguza magonjwa na upungufu wa virutubisho">AI scanning for diseases & deficiencies</div>
 </div>
 
-
-</div><!-- end app -->
-
+</div><!-- end main -->
 <script>
 window.onload = function () {
   const theme = localStorage.getItem("theme");
@@ -1158,20 +1183,32 @@ function toggleDarkMode() {
 
 window.addEventListener("load", () => {
   setTimeout(() => {
-    
-    // hide splash
-    document.getElementById("splash").classList.add("hide");
 
-    // show app
-    const app = document.getElementById("app");
-    app.classList.add("show");
+    const splashLogo = document.getElementById("splashLogo");
+    const navLogo = document.getElementById("navLogo");
 
-    // optional: remove splash from DOM after animation
+    // Animate logo shrinking into navbar
+    splashLogo.classList.add("shrink-to-nav");
+
     setTimeout(() => {
-      document.getElementById("splash").remove();
-    }, 600);
+      // Show navbar logo smoothly
+      navLogo.style.opacity = "1";
+      navLogo.style.transform = "scale(1)";
 
-  }, 1500); // splash duration (change if you want)
+      // Hide splash
+      document.getElementById("splash").classList.add("hide");
+
+      // Show app
+      document.getElementById("app").classList.add("show");
+
+      // Remove splash after animation
+      setTimeout(() => {
+        document.getElementById("splash")?.remove();
+      }, 600);
+
+    }, 700); // wait for shrink animation
+
+  }, 1200); // initial splash delay
 });
 </script>
 </body>
