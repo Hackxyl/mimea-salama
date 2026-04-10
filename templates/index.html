@@ -23,9 +23,17 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html{scroll-behavior:smooth;}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-height:100vh;overflow-x:hidden;padding-bottom:76px;}
+body {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+body.dark {
+  background-color: #121212;
+  color: #e0e0e0;
+}
 
 /* NAV */
-.topnav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--white);border-bottom:1.5px solid var(--mint);box-shadow:0 2px 12px rgba(13,92,46,.08);}
+.topnav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--white);border-bottom:1.5px solid var(--mint);box-shadow:0 2px 12px rgba(13,92,46,.08);background: rgba(255,255,255,0.85);
+backdrop-filter: blur(12px);}
 .topnav-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;}
 .nav-brand{display:flex;align-items:center;gap:10px;}
 .nav-logo {
@@ -66,10 +74,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
 .page{padding-top:60px;}
 
 /* HERO */
-.hero{background:linear-gradient(150deg,var(--g1) 0%,var(--g2) 60%,#0f7a3a 100%);padding:28px 20px 52px;position:relative;overflow:hidden;}
+.hero {
+  background: radial-gradient(circle at 20% 30%, #1a8a4a 0%, transparent 40%),
+              radial-gradient(circle at 80% 70%, #2db866 0%, transparent 40%),
+              linear-gradient(135deg, #0d5c2e, #0f7a3a);padding:28px 20px 52px;position:relative;overflow:hidden;}
 .hero::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:32px;background:var(--cream);border-radius:32px 32px 0 0;}
 .hero-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-.hcircle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(45,184,102,.2),transparent 65%);}
+.hcircle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(45,184,102,.2),transparent 65%);animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-18px); }
+  100% { transform: translateY(0px); }
+}
 .hc1{width:220px;height:220px;top:-80px;right:-40px;}
 .hc2{width:160px;height:160px;bottom:10px;right:80px;}
 .hc3{width:100px;height:100px;top:20px;left:-20px;}
@@ -94,9 +111,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
 /* SCAN */
 .scan-wrap{padding:16px 16px 0;}
 .sec-label{font-size:11px;font-weight:800;color:var(--gray);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;}
-.scan-card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;}
-.upload-zone{border:2.5px dashed var(--light);border-radius:14px;margin:16px;padding:clamp(24px,5vw,40px) 20px;text-align:center;cursor:pointer;transition:all .25s;background:var(--cream);position:relative;}
-.upload-zone:hover,.upload-zone.drag-over{border-color:var(--g3);background:var(--mint);}
+.scan-card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;transition:all 0.2s ease-in-out;}
+.upload-zone{border:2.5px dashed var(--light);border-radius:14px;margin:16px;padding:clamp(24px,5vw,40px) 20px;text-align:center;cursor:pointer;transition:all 0.3s ease;background:var(--cream);position:relative;}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--g3);background:var(--mint);transform: scale(1.02);
+  box-shadow: 0 10px 30px rgba(45,184,102,0.2);}
 .upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
 .up-icon{width:clamp(56px,12vw,72px);height:clamp(56px,12vw,72px);border-radius:18px;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:clamp(24px,6vw,32px);margin:0 auto 14px;box-shadow:0 4px 14px rgba(13,92,46,.12);}
 .up-title{font-size:clamp(15px,3vw,18px);font-weight:700;color:var(--dark);margin-bottom:5px;}
@@ -109,7 +127,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
 .cam-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:var(--cream);color:var(--dark);border:1.5px solid var(--light);border-radius:12px;font-size:clamp(13px,3vw,15px);font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .2s;}
 .cam-btn:active{background:var(--mint);border-color:var(--g3);}
 .analyze-btn{width:100%;background:linear-gradient(135deg,var(--g3),var(--g1));color:var(--white);border:none;border-radius:12px;padding:clamp(13px,3vw,16px);font-size:clamp(15px,3.5vw,18px);font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(45,184,102,.4);}
-.analyze-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(45,184,102,.5);}
+.auth-sbmt {
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  box-shadow: 0 6px 20px rgba(34,197,94,0.4);}
+.analyze-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow: 0 10px 30px rgba(34,197,94,0.5);}
 .analyze-btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;}
 .btn-spin{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -118,7 +139,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
 .result-wrap{padding:16px;display:none;}
 .result-wrap.show{display:block;animation:slideUp .4s cubic-bezier(.34,1.56,.64,1);}
 @keyframes slideUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
-.result-card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;}
+.result-card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden; position: relative;}
+.result-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.result-card:hover::before {
+  opacity: 1;
+}
 .result-banner{padding:18px 16px;display:flex;align-items:center;gap:12px;}
 .result-banner.healthy{background:linear-gradient(135deg,#065f2e,#0d8a40);}
 .result-banner.diseased{background:linear-gradient(135deg,#7f1d1d,#dc2626);}
@@ -156,7 +189,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
 .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
 .sec-head h2{font-size:clamp(14px,3vw,17px);font-weight:700;color:var(--dark);}
 .tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-.qtool{background:var(--white);border-radius:14px;padding:14px 8px;text-align:center;cursor:pointer;box-shadow:var(--shadow);transition:all .2s;border:none;font-family:'Plus Jakarta Sans',sans-serif;}
+.qtool{background:var(--white);border-radius:14px;padding:14px 8px;text-align:center;cursor:pointer;box-shadow:var(--shadow);transition:all 0.2s ease-in-out;border:none;font-family:'Plus Jakarta Sans',sans-serif;}
+.qtool:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.1);}
 .qtool:active{transform:scale(.95);background:var(--mint);}
 .qt-icon{width:clamp(38px,8vw,46px);height:clamp(38px,8vw,46px);border-radius:12px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:clamp(18px,4vw,22px);}
 .qt-lbl{font-size:clamp(10px,2.2vw,12px);font-weight:700;color:var(--dark);line-height:1.3;}
@@ -246,7 +282,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
 
 /* CALENDAR */
 .crop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
-.crop-btn{padding:10px 6px;border-radius:12px;border:1.5px solid var(--cream);background:var(--cream);color:var(--dark);font-weight:700;font-size:clamp(11px,2.5vw,13px);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;text-align:center;}
+.crop-btn{padding:10px 6px;border-radius:12px;border:1.5px solid var(--cream);background:var(--cream);color:var(--dark);font-weight:700;font-size:clamp(11px,2.5vw,13px);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;text-align:center;}
 .crop-btn.on{background:var(--g1);color:white;border-color:var(--g1);}
 .cal-row{display:flex;gap:10px;align-items:flex-start;padding:12px;background:var(--cream);border-radius:12px;margin-bottom:8px;border-left:3px solid var(--g3);}
 .cal-mo{font-size:11px;font-weight:700;color:var(--g1);min-width:70px;}
@@ -348,17 +384,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
 
 <nav class="topnav">
   <div class="topnav-inner">
-    <div class="nav-brand">
-      <div class="nav-logo" onclick="goHome()" style="cursor:pointer;">
-  <img src="static/logo.png" alt="Mimea Salama">
+    <div class="nav-brand" onclick="goHome()" style="cursor:pointer;">
+  <div class="nav-logo">
+    <img src="static/logo.png" alt="Mimea Salama">
+  </div>
+  <div class="nav-name">Mimea <span>Salama</span></div>
 </div>
-      <div class="nav-name">Mimea <span>Salama</span></div>
-    </div>
     <div class="nav-right">
       <div class="lang-sw">
         <button class="lbtn active" onclick="setLang('en')">EN</button>
         <button class="lbtn" onclick="setLang('sw')">SW</button>
       </div>
+      <button onclick="toggleDarkMode()" class="icon-btn">🌙</button>
       <button class="icon-btn" onclick="toggleTools()" id="toolsBtn">⚙️</button>
       <button class="icon-btn" id="authBtn" onclick="openAuth()">👤</button>
     </div>
@@ -727,6 +764,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
 </div>
 
 <script>
+window.onload = function () {
+  const theme = localStorage.getItem("theme");
+
+  if (theme === "dark") {
+    document.body.classList.add("dark");
+  }
+};
 let currentLang='en',selectedFile=null,lastResult=null,currentFarmer=null,mapInstance=null;
 
 function setLang(lang){
@@ -1054,6 +1098,16 @@ function setGreeting(){
   if (el) el.textContent = greetings[currentLang] || greetings.en;
 }
 checkAuth();loadWeather();setGreeting();
+
+function toggleDarkMode() {
+  document.body.classList.add("fade-theme");
+
+  document.body.classList.toggle("dark");
+
+  setTimeout(() => {
+    document.body.classList.remove("fade-theme");
+  }, 400);
+}
 </script>
 </body>
 </html>
