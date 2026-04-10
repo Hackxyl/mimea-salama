@@ -387,22 +387,31 @@ backdrop-filter: blur(12px);}
   align-items: center;
   justify-content: center;
   z-index: 99999;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
 }
 
-.splash-logo {
-  width: 90px;
-  height: 90px;
-  animation: pop 0.8s ease;
+#splash.hide {
+  opacity: 0;
+  visibility: hidden;
 }
 
-@keyframes pop {
-  from { transform: scale(0.6); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-/* IMPORTANT: app hidden at start */
 #app {
   display: none;
+  animation: appFade 0.6s ease;
+  filter: blur(10px);
+  opacity: 0;
+  transition: all 0.6s ease;
+}
+
+#app.show {
+  display: block;
+  filter: blur(0);
+  opacity: 1;
+}
+
+@keyframes appFade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 </style>
@@ -798,6 +807,9 @@ backdrop-filter: blur(12px);}
   <div class="load-sub" data-en="AI scanning for diseases & deficiencies" data-sw="AI inachunguza magonjwa na upungufu wa virutubisho">AI scanning for diseases & deficiencies</div>
 </div>
 
+
+</div><!-- end app -->
+
 <script>
 window.onload = function () {
   const theme = localStorage.getItem("theme");
@@ -1144,21 +1156,22 @@ function toggleDarkMode() {
   }, 400);
 }
 
-window.addEventListener("load", function () {
-
-  const splash = document.getElementById("splash");
-  const app = document.getElementById("app");
-
+window.addEventListener("load", () => {
   setTimeout(() => {
-
+    
     // hide splash
-    splash.style.display = "none";
+    document.getElementById("splash").classList.add("hide");
 
-    // show app (THIS IS THE FIX)
-    app.style.display = "block";
+    // show app
+    const app = document.getElementById("app");
+    app.classList.add("show");
 
-  }, 1500);
+    // optional: remove splash from DOM after animation
+    setTimeout(() => {
+      document.getElementById("splash").remove();
+    }, 600);
 
+  }, 1500); // splash duration (change if you want)
 });
 </script>
 </body>
