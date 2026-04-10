@@ -10,6 +10,7 @@
 <title>Mimea Salama – Plant Health AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="icon" href="/static/logo.png">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 :root{
@@ -27,7 +28,22 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
 .topnav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--white);border-bottom:1.5px solid var(--mint);box-shadow:0 2px 12px rgba(13,92,46,.08);}
 .topnav-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;}
 .nav-brand{display:flex;align-items:center;gap:10px;}
-.nav-logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--g3),var(--g1));display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 8px rgba(13,92,46,.3);}
+.nav-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  overflow: hidden; /* ensures image fits nicely */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent; /* remove gradient */
+}
+
+.nav-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* keeps it neat */
+}
 .nav-name{font-family:'Instrument Serif',serif;font-size:20px;color:var(--g1);}
 .nav-name span{color:var(--g3);font-style:italic;}
 .nav-right{display:flex;align-items:center;gap:6px;}
@@ -333,7 +349,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-heig
 <nav class="topnav">
   <div class="topnav-inner">
     <div class="nav-brand">
-      <div class="nav-logo">🌿</div>
+      <div class="nav-logo">
+  <img src="static/logo.png" alt="Mimea Salama Logo">
+</div>
       <div class="nav-name">Mimea <span>Salama</span></div>
     </div>
     <div class="nav-right">
