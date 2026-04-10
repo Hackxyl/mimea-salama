@@ -379,71 +379,46 @@ backdrop-filter: blur(12px);}
 .page-section{animation:fadeIn .3s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 
-/* ── SPLASH SCREEN ── */
 #splash {
   position: fixed;
   inset: 0;
-  background: linear-gradient(135deg, #0d5c2e, #1a8a4a);
+  background: #0d5c2e;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
-  transition: opacity 0.6s ease, visibility 0.6s ease;
-}
-
-#splash.hide {
-  opacity: 0;
-  visibility: hidden;
-}
-
-.splash-content {
-  text-align: center;
-  color: white;
+  z-index: 99999;
 }
 
 .splash-logo {
-  width: 80px;
-  height: 80px;
-  border-radius: 20px;
-  margin-bottom: 14px;
-  animation: popIn 0.6s ease, pulse 2s infinite;
-}
-@keyframes pulse {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
+  width: 90px;
+  height: 90px;
+  animation: pop 0.5s ease;
 }
 
-.splash-title {
-  font-family: 'Instrument Serif', serif;
-  font-size: 28px;
+@keyframes pop {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
-.splash-title span {
-  color: #7efbb0;
-  font-style: italic;
+/* IMPORTANT: app hidden at start */
+#app {
+  display: none;
 }
 
-/* animation */
-@keyframes popIn {
-  from {
-    transform: scale(0.7);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
 </style>
 </head>
 <body>
 
+  <!-- SPLASH (shows first) -->
+<div id="splash">
+  <img src="static/logo.png" class="splash-logo">
+</div>
+
 <nav class="topnav">
   <div class="topnav-inner">
     <div class="nav-brand" onclick="goHome()" style="cursor:pointer;">
-  <div id="splash">
-  <div class="splash-content">
-    <img src="static/logo.png" alt="Mimea Salama" class="splash-logo">
+    <div class="nav logo"></div>
+    <img src="static/logo.png" alt="Mimea Salama">
   </div>
   <div class="nav-name">Mimea <span>Salama</span></div>
 </div>
@@ -1167,9 +1142,18 @@ function toggleDarkMode() {
 }
 
 window.addEventListener("load", function () {
+
+  // keep logo visible first
   setTimeout(() => {
-    document.getElementById("splash").classList.add("hide");
-  }, 1500); // 1.5 seconds
+
+    // hide splash
+    document.getElementById("splash").style.display = "none";
+
+    // show app AFTER splash
+    document.getElementById("app").style.display = "block";
+
+  }, 1500); // adjust time if needed
+
 });
 </script>
 </body>
