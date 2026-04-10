@@ -406,7 +406,6 @@ backdrop-filter: blur(12px);}
 #app {
   display: none;
   animation: appFade 0.6s ease;
-  filter: blur(10px);
   opacity: 0;
   transition: all 0.6s ease;
 }
@@ -415,6 +414,7 @@ backdrop-filter: blur(12px);}
   display: block;
   filter: blur(0);
   opacity: 1;
+  transform: translateY(10px);
 }
 
 @keyframes appFade {
