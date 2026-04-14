@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -7,22 +7,22 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0d5c2e">
 <link rel="manifest" href="/static/manifest.json">
-<title>Mimea Salama – Plant Health AI</title>
+<title>Mimea Salama - Plant Health</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="icon" href="/static/logo.png">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 :root{
-  --g1:#0d5c2e;--g2:#1a8a4a;--g3:#2db866;
-  --mint:#e6f7ed;--cream:#f7f9f7;--white:#fff;
-  --gray:#6b7c72;--light:#d4e4da;
-  --amber:#f59e0b;--red:#dc2626;--dark:#0a1f12;
-  --shadow:0 2px 16px rgba(13,92,46,.10);--r:16px;
+  --g1:#11432f;--g2:#1f7a53;--g3:#38b281;
+  --mint:#e5f4e8;--cream:#f6faf3;--white:#fcfdf8;
+  --gray:#5f7367;--light:#d9ead9;
+  --amber:#e9a84f;--red:#c0392b;--dark:#0b1c13;
+  --shadow:0 2px 18px rgba(16,74,39,.12);--r:18px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html{scroll-behavior:smooth;}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);min-height:100vh;overflow-x:hidden;padding-bottom:76px;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(180deg, #f6faf3 0%, #ecf4e8 100%);min-height:100vh;overflow-x:hidden;}
 body {
   transition: background-color 0.4s ease, color 0.4s ease;
 }
@@ -32,9 +32,11 @@ body.dark {
 }
 
 /* NAV */
-.topnav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--white);border-bottom:1.5px solid var(--mint);box-shadow:0 2px 12px rgba(13,92,46,.08);background: rgba(255,255,255,0.85);
-backdrop-filter: blur(12px);}
-.topnav-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;}
+.topnav{position:fixed;top:0;left:0;right:0;height: 60px;width: 100%;z-index:1000;background:linear-gradient(135deg, rgba(255,255,255,0.92), rgba(252,253,248,0.95));border-bottom:2px solid rgba(31,122,83,.18);box-shadow:0 4px 20px rgba(16,74,39,.06);backdrop-filter:blur(12px);flex-shrink: 0;}
+.page {
+  padding-top: 80px; 
+}
+.topnav-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;height: 60px;}
 .nav-brand{display:flex;align-items:center;gap:10px;}
 .nav-logo {
   width: 38px;
@@ -52,38 +54,104 @@ backdrop-filter: blur(12px);}
   height: 100%;
   object-fit: cover; /* keeps it neat */
 }
-.nav-name{font-family:'Instrument Serif',serif;font-size:20px;color:var(--g1);}
-.nav-name span{color:var(--g3);font-style:italic;}
+.nav-name{font-family:'Instrument Serif',serif;font-size:30px;color:var(--g1);}
+.nav-name span{color:var(--g3);}
 .nav-right{display:flex;align-items:center;gap:6px;}
 .lang-sw{display:flex;background:var(--cream);border-radius:10px;padding:3px;gap:2px;}
 .lbtn{padding:5px 12px;border-radius:8px;border:none;font-size:12px;font-weight:700;cursor:pointer;color:var(--gray);background:transparent;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;}
 .lbtn.active{background:var(--g1);color:var(--white);}
-.icon-btn{width:38px;height:38px;border-radius:10px;border:none;background:var(--cream);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.icon-btn:active,.icon-btn.aactive{background:var(--mint);}
+.icon-btn{width:44px;height:44px;border-radius:14px;border:1px solid rgba(31,122,83,.16);background:linear-gradient(180deg, rgba(237,248,239,.9) 0%, rgba(223,244,227,.95) 100%);display:flex;align-items:center;justify-content:center;transition:all .25s;box-shadow:0 8px 20px rgba(16,74,39,.08);}
+.icon-btn:hover{background:linear-gradient(180deg, rgba(223,244,227,.95) 0%, rgba(209,240,217,.98) 100%);transform:translateY(-1px);border-color:rgba(31,122,83,.24);}
+.icon-btn svg{width:18px;height:18px;display:block;fill:var(--g2);transition:fill .25s;}
+.icon-btn:active,.icon-btn.aactive{background:linear-gradient(135deg,var(--g3),var(--g2));border-color:transparent;}
+.icon-btn:active svg,.icon-btn.aactive svg{fill:var(--white);}
+.profile-btn{padding:0;}
+.profile-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--g3),var(--g2));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:13px;line-height:1;overflow:hidden;border:2px solid rgba(255,255,255,.8);box-shadow:0 4px 12px rgba(16,74,39,.15);}
+.profile-avatar span{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;}
+.profile-avatar.has-initials{background:linear-gradient(135deg,#0d5c2e,#22c55e);}
+.profile-avatar svg{width:18px;height:18px;fill:white;}
 
 /* TOOLS MENU */
-.tools-dd{display:none;position:fixed;top:62px;right:12px;background:var(--white);border-radius:16px;padding:6px;min-width:200px;box-shadow:0 8px 28px rgba(13,92,46,.18);border:1px solid var(--mint);z-index:600;}
+.tools-dd{display:none;position:fixed;top:62px;right:12px;background:linear-gradient(135deg, rgba(255,255,255,0.98), rgba(252,253,248,0.95));border-radius:16px;padding:6px;min-width:200px;box-shadow:0 8px 28px rgba(16,74,39,.18);border:1px solid rgba(31,122,83,.18);z-index:600;backdrop-filter:blur(8px);}
 .tools-dd.open{display:block;animation:dropIn .18s ease;}
 @keyframes dropIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
 .t-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:transparent;border-radius:10px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:600;color:var(--dark);text-align:left;transition:background .15s;}
-.t-item:hover{background:var(--mint);}
-.t-ico{width:30px;height:30px;border-radius:8px;background:var(--mint);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.t-item:hover{background:linear-gradient(135deg, rgba(223,244,227,.9), rgba(209,240,217,.95));}
+
+/* MOBILE MENU */
+.hamburger-btn{display:none;flex-direction:column;gap:4px;background:transparent;border:none;cursor:pointer;padding:10px;border-radius:12px;transition:all .3s ease;}
+.hamburger-btn:hover{background:linear-gradient(135deg, rgba(31,122,83,.08), rgba(45,184,102,.05));transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,74,39,.1);}
+.hamburger-btn span{display:block;width:22px;height:2.5px;background:linear-gradient(90deg, var(--g2), var(--g1));transition:all .3s cubic-bezier(.68,-.55,.265,1.55);border-radius:2px;}
+.hamburger-btn.active span:nth-child(1){transform:rotate(45deg) translate(6px,6px);background:linear-gradient(90deg, var(--g3), var(--g2));}
+.hamburger-btn.active span:nth-child(2){opacity:0;transform:translateX(10px);}
+.hamburger-btn.active span:nth-child(3){transform:rotate(-45deg) translate(8px,-7px);background:linear-gradient(90deg, var(--g3), var(--g2));}
+
+.mobile-menu{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, rgba(16,74,39,.4), rgba(21,101,55,.5));backdrop-filter:blur(20px);z-index:1001;animation:menuFadeIn .3s ease;}
+.mobile-menu.open{display:flex;flex-direction:column;}
+@keyframes menuFadeIn{from{opacity:0;}to{opacity:1;}}
+
+.mobile-menu-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;background:linear-gradient(135deg, rgba(255,255,255,0.95), rgba(252,253,248,0.98));border-bottom:2px solid rgba(31,122,83,.15);box-shadow:0 4px 20px rgba(16,74,39,.08);position:relative;overflow:hidden;}
+.mobile-menu-header::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 20% 80%, rgba(45,184,102,.06) 0%, transparent 50%);pointer-events:none;}
+.mobile-menu-brand{display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.mobile-menu-brand .nav-logo{width:36px;height:36px;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(16,74,39,.15);border:2px solid rgba(255,255,255,.8);}
+.mobile-menu-brand .nav-name{font-size:26px;font-weight:700;color:var(--g1);text-shadow:0 1px 2px rgba(16,74,39,.1);}
+.mobile-menu-close{font-size:32px;color:var(--g2);background:linear-gradient(135deg, rgba(255,255,255,.9), rgba(252,253,248,.95));border:1px solid rgba(31,122,83,.2);border-radius:50%;cursor:pointer;padding:6px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;transition:all .3s ease;backdrop-filter:blur(10px);box-shadow:0 4px 16px rgba(16,74,39,.1);}
+.mobile-menu-close:hover{background:linear-gradient(135deg, rgba(223,244,227,.95), rgba(209,240,217,.98));transform:scale(1.05);color:var(--g3);border-color:rgba(31,122,83,.3);}
+
+.mobile-menu-content{flex:1;padding:24px 0;background:linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(252,253,248,0.99) 100%);overflow-y:auto;position:relative;}
+.mobile-menu-content::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 80% 20%, rgba(45,184,102,.03) 0%, transparent 40%),radial-gradient(circle at 20% 80%, rgba(255,255,255,.02) 0%, transparent 35%);pointer-events:none;}
+
+.mobile-menu-item{display:flex;align-items:center;gap:18px;width:100%;padding:18px 24px;border:none;background:linear-gradient(135deg, rgba(255,255,255,.8), rgba(252,253,248,.9));cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:600;color:var(--dark);text-align:left;border-bottom:1px solid rgba(31,122,83,.06);transition:all .3s ease;margin:4px 12px;border-radius:16px;position:relative;overflow:hidden;}
+.mobile-menu-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg, rgba(45,184,102,.1), rgba(31,122,83,.08));transition:width .3s ease;}
+.mobile-menu-item:hover{background:linear-gradient(135deg, rgba(223,244,227,.95), rgba(209,240,217,.98));transform:translateX(4px);border-color:rgba(31,122,83,.15);box-shadow:0 6px 20px rgba(16,74,39,.08);}
+.mobile-menu-item:hover::before{width:4px;}
+.mobile-menu-item:active{transform:translateX(2px);box-shadow:0 3px 10px rgba(16,74,39,.05);}
+.mobile-menu-item:last-child{border-bottom:none;}
+
+.mobile-menu-icon{width:28px;height:28px;border-radius:12px;background:linear-gradient(135deg, var(--mint), rgba(45,184,102,.8));display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;box-shadow:0 3px 8px rgba(16,74,39,.15);transition:transform .3s ease;}
+.mobile-menu-item:hover .mobile-menu-icon{transform:scale(1.1);}
+.mobile-menu-icon svg{width:16px;height:16px;fill:currentColor;}
+
+.mobile-menu-divider{height:2px;background:linear-gradient(90deg, transparent, rgba(31,122,83,.2), transparent);margin:16px 24px;border-radius:1px;position:relative;}
+.mobile-menu-divider::before{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:60px;height:1px;background:linear-gradient(90deg, transparent, rgba(31,122,83,.4), transparent);}
+
+/* MOBILE RESPONSIVE */
+@media(max-width:768px){
+  .hamburger-btn{display:flex;}
+  .desktop-only{display:none !important;}
+  .mobile-only{display:block !important;}
+}
+.t-ico{width:30px;height:30px;border-radius:8px;background:var(--mint);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:white;}
+.t-ico svg,.bnav-ico svg,.r-icon svg{width:18px;height:18px;display:block;fill:currentColor;}
+.result-banner .r-icon svg{fill:white;}
 .t-div{height:1px;background:var(--cream);margin:4px 0;}
 
 /* PAGE */
 .page {
-  padding-bottom: 60px; /* adjust to nav height */
+  padding:60px 16px 60px;
+  box-sizing: border-box;
 }
+.page-section {
+  display: none;
+}
+.page-section.active {
+  display: block;
+
+}
+
 
 /* HERO */
 .hero {
-  background: radial-gradient(circle at 20% 30%, #1a8a4a 0%, transparent 40%),
-              radial-gradient(circle at 80% 70%, #2db866 0%, transparent 40%),
-              linear-gradient(135deg, #0d5c2e, #0f7a3a);padding:28px 20px 52px;position:relative;overflow:hidden;}
-.hero::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:32px;background:var(--cream);border-radius:32px 32px 0 0;}
-.hero-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-.hcircle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(45,184,102,.2),transparent 65%);animation: float 6s ease-in-out infinite;
+  background: radial-gradient(circle at 25% 18%, rgba(255,255,255,0.14) 0%, transparent 35%),
+              radial-gradient(circle at 80% 28%, rgba(86,203,134,0.14) 0%, transparent 34%),
+              linear-gradient(135deg, #164c34, #1d6d43);
+  padding:32px 24px 64px;
+  position:relative;
+  overflow:hidden;
 }
+.hero::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:42px;background:rgba(252,253,248,0.98);border-radius:32px 32px 0 0;}
+.hero-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.hcircle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 68%);animation: float 6s ease-in-out infinite;}
 @keyframes float {
   0% { transform: translateY(0px); }
   50% { transform: translateY(-18px); }
@@ -96,9 +164,9 @@ backdrop-filter: blur(12px);}
 .welcome-chip{display:none;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:5px 14px;color:#a7f3cc;font-size:12px;font-weight:600;margin-bottom:12px;width:fit-content;}
 .welcome-chip.show{display:inline-flex;align-items:center;gap:6px;}
 .hero-tag{font-size:13px;color:rgba(255,255,255,.65);font-weight:500;margin-bottom:8px;}
-.hero-title{font-family:'Instrument Serif',serif;font-size:clamp(26px,6vw,44px);color:var(--white);line-height:1.15;margin-bottom:10px;}
-.hero-title em{color:#7efbb0;font-style:italic;}
-.hero-desc{font-size:clamp(13px,2.5vw,16px);color:rgba(255,255,255,.7);line-height:1.65;max-width:560px;}
+.hero-title{font-family:'Instrument Serif',serif;font-size:clamp(30px,6vw,48px);color:var(--white);line-height:1.12;margin-bottom:12px;}
+.hero-title em{color:var(--mint);font-style:normal;font-weight:800;text-decoration:underline var(--mint) 2px;text-decoration-skip-ink:none;}
+.hero-desc{font-size:clamp(14px,2.5vw,17px);color:rgba(255,255,255,.92);line-height:1.7;max-width:560px;}
 .hero-steps{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;}
 .hstep{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 14px;color:rgba(255,255,255,.9);font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;}
 
@@ -112,23 +180,24 @@ backdrop-filter: blur(12px);}
 
 /* SCAN */
 .scan-wrap{padding:16px 16px 0;}
-.sec-label{font-size:11px;font-weight:800;color:var(--gray);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;}
-.scan-card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;transition:all 0.2s ease-in-out;}
-.upload-zone{border:2.5px dashed var(--light);border-radius:14px;margin:16px;padding:clamp(24px,5vw,40px) 20px;text-align:center;cursor:pointer;transition:all 0.3s ease;background:var(--cream);position:relative;}
-.upload-zone:hover,.upload-zone.drag-over{border-color:var(--g3);background:var(--mint);transform: scale(1.02);
-  box-shadow: 0 10px 30px rgba(45,184,102,0.2);}
+.sec-label{font-size:11px;font-weight:800;color:var(--gray);text-transform:uppercase;letter-spacing:1.3px;margin-bottom:10px;}
+.scan-card{background:rgba(255,255,255,.98);border-radius:calc(var(--r) + 2px);box-shadow:0 18px 42px rgba(16,74,39,.08);overflow:hidden;transition:all 0.25s ease-in-out;}
+.upload-zone{border:2.5px dashed rgba(31,122,83,.22);border-radius:22px;margin:16px;padding:clamp(26px,5vw,44px) 24px;text-align:center;cursor:pointer;transition:all 0.3s ease;background:linear-gradient(180deg, rgba(229,244,232,.96), rgba(246,252,246,.98));position:relative;}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--g3);background:linear-gradient(180deg, #eef7eb, #e5f1e4);transform:translateY(-1px);box-shadow:0 18px 40px rgba(16,74,39,.1);}
 .upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
-.up-icon{width:clamp(56px,12vw,72px);height:clamp(56px,12vw,72px);border-radius:18px;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:clamp(24px,6vw,32px);margin:0 auto 14px;box-shadow:0 4px 14px rgba(13,92,46,.12);}
-.up-title{font-size:clamp(15px,3vw,18px);font-weight:700;color:var(--dark);margin-bottom:5px;}
+.up-icon{width:clamp(64px,12vw,84px);height:clamp(64px,12vw,84px);border-radius:24px;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:clamp(26px,6vw,34px);margin:0 auto 16px;box-shadow:0 10px 28px rgba(16,74,39,.12);}
+.up-icon svg{width:30px;height:30px;fill:var(--g2);}
+.up-title{font-size:clamp(16px,3vw,19px);font-weight:800;color:var(--dark);margin-bottom:6px;}
 .up-hint{color:var(--gray);font-size:clamp(12px,2.5vw,14px);}
 .upload-zone.has-image .upload-placeholder{display:none;}
 .prev-wrap{display:none;text-align:center;padding:0 16px 16px;}
-.prev-wrap img{max-width:100%;max-height:240px;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.1);}
+.prev-wrap img{max-width:100%;max-height:280px;border-radius:18px;box-shadow:0 10px 28px rgba(16,74,39,.12);}
 .prev-wrap.active{display:block;}
-.scan-btns{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px;}
-.cam-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:var(--cream);color:var(--dark);border:1.5px solid var(--light);border-radius:12px;font-size:clamp(13px,3vw,15px);font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .2s;}
-.cam-btn:active{background:var(--mint);border-color:var(--g3);}
-.analyze-btn{width:100%;background:linear-gradient(135deg,var(--g3),var(--g1));color:var(--white);border:none;border-radius:12px;padding:clamp(13px,3vw,16px);font-size:clamp(15px,3.5vw,18px);font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(45,184,102,.4);}
+.scan-btns{padding:0 16px 18px;display:flex;flex-direction:column;gap:12px;}
+.cam-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px 18px;background:linear-gradient(135deg,#edf7ea,#dbe9d1);color:var(--dark);border:1.5px solid rgba(15,100,55,.18);border-radius:16px;font-size:clamp(14px,3vw,15px);font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s,border-color .2s;box-shadow:0 12px 32px rgba(16,74,39,.08);}
+.cam-btn:hover{background:linear-gradient(135deg,#e6f3dd,#cfe7cb);transform:translateY(-1px);border-color:rgba(15,100,55,.28);box-shadow:0 16px 36px rgba(16,74,39,.12);}
+.cam-btn:active{background:linear-gradient(135deg,#d5ebce,#c1e0bd);border-color:var(--g3);box-shadow:0 8px 20px rgba(16,74,39,.1);}
+.analyze-btn{width:100%;background:linear-gradient(135deg,var(--g3),var(--g2));color:var(--white);border:none;border-radius:16px;padding:clamp(14px,3.5vw,18px);font-size:clamp(15px,3.5vw,18px);font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 14px 36px rgba(16,74,39,.28);}
 .auth-sbmt {
   background: linear-gradient(135deg, #22c55e, #15803d);
   box-shadow: 0 6px 20px rgba(34,197,94,0.4);}
@@ -178,7 +247,7 @@ backdrop-filter: blur(12px);}
 .step-title{font-size:clamp(13px,3vw,15px);font-weight:700;color:var(--dark);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
 .step-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
 .step-list li{display:flex;gap:10px;align-items:flex-start;background:var(--cream);border-radius:10px;padding:10px 12px;font-size:clamp(12px,2.5vw,14px);line-height:1.55;color:#1a3020;}
-.step-list li::before{content:'✦';color:var(--g3);font-size:10px;flex-shrink:0;margin-top:3px;}
+.step-list li::before{content:'•';color:var(--g3);font-size:10px;flex-shrink:0;margin-top:3px;}
 .share-row{display:flex;gap:8px;margin-top:4px;}
 .share-btn{flex:1;padding:11px;border:none;border-radius:12px;font-size:clamp(12px,2.5vw,14px);font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;}
 .share-wa{background:#25D366;color:white;}
@@ -186,20 +255,17 @@ backdrop-filter: blur(12px);}
 .share-pdf{background:var(--cream);color:var(--dark);border:1.5px solid var(--light);}
 .share-pdf:active{background:var(--mint);}
 
-/* QUICK TOOLS */
-.sec-wrap{padding:0 16px 16px;}
-.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.sec-head h2{font-size:clamp(14px,3vw,17px);font-weight:700;color:var(--dark);}
-.tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-.qtool{background:var(--white);border-radius:14px;padding:14px 8px;text-align:center;cursor:pointer;box-shadow:var(--shadow);transition:all 0.2s ease-in-out;border:none;font-family:'Plus Jakarta Sans',sans-serif;}
-.qtool:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.1);}
-.qtool:active{transform:scale(.95);background:var(--mint);}
-.qt-icon{width:clamp(38px,8vw,46px);height:clamp(38px,8vw,46px);border-radius:12px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:clamp(18px,4vw,22px);}
-.qt-lbl{font-size:clamp(10px,2.2vw,12px);font-weight:700;color:var(--dark);line-height:1.3;}
-
 /* HOTLINE */
+.hotline-wrap{padding:0 16px 16px;}
+.hotline-card{background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:var(--r);padding:20px;display:flex;gap:16px;align-items:flex-start;}
+.h-icon{width:clamp(44px,10vw,56px);height:clamp(44px,10vw,56px);border-radius:14px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:clamp(22px,5vw,28px);flex-shrink:0;}
+.h-text h3{font-size:clamp(14px,3vw,16px);font-weight:700;color:white;margin-bottom:3px;}
+.h-text p{font-size:clamp(11px,2.5vw,13px);color:rgba(255,255,255,.65);}
+.h-btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.h-btn{padding:8px 16px;border-radius:10px;border:none;font-size:clamp(11px,2.5vw,13px);font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:opacity .2s;}
+.h-btn:active{opacity:.8;}
+.h-call{background:white;color:var(--g1);}
+.h-wa{background:#25D366;color:white;}
 .hotline-wrap{padding:0 16px 16px;}
 .hotline-card{background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:var(--r);padding:20px;display:flex;gap:16px;align-items:flex-start;}
 .h-icon{width:clamp(44px,10vw,56px);height:clamp(44px,10vw,56px);border-radius:14px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:clamp(22px,5vw,28px);flex-shrink:0;}
@@ -216,11 +282,14 @@ backdrop-filter: blur(12px);}
 .site-footer strong{color:var(--dark);}
 
 /* BOTTOM NAV */
-.botnav{position:fixed;bottom:0;left:0;right:0; width: 100%;background:var(--white);border-top:1.5px solid var(--mint);display:flex;padding:6px 0 10px;z-index:500;;box-shadow:0 -4px 20px rgba(13,92,46,.07);}
-.bnav{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border:none;background:transparent;font-family:'Plus Jakarta Sans',sans-serif;padding:4px 0;}
-.bnav-ico{width:clamp(32px,7vw,38px);height:clamp(32px,7vw,38px);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:clamp(16px,4vw,20px);transition:all .2s;}
-.bnav-lbl{font-size:clamp(9px,2vw,11px);font-weight:700;color:var(--gray);transition:color .2s;}
-.bnav.on .bnav-ico{background:var(--mint);}
+.botnav{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg, rgba(255,255,255,0.95), rgba(252,253,248,0.98));border-top:2px solid rgba(31,122,83,.18);display:flex;padding:8px 0 10px;height:74px;z-index:1000;box-shadow:0 -8px 28px rgba(16,74,39,.08);backdrop-filter:blur(8px);}
+.page{padding:60px 16px 60px;}
+.bnav{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;border:none;background:transparent;font-family:'Plus Jakarta Sans',sans-serif;padding:4px 0;}
+.bnav-ico{width:clamp(34px,7vw,40px);height:clamp(34px,7vw,40px);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:clamp(16px,4vw,20px);transition:all .25s;color:var(--gray);background:linear-gradient(180deg, rgba(237,248,239,.85) 0%, rgba(223,244,227,.9) 100%);border:1px solid rgba(31,122,83,.12);}
+.bnav-lbl{font-size:clamp(9px,2vw,11px);font-weight:700;color:var(--gray);transition:color .25s;}
+.bnav:hover .bnav-ico{transform:translateY(-2px);background:linear-gradient(180deg, rgba(223,244,227,.95) 0%, rgba(209,240,217,.98) 100%);border-color:rgba(31,122,83,.18);}
+.bnav.on .bnav-ico{background:linear-gradient(135deg, var(--g3), var(--g2));color:white;border-color:transparent;box-shadow:0 8px 20px rgba(16,74,39,.12);}
+.bnav.on .bnav-ico svg{fill:white;}
 .bnav.on .bnav-lbl{color:var(--g1);}
 
 /* MODALS */
@@ -360,7 +429,7 @@ backdrop-filter: blur(12px);}
 }
 
 
-/* ── ABOUT PAGE ── */
+/* â”€â”€ ABOUT PAGE â”€â”€ */
 .about-card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;}
 .about-sec-title{font-size:clamp(14px,3vw,16px);font-weight:700;color:var(--dark);margin-bottom:10px;}
 .about-text{font-size:clamp(13px,2.5vw,15px);color:var(--gray);line-height:1.7;}
@@ -383,7 +452,7 @@ backdrop-filter: blur(12px);}
 @media(max-width:400px){.built-grid{grid-template-columns:repeat(2,1fr);}}
 
 
-/* ── PAGE TRANSITIONS ── */
+/* â”€â”€ PAGE TRANSITIONS â”€â”€ */
 .page-section{animation:fadeIn .3s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 
@@ -408,6 +477,9 @@ backdrop-filter: blur(12px);}
   animation: appFade 0.6s ease;
   opacity: 0;
   transition: all 0.6s ease;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: visible;
 }
 
 #app.show {
@@ -444,12 +516,26 @@ backdrop-filter: blur(12px);}
 
 /* Animation class */
 .shrink-to-nav {
-  position: fixed !important;
-  top: 15px;
-  left: 20px;
-  width: 40px !important;
+  position: fixed;
+  top: 12px;
+  left: 16px;
+  width: 40px;
   transform: scale(1);
-  z-index: 10; /* 👈 lower than navbar */
+  z-index: 999; 
+}
+
+#content {
+  flex: 1;
+  position: absolute;
+  top: 60px;    
+  bottom: 70px;  
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  padding-top: 70px;  
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
 }
 
 </style>
@@ -465,31 +551,85 @@ backdrop-filter: blur(12px);}
 <nav class="topnav">
   <div class="topnav-inner">
     <div class="nav-brand" onclick="goHome()" style="cursor:pointer;">
-    <div class="nav-brand">
+    <div class="nav-logo">
     <img src="static/logo.png" id="navLogo" alt="Mimea Salama">
   </div>
   <div class="nav-name">Mimea <span>Salama</span></div>
 </div>
+
     <div class="nav-right">
       <div class="lang-sw">
         <button class="lbtn active" onclick="setLang('en')">EN</button>
         <button class="lbtn" onclick="setLang('sw')">SW</button>
       </div>
-      <button onclick="toggleDarkMode()" class="icon-btn">🌙</button>
-      <button class="icon-btn" onclick="toggleTools()" id="toolsBtn">⚙️</button>
-      <button class="icon-btn" id="authBtn" onclick="openAuth()">👤</button>
+      <button onclick="toggleDarkMode()" class="icon-btn desktop-only" title="Toggle dark mode"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+      <button class="icon-btn desktop-only" onclick="toggleTools()" id="toolsBtn" title="Tools"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7zm8.94 3.5a7.96 7.96 0 00-.16-1.44l1.93-1.5-1.5-2.6-2.23.9a7.96 7.96 0 00-1.23-.7l-.34-2.32h-3l-.34 2.32c-.44.18-.86.42-1.23.7l-2.23-.9-1.5 2.6 1.93 1.5a7.96 7.96 0 000 2.88l-1.93 1.5 1.5 2.6 2.23-.9c.37.29.79.52 1.23.7l.34 2.32h3l.34-2.32c.44-.18.86-.42 1.23-.7l2.23.9 1.5-2.6-1.93-1.5c.1-.46.16-.94.16-1.44z"/></svg></button>
+      <button class="icon-btn profile-btn desktop-only" id="authBtn" onclick="openAuth()" title="Account"><div class="profile-avatar" id="profileAvatar"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z"/></svg></div></button>
+      <button class="hamburger-btn mobile-only" onclick="toggleMobileMenu()" id="hamburgerBtn" title="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
   </div>
 </nav>
 
 <div class="tools-dd" id="toolsMenu">
-  <button class="t-item" onclick="openHistory();closeTools()"><div class="t-ico">📋</div><span data-en="Scan History" data-sw="Historia ya Uchunguzi">Scan History</span></button>
-  <button class="t-item" onclick="openDashboard();closeTools()"><div class="t-ico">📊</div><span data-en="My Statistics" data-sw="Takwimu Zangu">My Statistics</span></button>
-  <button class="t-item" onclick="openMap();closeTools()"><div class="t-ico">🗺️</div><span data-en="Disease Map" data-sw="Ramani ya Magonjwa">Disease Map</span></button>
+  <button class="t-item" onclick="openHistory();closeTools()"><div class="t-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8V12l3 1.5M4 12a8 8 0 1116 0 8 8 0 01-16 0z"/></svg></div><span data-en="Scan History" data-sw="Historia ya Uchunguzi">Scan History</span></button>
+  <button class="t-item" onclick="openDashboard();closeTools()"><div class="t-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 17h4V9H4v8zm6 0h4V5h-4v12zm6 0h4V12h-4v5z"/></svg></div><span data-en="My Statistics" data-sw="Takwimu Zangu">My Statistics</span></button>
+  <button class="t-item" onclick="openMap();closeTools()"><div class="t-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg></div><span data-en="Disease Map" data-sw="Ramani ya Magonjwa">Disease Map</span></button>
   <div class="t-div"></div>
-  <button class="t-item" onclick="openCalendar();closeTools()"><div class="t-ico">🌱</div><span data-en="Crop Calendar" data-sw="Kalenda ya Mazao">Crop Calendar</span></button>
-  <button class="t-item" onclick="openDealers();closeTools()"><div class="t-ico">🏪</div><span data-en="Agro-dealers" data-sw="Maduka ya Pembejeo">Agro-dealers</span></button>
-  <button class="t-item" onclick="openEncyclopedia();closeTools()"><div class="t-ico">📚</div><span data-en="Disease Guide" data-sw="Mwongozo wa Magonjwa">Disease Guide</span></button>
+  <button class="t-item" onclick="openCalendar();closeTools()"><div class="t-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 3h2v2H7V3zm8 0h2v2h-2V3zM5 7h14v14H5V7zm2 2v10h10V9H7z"/></svg></div><span data-en="Crop Calendar" data-sw="Kalenda ya Mazao">Crop Calendar</span></button>
+  <button class="t-item" onclick="openDealers();closeTools()"><div class="t-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 7h16v2H4V7zm2 4h12v9H6v-9zm2 2v5h2v-5H8zm4 0v5h2v-5h-2z"/></svg></div><span data-en="Agro-dealers" data-sw="Maduka ya Pembejeo">Agro-dealers</span></button>
+  <button class="t-item" onclick="openEncyclopedia();closeTools()"><div class="t-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 4h12v16H6V4zm2 2v12l4-2 4 2V6H8z"/></svg></div><span data-en="Disease Guide" data-sw="Mwongozo wa Magonjwa">Disease Guide</span></button>
+</div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-header">
+    <div class="mobile-menu-brand">
+      <div class="nav-logo">
+        <img src="static/logo.png" alt="Mimea Salama">
+      </div>
+      <div class="nav-name">Mimea <span>Salama</span></div>
+    </div>
+    <button class="mobile-menu-close" onclick="toggleMobileMenu()">&times;</button>
+  </div>
+  <div class="mobile-menu-content">
+    <button class="mobile-menu-item" onclick="openHistory();closeMobileMenu()">
+      <div class="mobile-menu-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8V12l3 1.5M4 12a8 8 0 1116 0 8 8 0 01-16 0z"/></svg></div>
+      <span data-en="Scan History" data-sw="Historia ya Uchunguzi">Scan History</span>
+    </button>
+    <button class="mobile-menu-item" onclick="openDashboard();closeMobileMenu()">
+      <div class="mobile-menu-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 17h4V9H4v8zm6 0h4V5h-4v12zm6 0h4V12h-4v5z"/></svg></div>
+      <span data-en="My Statistics" data-sw="Takwimu Zangu">My Statistics</span>
+    </button>
+    <button class="mobile-menu-item" onclick="openEncyclopedia();closeMobileMenu()">
+      <div class="mobile-menu-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 4h12v16H6V4zm2 2v12l4-2 4 2V6H8z"/></svg></div>
+      <span data-en="Disease Guide" data-sw="Mwongozo wa Magonjwa">Disease Guide</span>
+    </button>
+    <button class="mobile-menu-item" onclick="openMap();closeMobileMenu()">
+      <div class="mobile-menu-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+      <span data-en="Disease Map" data-sw="Ramani ya Magonjwa">Disease Map</span>
+    </button>
+    <button class="mobile-menu-item" onclick="openDealers();closeMobileMenu()">
+      <div class="mobile-menu-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      <span data-en="Find Shops" data-sw="Tafuta Maduka">Find Shops</span>
+    </button>
+    <button class="mobile-menu-item" onclick="loadWeather();closeMobileMenu()">
+      <div class="mobile-menu-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/></svg></div>
+      <span data-en="Weather" data-sw="Hali ya Hewa">Weather</span>
+    </button>
+    <div class="mobile-menu-divider"></div>
+    <button class="mobile-menu-item" onclick="toggleDarkMode();closeMobileMenu()">
+      <div class="mobile-menu-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></div>
+      <span data-en="Dark Mode" data-sw="Hali ya Giza">Dark Mode</span>
+    </button>
+    <button class="mobile-menu-item" onclick="openAuth();closeMobileMenu()">
+      <div class="mobile-menu-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z"/></svg></div>
+      <span data-en="Account" data-sw="Akaunti">Account</span>
+    </button>
+  </div>
 </div>
 
 <div class="page">
@@ -505,11 +645,11 @@ backdrop-filter: blur(12px);}
       <div class="welcome-chip" id="welcomeChip"></div>
       <div class="hero-tag" id="timeGreeting"></div>
       <div class="hero-title" data-en="Scan your plant,<br><em>know its health</em>" data-sw="Chunguza mmea wako,<br><em>jua afya yake</em>">Scan your plant,<br><em>know its health</em></div>
-      <div class="hero-desc" data-en="AI plant doctor in your pocket. Take a photo and get instant diagnosis, treatment steps, and prevention tips — free." data-sw="Daktari wa mimea wa AI mfukoni mwako. Piga picha upate uchunguzi, hatua za matibabu na vidokezo vya kuzuia — bila malipo.">AI plant doctor in your pocket. Take a photo and get instant diagnosis, treatment steps, and prevention tips — free.</div>
+      <div class="hero-desc" data-en="AI plant doctor in your pocket. Take a photo and get instant diagnosis, treatment steps, and prevention tips â€” free." data-sw="Daktari wa mimea wa AI mfukoni mwako. Piga picha upate uchunguzi, hatua za matibabu na vidokezo vya kuzuia â€” bila malipo.">AI plant doctor in your pocket. Take a photo and get instant diagnosis, treatment steps, and prevention tips â€” free.</div>
       <div class="hero-steps">
-        <div class="hstep">📸 <span data-en="Take Photo" data-sw="Piga Picha">Take Photo</span></div>
-        <div class="hstep">🤖 <span data-en="AI Analyzes" data-sw="AI Inachunguza">AI Analyzes</span></div>
-        <div class="hstep">💊 <span data-en="Get Treatment" data-sw="Pata Matibabu">Get Treatment</span></div>
+        <div class="hstep"><span data-en="Take Photo" data-sw="Piga Picha">Take Photo</span></div>
+        <div class="hstep"><span data-en="AI Analyzes" data-sw="AI Inachunguza">AI Analyzes</span></div>
+        <div class="hstep"><span data-en="Get Treatment" data-sw="Pata Matibabu">Get Treatment</span></div>
       </div>
     </div>
   </div>
@@ -522,12 +662,12 @@ backdrop-filter: blur(12px);}
   </div>
 
   <div class="scan-wrap">
-    <div class="sec-label" data-en="📸 SCAN YOUR PLANT" data-sw="📸 CHUNGUZA MMEA WAKO">📸 SCAN YOUR PLANT</div>
+    <div class="sec-label" data-en="SCAN YOUR PLANT" data-sw="CHUNGUZA MMEA WAKO">SCAN YOUR PLANT</div>
     <div class="scan-card">
       <div class="upload-zone" id="uploadZone">
         <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)">
         <div class="upload-placeholder">
-          <div class="up-icon">📸</div>
+          <div class="up-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 7h3l2-3h6l2 3h3a1 1 0 011 1v11a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1zm8 11a5 5 0 100-10 5 5 0 000 10zm-2-4h4v2h-4v-2z"/></svg></div>
           <div class="up-title" data-en="Upload Plant Photo" data-sw="Pakia Picha ya Mmea">Upload Plant Photo</div>
           <div class="up-hint" data-en="Tap here or drag & drop your photo" data-sw="Gusa hapa au buruta picha yako">Tap here or drag & drop your photo</div>
         </div>
@@ -537,75 +677,61 @@ backdrop-filter: blur(12px);}
       </div>
       <div class="scan-btns">
         <button class="cam-btn" onclick="openCamera()">
-          📷 <span data-en="Take Photo with Camera" data-sw="Piga Picha na Kamera">Take Photo with Camera</span>
+          <span data-en="Take Photo with Camera" data-sw="Piga Picha na Kamera">Take Photo with Camera</span>
         </button>
         <button class="analyze-btn" id="analyzeBtn" onclick="analyze()" disabled>
           <span class="btn-spin" id="btnSpinner"></span>
-          <span data-en="🔍 Analyze My Plant" data-sw="🔍 Chunguza Mmea Wangu">🔍 Analyze My Plant</span>
+          <span data-en="Analyze My Plant" data-sw="Chunguza Mmea Wangu">Analyze My Plant</span>
         </button>
       </div>
     </div>
   </div>
 
   <div class="result-wrap" id="resultWrap">
-    <div class="sec-label" data-en="📋 DIAGNOSIS RESULT" data-sw="📋 MATOKEO YA UCHUNGUZI">📋 DIAGNOSIS RESULT</div>
+    <div class="sec-label" data-en="DIAGNOSIS RESULT" data-sw="MATOKEO YA UCHUNGUZI">DIAGNOSIS RESULT</div>
     <div class="result-card">
       <div class="result-banner" id="resultBanner">
-        <div class="r-icon" id="resultIcon">🌱</div>
+        <div class="r-icon" id="resultIcon"></div>
         <div>
-          <div class="r-name" id="resultTitle">—</div>
-          <div class="r-status" id="resultStatus">—</div>
+          <div class="r-name" id="resultTitle">â€”</div>
+          <div class="r-status" id="resultStatus">â€”</div>
         </div>
         <div class="r-actions">
-          <button class="act-btn" onclick="speakResult(lastResult)" title="Read aloud">🔊</button>
-          <button class="act-btn" onclick="window.speechSynthesis.cancel()" title="Stop">⏹️</button>
+          <button class="act-btn" onclick="speakResult(lastResult)" title="Read aloud"></button>
+          <button class="act-btn" onclick="window.speechSynthesis.cancel()" title="Stop"></button>
         </div>
       </div>
       <div class="result-body">
         <div class="conf-wrap">
           <div class="conf-row">
             <span data-en="AI Confidence" data-sw="Uhakika wa AI">AI Confidence</span>
-            <span id="confPct">—</span>
+            <span id="confPct">â€”</span>
           </div>
           <div class="conf-bar"><div class="conf-fill" id="confFill" style="width:0%"></div></div>
         </div>
         <div class="info-grid" id="infoGrid"></div>
-        <div class="step-title" id="treatTitle">💊 <span data-en="Recommended Treatment" data-sw="Matibabu Yanayopendekezwa">Recommended Treatment</span></div>
+        <div class="step-title" id="treatTitle"><span data-en="Recommended Treatment" data-sw="Matibabu Yanayopendekezwa">Recommended Treatment</span></div>
         <ul class="step-list" id="treatList"></ul>
-        <div class="step-title">🛡️ <span data-en="Prevention Tips" data-sw="Vidokezo vya Kuzuia">Prevention Tips</span></div>
+        <div class="step-title"><span data-en="Prevention Tips" data-sw="Vidokezo vya Kuzuia">Prevention Tips</span></div>
         <ul class="step-list" id="preventList"></ul>
         <div class="share-row">
-          <button class="share-btn share-wa" onclick="shareWhatsApp()">📲 WhatsApp</button>
-          <button class="share-btn share-pdf" onclick="exportPDF()">📄 PDF</button>
+          <button class="share-btn share-wa" onclick="shareWhatsApp()">WhatsApp</button>
+          <button class="share-btn share-pdf" onclick="exportPDF()">PDF</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="sec-wrap">
-    <div class="sec-head"><h2 data-en="🛠️ Quick Tools" data-sw="🛠️ Zana za Haraka">🛠️ Quick Tools</h2></div>
-    <div class="tools-grid">
-      <button class="qtool" onclick="openCalendar()"><div class="qt-icon" style="background:#e6f7ed">🌱</div><div class="qt-lbl" data-en="Crop Calendar" data-sw="Kalenda">Crop Calendar</div></button>
-      <button class="qtool" onclick="openEncyclopedia()"><div class="qt-icon" style="background:#ede9fe">📚</div><div class="qt-lbl" data-en="Disease Guide" data-sw="Magonjwa">Disease Guide</div></button>
-      <button class="qtool" onclick="openMap()"><div class="qt-icon" style="background:#fff7ed">🗺️</div><div class="qt-lbl" data-en="Disease Map" data-sw="Ramani">Disease Map</div></button>
-      <button class="qtool" onclick="openDealers()"><div class="qt-icon" style="background:#fee2e2">🏪</div><div class="qt-lbl" data-en="Find Shops" data-sw="Maduka">Find Shops</div></button>
-      <button class="qtool" onclick="openHistory()"><div class="qt-icon" style="background:#e0f2fe">📋</div><div class="qt-lbl" data-en="My History" data-sw="Historia">My History</div></button>
-      <button class="qtool" onclick="openDashboard()"><div class="qt-icon" style="background:#fef9c3">📊</div><div class="qt-lbl" data-en="Statistics" data-sw="Takwimu">Statistics</div></button>
-      
-      <button class="qtool" onclick="loadWeather()"><div class="qt-icon" style="background:#f0f9ff">🌦️</div><div class="qt-lbl" data-en="Weather" data-sw="Hali ya Hewa">Weather</div></button>
-    </div>
-  </div>
-
   <div class="hotline-wrap">
-    <div class="sec-label" data-en="📞 NEED EXPERT HELP?" data-sw="📞 UNAHITAJI MSAADA?">📞 NEED EXPERT HELP?</div>
+    <div class="sec-label" data-en="NEED EXPERT HELP?" data-sw="UNAHITAJI MSAADA?">NEED EXPERT HELP?</div>
     <div class="hotline-card">
-      <div class="h-icon">👨‍🌾</div>
+      <div class="h-icon"></div>
       <div class="h-text">
         <h3 data-en="Talk to a Real Agronomist" data-sw="Zungumza na Mtaalamu wa Kilimo">Talk to a Real Agronomist</h3>
-        <p data-en="For serious plant diseases — call or WhatsApp a certified expert" data-sw="Kwa magonjwa mazito ya mimea — piga simu au WhatsApp mtaalamu">For serious plant diseases — call or WhatsApp a certified expert</p>
+        <p data-en="For serious plant diseases â€” call or WhatsApp a certified expert" data-sw="Kwa magonjwa mazito ya mimea â€” piga simu au WhatsApp mtaalamu">For serious plant diseases â€” call or WhatsApp a certified expert</p>
         <div class="h-btns">
-          <a href="tel:+254709891000" class="h-btn h-call">📞 <span data-en="Call Now" data-sw="Piga Simu">Call Now</span></a>
-          <a href="mailto:kephisinfo@kephis.org" target="_blank" class="h-btn h-web">🌐 Visit KEPHIS</a>
+          <a href="tel:+254709891000" class="h-btn h-call"><span data-en="Call Now" data-sw="Piga Simu">Call Now</span></a>
+          <a href="mailto:kephisinfo@kephis.org" target="_blank" class="h-btn h-web">Visit KEPHIS</a>
         </div>
         <p style="font-size:10px;color:rgba(255,255,255,.5);margin-top:8px;">Kenya Plant Health Inspectorate Service (KEPHIS)</p>
       </div>
@@ -622,9 +748,9 @@ backdrop-filter: blur(12px);}
   <div class="hero" style="padding:28px 20px 40px;">
     <div class="hero-bg"><div class="hcircle hc1"></div><div class="hcircle hc2"></div></div>
     <div class="hero-inner">
-      <div class="hero-tag" data-en="ℹ️ About This App" data-sw="ℹ️ Kuhusu Programu Hii">ℹ️ About</div>
+      <div class="hero-tag" data-en="About This App" data-sw="Kuhusu Programu Hii">About</div>
       <div class="hero-title" style="font-size:clamp(22px,5vw,34px);" data-en="Mimea <em>Salama</em>" data-sw="Mimea <em>Salama</em>">Mimea <em>Salama</em></div>
-      <div class="hero-desc" data-en="AI Plant Doctor for East African Farmers — Free, Fast, in Kiswahili." data-sw="Daktari wa Mimea wa AI kwa Wakulima wa Afrika Mashariki — Bure, Haraka, kwa Kiswahili.">AI Plant Doctor for East African Farmers — Free, Fast, in Kiswahili.</div>
+      <div class="hero-desc" data-en="AI Plant Doctor for East African Farmers â€” Free, Fast, in Kiswahili." data-sw="Daktari wa Mimea wa AI kwa Wakulima wa Afrika Mashariki â€” Bure, Haraka, kwa Kiswahili.">AI Plant Doctor for East African Farmers â€” Free, Fast, in Kiswahili.</div>
     </div>
   </div>
 
@@ -632,13 +758,13 @@ backdrop-filter: blur(12px);}
 
     <!-- WHAT IS IT -->
     <div class="about-card" style="margin-bottom:14px;">
-      <div class="about-sec-title">🌱 <span data-en="What is Mimea Salama?" data-sw="Mimea Salama ni Nini?">What is Mimea Salama?</span></div>
-      <p class="about-text" data-en="Mimea Salama is a free AI-powered plant health app designed for East African farmers. It instantly diagnoses plant diseases, pests, and nutrient deficiencies from a simple photo — no expert needed." data-sw="Mimea Salama ni programu ya bure ya afya ya mimea inayotumia AI, iliyoundwa kwa wakulima wa Afrika Mashariki. Inagundua magonjwa ya mimea, wadudu, na upungufu wa virutubisho mara moja kutoka kwa picha tu.">Mimea Salama is a free AI-powered plant health app designed for East African farmers. It instantly diagnoses plant diseases, pests, and nutrient deficiencies from a simple photo — no expert needed.</p>
+      <div class="about-sec-title"><span data-en="What is Mimea Salama?" data-sw="Mimea Salama ni Nini?">What is Mimea Salama?</span></div>
+      <p class="about-text" data-en="Mimea Salama is a free AI-powered plant health app designed for East African farmers. It instantly diagnoses plant diseases, pests, and nutrient deficiencies from a simple photo â€” no expert needed." data-sw="Mimea Salama ni programu ya bure ya afya ya mimea inayotumia AI, iliyoundwa kwa wakulima wa Afrika Mashariki. Inagundua magonjwa ya mimea, wadudu, na upungufu wa virutubisho mara moja kutoka kwa picha tu.">Mimea Salama is a free AI-powered plant health app designed for East African farmers. It instantly diagnoses plant diseases, pests, and nutrient deficiencies from a simple photo â€” no expert needed.</p>
     </div>
 
     <!-- HOW TO USE -->
     <div class="about-card" style="margin-bottom:14px;">
-      <div class="about-sec-title">📱 <span data-en="How to Use the App" data-sw="Jinsi ya Kutumia Programu">How to Use the App</span></div>
+      <div class="about-sec-title"><span data-en="How to Use the App" data-sw="Jinsi ya Kutumia Programu">How to Use the App</span></div>
       <div class="how-steps">
         <div class="how-step">
           <div class="how-num">1</div>
@@ -673,57 +799,55 @@ backdrop-filter: blur(12px);}
 
     <!-- FEATURES -->
     <div class="about-card" style="margin-bottom:14px;">
-      <div class="about-sec-title">⚡ <span data-en="Key Features" data-sw="Vipengele Vikuu">Key Features</span></div>
+      <div class="about-sec-title"><span data-en="Key Features" data-sw="Vipengele Vikuu">Key Features</span></div>
       <div class="feat-chips">
-        <span class="feat-chip">🤖 <span data-en="AI Diagnosis" data-sw="Uchunguzi wa AI">AI Diagnosis</span></span>
-        <span class="feat-chip">🌍 <span data-en="English & Kiswahili" data-sw="Kiingereza & Kiswahili">English & Kiswahili</span></span>
-        <span class="feat-chip">📋 <span data-en="Scan History" data-sw="Historia">Scan History</span></span>
-        <span class="feat-chip">🗺️ <span data-en="Disease Map" data-sw="Ramani">Disease Map</span></span>
-        <span class="feat-chip">🌱 <span data-en="Crop Calendar" data-sw="Kalenda">Crop Calendar</span></span>
-        <span class="feat-chip">🏪 <span data-en="Agro-dealers" data-sw="Maduka">Agro-dealers</span></span>
-        <span class="feat-chip">📲 <span data-en="WhatsApp Share" data-sw="Shiriki WhatsApp">WhatsApp Share</span></span>
-        <span class="feat-chip">🔊 <span data-en="Voice Output" data-sw="Sauti">Voice Output</span></span>
-        <span class="feat-chip">📈 <span data-en="AI Confidence Score" data-sw="Alama ya Uhakika ya AI">AI Confidence Score</span></span>
-      </div>
+        <span class="feat-chip"><span data-en="AI Diagnosis" data-sw="Uchunguzi wa AI">AI Diagnosis</span></span>
+        <span class="feat-chip"><span data-en="English & Kiswahili" data-sw="Kiingereza & Kiswahili">English & Kiswahili</span></span>
+        <span class="feat-chip"><span data-en="Scan History" data-sw="Historia">Scan History</span></span>
+        <span class="feat-chip"><span data-en="Disease Map" data-sw="Ramani">Disease Map</span></span>
+        <span class="feat-chip"><span data-en="Crop Calendar" data-sw="Kalenda">Crop Calendar</span></span>
+        <span class="feat-chip"><span data-en="Agro-dealers" data-sw="Maduka">Agro-dealers</span></span>
+        <span class="feat-chip"><span data-en="WhatsApp Share" data-sw="Shiriki WhatsApp">WhatsApp Share</span></span>
+        <span class="feat-chip"><span data-en="Voice Output" data-sw="Sauti">Voice Output</span></span>
+        <span class="feat-chip"><span data-en="AI Confidence Score" data-sw="Alama ya Uhakika ya AI">AI Confidence Score</span></span>
     </div>
 
     <!-- SUPPORTED CROPS -->
     <div class="about-card" style="margin-bottom:14px;">
-      <div class="about-sec-title">🌾 <span data-en="Supported Crops" data-sw="Mazao Yanayoungwa">Supported Crops</span></div>
+      <div class="about-sec-title"><span data-en="Supported Crops" data-sw="Mazao Yanayoungwa">Supported Crops</span></div>
       <p class="about-text" data-en="Works on all plants, specializing in East African crops:" data-sw="Inafanya kazi kwa mimea yote, ikibobea katika mazao ya Afrika Mashariki:">Works on all plants, specializing in East African crops:</p>
       <div class="crop-chips">
-        <span class="crop-chip">🌽 <span data-en="Maize" data-sw="Mahindi">Maize</span></span>
-        <span class="crop-chip">🍅 <span data-en="Tomato" data-sw="Nyanya">Tomato</span></span>
-        <span class="crop-chip">🫘 <span data-en="Beans" data-sw="Maharagwe">Beans</span></span>
-        <span class="crop-chip">🍠 <span data-en="Cassava" data-sw="Muhogo">Cassava</span></span>
-        <span class="crop-chip">🍌 <span data-en="Banana" data-sw="Ndizi">Banana</span></span>
-        <span class="crop-chip">🥬 <span data-en="Kale" data-sw="Sukuma Wiki">Kale</span></span>
-        <span class="crop-chip">🧅 <span data-en="Onion" data-sw="Kitunguu">Onion</span></span>
-        <span class="crop-chip">🌿 <span data-en="& Many More" data-sw="& Zaidi">& Many More</span></span>
-      </div>
+        <span class="crop-chip"><span data-en="Maize" data-sw="Mahindi">Maize</span></span>
+        <span class="crop-chip"><span data-en="Tomato" data-sw="Nyanya">Tomato</span></span>
+        <span class="crop-chip"><span data-en="Beans" data-sw="Maharagwe">Beans</span></span>
+        <span class="crop-chip"><span data-en="Cassava" data-sw="Muhogo">Cassava</span></span>
+        <span class="crop-chip"><span data-en="Banana" data-sw="Ndizi">Banana</span></span>
+        <span class="crop-chip"><span data-en="Kale" data-sw="Sukuma Wiki">Kale</span></span>
+        <span class="crop-chip"><span data-en="Onion" data-sw="Kitunguu">Onion</span></span>
+        <span class="crop-chip"><span data-en="& Many More" data-sw="& Zaidi">& Many More</span></span>
     </div>
 
     <!-- TIPS -->
     <div class="about-card" style="margin-bottom:14px;">
-      <div class="about-sec-title">💡 <span data-en="Tips for Best Results" data-sw="Vidokezo vya Matokeo Bora">Tips for Best Results</span></div>
+      <div class="about-sec-title"><span data-en="Tips for Best Results" data-sw="Vidokezo vya Matokeo Bora">Tips for Best Results</span></div>
       <div class="tip-list">
-        <div class="tip-item">📸 <span data-en="Take photos in good natural light" data-sw="Piga picha katika mwanga mzuri wa asili">Take photos in good natural light</span></div>
-        <div class="tip-item">🔍 <span data-en="Focus on the most affected area of the plant" data-sw="Lenga sehemu inayoathirika zaidi ya mmea">Focus on the most affected area of the plant</span></div>
-        <div class="tip-item">📏 <span data-en="Get close enough to see symptoms clearly" data-sw="Karibia ili kuona dalili wazi">Get close enough to see symptoms clearly</span></div>
-        <div class="tip-item">🚫 <span data-en="Avoid blurry or dark photos for better accuracy" data-sw="Epuka picha zisizo wazi au za giza kwa usahihi zaidi">Avoid blurry or dark photos for better accuracy</span></div>
-        <div class="tip-item">👤 <span data-en="Create an account to save and track your scans" data-sw="Fungua akaunti ili kuhifadhi na kufuatilia uchunguzi wako">Create an account to save and track your scans</span></div>
+        <div class="tip-item"><span data-en="Take photos in good natural light" data-sw="Piga picha katika mwanga mzuri wa asili">Take photos in good natural light</span></div>
+        <div class="tip-item"><span data-en="Focus on the most affected area of the plant" data-sw="Lenga sehemu inayoathirika zaidi ya mmea">Focus on the most affected area of the plant</span></div>
+        <div class="tip-item"><span data-en="Get close enough to see symptoms clearly" data-sw="Karibia ili kuona dalili wazi">Get close enough to see symptoms clearly</span></div>
+        <div class="tip-item"><span data-en="Avoid blurry or dark photos for better accuracy" data-sw="Epuka picha zisizo wazi au za giza kwa usahihi zaidi">Avoid blurry or dark photos for better accuracy</span></div>
+        <div class="tip-item"><span data-en="Create an account to save and track your scans" data-sw="Fungua akaunti ili kuhifadhi na kufuatilia uchunguzi wako">Create an account to save and track your scans</span></div>
       </div>
     </div>
 
 
     <!-- START SCANNING CTA -->
     <button class="analyze-btn" onclick="showPage('home')" style="margin-bottom:8px;">
-      🌿 <span data-en="Start Scanning My Plants" data-sw="Anza Kuchunguza Mimea Yangu">Start Scanning My Plants</span>
+      <span data-en="Start Scanning My Plants" data-sw="Anza Kuchunguza Mimea Yangu">Start Scanning My Plants</span>
     </button>
 
     <div class="site-footer">
-    <strong>Mimea Salama</strong> · Developed by Meshack Muindi<br>
-    <span data-en="Empowering farmers with AI · Free forever 🌍" data-sw="Kuwawezesha wakulima kwa AI · Bila malipo 🌍">Empowering farmers with AI · Free forever 🌍</span>
+    <strong>Mimea Salama</strong> Â· Developed by Meshack Muindi<br>
+    <span data-en="Empowering farmers with AI Â· Free forever" data-sw="Kuwawezesha wakulima kwa AI Â· Bila malipo">Empowering farmers with AI Â· Free forever</span>
   </div>
 
  </div> 
@@ -733,35 +857,28 @@ backdrop-filter: blur(12px);}
 
 </div>
 
-<nav class="botnav">
-  <button class="bnav on" id="bn-home" onclick="showPage('home')"><div class="bnav-ico">🏠</div><div class="bnav-lbl" data-en="Home" data-sw="Nyumbani">Home</div></button>
-  <button class="bnav" id="bn-hist" onclick="openHistory()"><div class="bnav-ico">📋</div><div class="bnav-lbl" data-en="History" data-sw="Historia">History</div></button>
-  <button class="bnav" id="bn-stats" onclick="openDashboard()"><div class="bnav-ico">📊</div><div class="bnav-lbl" data-en="Stats" data-sw="Takwimu">Stats</div></button>
-  <button class="bnav" id="bn-about" onclick="showPage('about')"><div class="bnav-ico">ℹ️</div><div class="bnav-lbl" data-en="About" data-sw="Kuhusu">About</div></button>
-</nav>
-
 <!-- HISTORY MODAL -->
 <div class="modal-bg" id="historyModal">
   <div class="modal-sheet"><div class="modal-handle"></div>
-    <div class="modal-head"><h2 data-en="📋 Scan History" data-sw="📋 Historia ya Uchunguzi">📋 Scan History</h2><button class="modal-x" onclick="closeModal('historyModal')">✕</button></div>
-    <div class="modal-body" id="historyBody"><div class="empty"><div class="empty-ico">🌱</div>No scans yet.</div></div>
-    <div class="modal-foot"><span class="scan-count" id="scanCount"></span><button class="clr-btn" onclick="clearHistory()" data-en="🗑️ Clear All" data-sw="🗑️ Futa Yote">🗑️ Clear All</button></div>
+    <div class="modal-head"><h2 data-en="Scan History" data-sw="Historia ya Uchunguzi">Scan History</h2><button class="modal-x" onclick="closeModal('historyModal')">Close</button></div>
+    <div class="modal-body" id="historyBody"><div class="empty"><div class="empty-ico"></div>No scans yet.</div></div>
+    <div class="modal-foot"><span class="scan-count" id="scanCount"></span><button class="clr-btn" onclick="clearHistory()" data-en="Clear All" data-sw="Futa Yote">Clear All</button></div>
   </div>
 </div>
 
 <!-- DASHBOARD MODAL -->
 <div class="modal-bg" id="dashboardModal">
   <div class="modal-sheet"><div class="modal-handle"></div>
-    <div class="modal-head"><h2 data-en="📊 My Statistics" data-sw="📊 Takwimu Zangu">📊 My Statistics</h2><button class="modal-x" onclick="closeModal('dashboardModal')">✕</button></div>
-    <div class="modal-body" id="dashboardBody"><div class="empty"><div class="empty-ico">⏳</div>Loading...</div></div>
-    <div style="padding:0 18px 18px;"><button class="pdf-btn" onclick="exportPDF()">📄 <span data-en="Download PDF Report" data-sw="Pakua Ripoti ya PDF">Download PDF Report</span></button></div>
+    <div class="modal-head"><h2 data-en="My Statistics" data-sw="Takwimu Zangu">My Statistics</h2><button class="modal-x" onclick="closeModal('dashboardModal')">Close</button></div>
+    <div class="modal-body" id="dashboardBody"><div class="empty"><div class="empty-ico"></div>Loading...</div></div>
+    <div style="padding:0 18px 18px;"><button class="pdf-btn" onclick="exportPDF()"><span data-en="Download PDF Report" data-sw="Pakua Ripoti ya PDF">Download PDF Report</span></button></div>
   </div>
 </div>
 
 <!-- MAP MODAL -->
 <div class="modal-bg" id="mapModal">
   <div class="modal-sheet"><div class="modal-handle"></div>
-    <div class="modal-head"><h2 data-en="🗺️ Disease Map" data-sw="🗺️ Ramani ya Magonjwa">🗺️ Disease Map</h2><button class="modal-x" onclick="closeModal('mapModal')">✕</button></div>
+    <div class="modal-head"><h2 data-en="Disease Map" data-sw="Ramani ya Magonjwa">Disease Map</h2><button class="modal-x" onclick="closeModal('mapModal')">Close</button></div>
     <div class="modal-body">
       <p style="font-size:13px;color:var(--gray);margin-bottom:12px;" data-en="Shows where you scanned plants. Enable location for pins to appear." data-sw="Inaonyesha ulipochunguza mimea.">Shows where you scanned plants. Enable location for pins to appear.</p>
       <div id="mapContainer"></div>
@@ -777,10 +894,10 @@ backdrop-filter: blur(12px);}
 <!-- CALENDAR MODAL -->
 <div class="modal-bg" id="calendarModal">
   <div class="modal-sheet"><div class="modal-handle"></div>
-    <div class="modal-head"><h2 data-en="🌱 Crop Calendar" data-sw="🌱 Kalenda ya Mazao">🌱 Crop Calendar</h2><button class="modal-x" onclick="closeModal('calendarModal')">✕</button></div>
+    <div class="modal-head"><h2 data-en="Crop Calendar" data-sw="Kalenda ya Mazao">Crop Calendar</h2><button class="modal-x" onclick="closeModal('calendarModal')">Close</button></div>
     <div class="modal-body">
       <div class="crop-grid" id="cropGrid"></div>
-      <div id="calBody"><div class="empty"><div class="empty-ico">🌱</div><span data-en="Select a crop above" data-sw="Chagua zao hapo juu">Select a crop above</span></div></div>
+      <div id="calBody"><div class="empty"><div class="empty-ico"></div><span data-en="Select a crop above" data-sw="Chagua zao hapo juu">Select a crop above</span></div></div>
     </div>
   </div>
 </div>
@@ -788,23 +905,23 @@ backdrop-filter: blur(12px);}
 <!-- DEALER MODAL -->
 <div class="modal-bg" id="dealerModal">
   <div class="modal-sheet"><div class="modal-handle"></div>
-    <div class="modal-head"><h2 data-en="🏪 Nearest Agro-dealers" data-sw="🏪 Maduka ya Pembejeo Karibu">🏪 Nearest Agro-dealers</h2><button class="modal-x" onclick="closeModal('dealerModal')">✕</button></div>
-    <div class="modal-body" id="dealerBody"><div class="empty"><div class="empty-ico">📍</div>Finding shops near you...</div></div>
+    <div class="modal-head"><h2 data-en="Nearest Agro-dealers" data-sw="Maduka ya Pembejeo Karibu">Nearest Agro-dealers</h2><button class="modal-x" onclick="closeModal('dealerModal')">Close</button></div>
+    <div class="modal-body" id="dealerBody"><div class="empty"><div class="empty-ico"></div>Finding shops near you...</div></div>
   </div>
 </div>
 
 <!-- ENCYCLOPEDIA MODAL -->
 <div class="modal-bg" id="encyclopediaModal">
   <div class="modal-sheet"><div class="modal-handle"></div>
-    <div class="modal-head"><h2 data-en="📚 Disease Guide" data-sw="📚 Mwongozo wa Magonjwa">📚 Disease Guide</h2><button class="modal-x" onclick="closeModal('encyclopediaModal')">✕</button></div>
-    <div class="modal-body" id="encyclopediaBody"><div class="empty"><div class="empty-ico">⏳</div>Loading...</div></div>
+    <div class="modal-head"><h2 data-en="Disease Guide" data-sw="Mwongozo wa Magonjwa">Disease Guide</h2><button class="modal-x" onclick="closeModal('encyclopediaModal')">Close</button></div>
+    <div class="modal-body" id="encyclopediaBody"><div class="empty"><div class="empty-ico"></div>Loading...</div></div>
   </div>
 </div>
 
 <!-- AUTH MODAL -->
 <div class="modal-bg" id="authModal">
   <div class="modal-sheet"><div class="modal-handle"></div>
-    <div class="modal-head"><h2 data-en="👤 Farmer Account" data-sw="👤 Akaunti ya Mkulima">👤 Farmer Account</h2><button class="modal-x" onclick="closeModal('authModal')">✕</button></div>
+    <div class="modal-head"><h2 data-en="Farmer Account" data-sw="Akaunti ya Mkulima">Farmer Account</h2><button class="modal-x" onclick="closeModal('authModal')">Close</button></div>
     <div id="authForms">
       <div class="auth-tabs">
         <button class="auth-tab on" id="tab-login" onclick="switchTab('login')" data-en="Login" data-sw="Ingia">Login</button>
@@ -813,34 +930,42 @@ backdrop-filter: blur(12px);}
       <div class="modal-body">
         <div class="auth-form" id="loginForm">
           <div class="auth-err" id="loginErr"></div>
-          <input class="auth-inp" id="loginPhone" type="tel" placeholder="📱 Phone e.g. 0712345678">
-          <input class="auth-inp" id="loginPin" type="password" placeholder="🔒 PIN (4 digits)" maxlength="6">
-          <button class="auth-sbmt" onclick="doLogin()" data-en="Login →" data-sw="Ingia →">Login →</button>
+          <input class="auth-inp" id="loginPhone" type="tel" placeholder="Phone e.g. 0712345678">
+          <input class="auth-inp" id="loginPin" type="password" placeholder="PIN (4 digits)" maxlength="6">
+          <button class="auth-sbmt" onclick="doLogin()" data-en="Login â†’" data-sw="Ingia â†’">Login â†’</button>
         </div>
         <div class="auth-form hide" id="registerForm">
           <div class="auth-err" id="regErr"></div>
-          <input class="auth-inp" id="regName" type="text" placeholder="👤 Full Name">
-          <input class="auth-inp" id="regPhone" type="tel" placeholder="📱 Phone e.g. 0712345678">
-          <input class="auth-inp" id="regPin" type="password" placeholder="🔒 Create PIN (4 digits)" maxlength="6">
-          <button class="auth-sbmt" onclick="doRegister()" data-en="Create Account →" data-sw="Fungua Akaunti →">Create Account →</button>
+          <input class="auth-inp" id="regName" type="text" placeholder="Full Name">
+          <input class="auth-inp" id="regPhone" type="tel" placeholder="Phone e.g. 0712345678">
+          <input class="auth-inp" id="regPin" type="password" placeholder="Create PIN (4 digits)" maxlength="6">
+          <button class="auth-sbmt" onclick="doRegister()" data-en="Create Account â†’" data-sw="Fungua Akaunti â†’">Create Account â†’</button>
         </div>
       </div>
     </div>
     <div class="logout-sec" id="logoutSec" style="display:none;">
       <h3 id="loggedName"></h3><p id="loggedPhone"></p>
-      <button class="logout-btn" onclick="doLogout()" data-en="🚪 Logout" data-sw="🚪 Toka">🚪 Logout</button>
+      <button class="logout-btn" onclick="doLogout()" data-en="Logout" data-sw="Toka">Logout</button>
     </div>
   </div>
 </div>
 
 <!-- LOADING -->
 <div class="loading" id="loadingOverlay">
-  <div class="load-ring-wrap"><div class="load-ring"></div><div class="load-ico">🌿</div></div>
-  <div class="load-text" data-en="Analyzing your plant…" data-sw="Inachunguza mmea wako…">Analyzing your plant…</div>
+  <div class="load-ring-wrap"><div class="load-ring"></div><div class="load-ico"></div></div>
+  <div class="load-text" data-en="Analyzing your plantâ€¦" data-sw="Inachunguza mmea wakoâ€¦">Analyzing your plantâ€¦</div>
   <div class="load-sub" data-en="AI scanning for diseases & deficiencies" data-sw="AI inachunguza magonjwa na upungufu wa virutubisho">AI scanning for diseases & deficiencies</div>
 </div>
 
-</div><!-- end main -->
+</div>
+
+<nav class="botnav">
+  <button class="bnav on" id="bn-home" onclick="showPage('home')"><div class="bnav-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1V10z"/></svg></div><div class="bnav-lbl" data-en="Home" data-sw="Nyumbani">Home</div></button>
+  <button class="bnav" id="bn-hist" onclick="openHistory()"><div class="bnav-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8v5l4 2 .75-1.23-3.25-1.77V8H12z"/><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16z"/></svg></div><div class="bnav-lbl" data-en="History" data-sw="Historia">History</div></button>
+  <button class="bnav" id="bn-stats" onclick="openDashboard()"><div class="bnav-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 19h3V10H5v9zm5 0h3V4h-3v15zm5 0h3V13h-3v6z"/></svg></div><div class="bnav-lbl" data-en="Stats" data-sw="Takwimu">Stats</div></button>
+  <button class="bnav" id="bn-about" onclick="showPage('about')"><div class="bnav-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11 7h2v2h-2V7zm0 4h2v6h-2v-6zm1-7C6.48 4 2 8.48 2 14s4.48 10 10 10 10-4.48 10-10S17.52 4 12 4z"/></svg></div><div class="bnav-lbl" data-en="About" data-sw="Kuhusu">About</div></button>
+</nav>
+
 <script>
 window.onload = function () {
   const theme = localStorage.getItem("theme");
@@ -868,6 +993,18 @@ function openModal(id){document.getElementById(id).classList.add('on');}
 function closeModal(id){document.getElementById(id).classList.remove('on');}
 function toggleTools(){document.getElementById('toolsMenu').classList.toggle('open');}
 function closeTools(){document.getElementById('toolsMenu').classList.remove('open');}
+function toggleMobileMenu(){
+  const menu = document.getElementById('mobileMenu');
+  const hamburger = document.getElementById('hamburgerBtn');
+  menu.classList.toggle('open');
+  hamburger.classList.toggle('active');
+}
+function closeMobileMenu(){
+  const menu = document.getElementById('mobileMenu');
+  const hamburger = document.getElementById('hamburgerBtn');
+  menu.classList.remove('open');
+  hamburger.classList.remove('active');
+}
 document.addEventListener('click',e=>{
   const b=document.getElementById('toolsBtn'),m=document.getElementById('toolsMenu');
   if(!b.contains(e.target)&&!m.contains(e.target)) m.classList.remove('open');
@@ -925,7 +1062,7 @@ ${swNote}`;
   try{
     const res=await fetch('/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mime,data:b64}},{type:'text',text:'Analyze this plant image.'}]}]})});
     const d=await res.json();
-    if(d.error==='not_a_plant'){ov.classList.remove('on');btn.disabled=false;sp.style.display='none';alert(currentLang==='sw'?'🚫 Hakuna mmea katika picha hii. Tafadhali pakia picha ya mmea.':'🚫 No plant detected. Please upload a photo of a plant, leaf, or crop.');return;}
+    if(d.error==='not_a_plant'){ov.classList.remove('on');btn.disabled=false;sp.style.display='none';alert(currentLang==='sw'?'Hakuna mmea katika picha hii. Tafadhali pakia picha ya mmea.':'No plant detected. Please upload a photo of a plant, leaf, or crop.');return;}
     if(d.error)throw new Error(d.error);
     showResult(d);lastResult=d;askNotifications();
     if(d.scan_id&&navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{fetch('/save-location',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scan_id:d.scan_id,lat:p.coords.latitude,lng:p.coords.longitude})});});}
@@ -935,17 +1072,17 @@ ${swNote}`;
 }
 
 function showResult(r){
-  const map={healthy:{label:currentLang==='sw'?'✅ Mmea Mzima':'✅ Healthy Plant',icon:'🌿'},diseased:{label:currentLang==='sw'?'⚠️ Mmea Mgonjwa':'⚠️ Disease Detected',icon:'🍂'},caution:{label:currentLang==='sw'?'🔔 Tahadhari':'🔔 Caution',icon:'🌱'}};
+  const map={healthy:{label:currentLang==='sw'?'Mmea Mzima':'Healthy Plant',svg:'<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C7.58 2 4 5.58 4 10c0 3.3 1.4 6.24 3.57 8.21L12 22l4.43-3.79C18.6 16.24 20 13.3 20 10c0-4.42-3.58-8-8-8z"/></svg>'},diseased:{label:currentLang==='sw'?'Mmea Mgonjwa':'Disease Detected',svg:'<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>'},caution:{label:currentLang==='sw'?'Tahadhari':'Caution',svg:'<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 14h-2v-2h2v2zm0-4h-2V6h2v6z"/></svg>'}};
   const s=map[r.status]||map.caution;
   document.getElementById('resultBanner').className='result-banner '+(r.status||'caution');
-  document.getElementById('resultIcon').textContent=s.icon;
-  document.getElementById('resultTitle').textContent=`${r.plant} — ${r.condition}`;
+  document.getElementById('resultIcon').innerHTML=s.svg;
+  document.getElementById('resultTitle').textContent=`${r.plant} â€” ${r.condition}`;
   document.getElementById('resultStatus').textContent=s.label;
   const L={en:{cause:'Cause',severity:'Severity',symptoms:'Symptoms'},sw:{cause:'Sababu',severity:'Ukali',symptoms:'Dalili'}}[currentLang];
   document.getElementById('infoGrid').innerHTML=`
-    <div class="info-tile ${r.status==='diseased'?'red':''}"><label>${L.cause}</label><p>${r.cause||'—'}</p></div>
-    <div class="info-tile ${r.status==='diseased'?'amber':''}"><label>${L.severity}</label><p>${r.severity||'—'}</p></div>
-    <div class="info-tile" style="grid-column:1/-1"><label>${L.symptoms}</label><p>${r.symptoms||'—'}</p></div>`;
+    <div class="info-tile ${r.status==='diseased'?'red':''}"><label>${L.cause}</label><p>${r.cause||'â€”'}</p></div>
+    <div class="info-tile ${r.status==='diseased'?'amber':''}"><label>${L.severity}</label><p>${r.severity||'â€”'}</p></div>
+    <div class="info-tile" style="grid-column:1/-1"><label>${L.symptoms}</label><p>${r.symptoms||'â€”'}</p></div>`;
   const pct=r.confidence||0;
   document.getElementById('confPct').textContent=pct+'%';
   setTimeout(()=>document.getElementById('confFill').style.width=pct+'%',50);
@@ -959,13 +1096,28 @@ function fileToBase64(f){return new Promise((res,rej)=>{const r=new FileReader()
 
 async function checkAuth(){const res=await fetch('/me');const d=await res.json();if(d.logged_in){currentFarmer=d;updateAuthUI();}}
 function updateAuthUI(){
-  const btn=document.getElementById('authBtn'),chip=document.getElementById('welcomeChip');
-  if(currentFarmer){btn.classList.add('aactive');btn.textContent='✅';chip.classList.add('show');chip.innerHTML=`🌿 ${currentLang==='sw'?'Karibu':'Welcome back'}, <strong style="color:white">${currentFarmer.name.split(' ')[0]}</strong>!`;}
-  else{btn.classList.remove('aactive');btn.textContent='👤';chip.classList.remove('show');}
+  const btn=document.getElementById('authBtn'),chip=document.getElementById('welcomeChip'),avatar=document.getElementById('profileAvatar');
+  if(currentFarmer){
+    btn.classList.add('aactive');
+    if(avatar){
+      const initials=(currentFarmer.name||'U').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+      avatar.classList.add('has-initials');
+      avatar.innerHTML=`<span>${initials}</span>`;
+    }
+    chip.classList.add('show');
+    chip.innerHTML=`${currentLang==='sw'?'Karibu':'Welcome back'}, <strong style="color:white">${currentFarmer.name.split(' ')[0]}</strong>!`;
+  } else {
+    btn.classList.remove('aactive');
+    if(avatar){
+      avatar.classList.remove('has-initials');
+      avatar.innerHTML='<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z"/></svg>';
+    }
+    chip.classList.remove('show');
+  }
 }
 function openAuth(){
   openModal('authModal');
-  if(currentFarmer){document.getElementById('authForms').style.display='none';document.getElementById('logoutSec').style.display='block';document.getElementById('loggedName').textContent='👤 '+currentFarmer.name;document.getElementById('loggedPhone').textContent='📱 '+currentFarmer.phone;}
+  if(currentFarmer){document.getElementById('authForms').style.display='none';document.getElementById('logoutSec').style.display='block';document.getElementById('loggedName').textContent=currentFarmer.name;document.getElementById('loggedPhone').textContent=currentFarmer.phone;}
   else{document.getElementById('authForms').style.display='block';document.getElementById('logoutSec').style.display='none';}
 }
 function switchTab(t){
@@ -998,34 +1150,34 @@ async function doLogout(){await fetch('/logout',{method:'POST'});currentFarmer=n
 async function openHistory(){setNav('bn-hist');openModal('historyModal');await loadHistory();}
 async function loadHistory(){
   const body=document.getElementById('historyBody');
-  body.innerHTML='<div class="empty"><div class="empty-ico">⏳</div>Loading...</div>';
+  body.innerHTML='<div class="empty"><div class="empty-ico"></div>Loading...</div>';
   try{
     const res=await fetch('/history'),scans=await res.json();
-    if(scans.error==='login_required'){body.innerHTML=`<div class="empty"><div class="empty-ico">🔒</div><p style="font-weight:700;color:var(--dark);margin-bottom:8px;">${currentLang==='sw'?'Tafadhali ingia kwanza':'Login required'}</p><p style="font-size:13px;margin-bottom:16px;">${currentLang==='sw'?'Unahitaji akaunti kuona historia yako.':'You need an account to view your scan history.'}</p><button class="analyze-btn" style="display:inline-flex;width:auto;padding:10px 24px;" onclick="closeModal('historyModal');openAuth();">👤 ${currentLang==='sw'?'Ingia / Jisajili':'Login / Register'}</button></div>`;return;}
+    if(scans.error==='login_required'){body.innerHTML=`<div class="empty"><div class="empty-ico"></div><p style="font-weight:700;color:var(--dark);margin-bottom:8px;">${currentLang==='sw'?'Tafadhali ingia kwanza':'Login required'}</p><p style="font-size:13px;margin-bottom:16px;">${currentLang==='sw'?'Unahitaji akaunti kuona historia yako.':'You need an account to view your scan history.'}</p><button class="analyze-btn" style="display:inline-flex;width:auto;padding:10px 24px;" onclick="closeModal('historyModal');openAuth();">${currentLang==='sw'?'Ingia / Jisajili':'Login / Register'}</button></div>`;return;}
     document.getElementById('scanCount').textContent=currentLang==='sw'?`Uchunguzi ${scans.length}`:`${scans.length} scan${scans.length!==1?'s':''}`;
-    if(!scans.length){body.innerHTML=`<div class="empty"><div class="empty-ico">🌱</div>${currentLang==='sw'?'Hakuna uchunguzi bado.':'No scans yet. Analyze a plant to get started!'}</div>`;return;}
+    if(!scans.length){body.innerHTML=`<div class="empty"><div class="empty-ico"></div>${currentLang==='sw'?'Hakuna uchunguzi bado.':'No scans yet. Analyze a plant to get started!'}</div>`;return;}
     body.innerHTML=scans.map(s=>`
       <div class="hist-item" id="card-${s.id}">
         <div class="hist-head" onclick="toggleHist('${s.id}')">
           <div class="sdot ${s.status==='healthy'?'doth':s.status==='diseased'?'dotd':'dotc'}"></div>
           ${s.image_b64?`<img src="data:image/jpeg;base64,${s.image_b64}" style="width:42px;height:42px;border-radius:8px;object-fit:cover;flex-shrink:0;">`:''}
-          <div style="flex:1;min-width:0;"><div class="hist-plant">${s.plant} — ${s.condition}</div><div class="hist-date">🕐 ${s.scanned_at}${s.farmer_name?' · 👤 '+s.farmer_name:''}</div></div>
-          <span style="color:var(--gray);font-size:12px;flex-shrink:0;">▼</span>
+          <div style="flex:1;min-width:0;"><div class="hist-plant">${s.plant} â€” ${s.condition}</div><div class="hist-date">${s.scanned_at}${s.farmer_name?' Â· '+s.farmer_name:''}</div></div>
+          <span style="color:var(--gray);font-size:12px;flex-shrink:0;">â–¼</span>
         </div>
         <div class="hist-body" id="hb-${s.id}">
           <div class="det-grid">
-            <div class="det-tile"><label>${currentLang==='sw'?'Sababu':'Cause'}</label><p>${s.cause||'—'}</p></div>
-            <div class="det-tile"><label>${currentLang==='sw'?'Ukali':'Severity'}</label><p>${s.severity||'—'}</p></div>
-            <div class="det-tile" style="grid-column:1/-1"><label>${currentLang==='sw'?'Dalili':'Symptoms'}</label><p>${s.symptoms||'—'}</p></div>
+            <div class="det-tile"><label>${currentLang==='sw'?'Sababu':'Cause'}</label><p>${s.cause||'â€”'}</p></div>
+            <div class="det-tile"><label>${currentLang==='sw'?'Ukali':'Severity'}</label><p>${s.severity||'â€”'}</p></div>
+            <div class="det-tile" style="grid-column:1/-1"><label>${currentLang==='sw'?'Dalili':'Symptoms'}</label><p>${s.symptoms||'â€”'}</p></div>
           </div>
-          ${s.treatment?.length?`<p style="font-weight:700;font-size:13px;color:var(--dark);margin-bottom:6px;">💊 ${currentLang==='sw'?'Matibabu':'Treatment'}</p><div style="font-size:13px;color:#1a3020;line-height:1.6;">${s.treatment.map(t=>`• ${t}`).join('<br>')}</div>`:''}
+          ${s.treatment?.length?`<p style="font-weight:700;font-size:13px;color:var(--dark);margin-bottom:6px;">${currentLang==='sw'?'Matibabu':'Treatment'}</p><div style="font-size:13px;color:#1a3020;line-height:1.6;">${s.treatment.map(t=>`â€¢ ${t}`).join('<br>')}</div>`:''}
           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
-            <span style="font-size:12px;color:var(--gray);">🤖 ${currentLang==='sw'?'Uhakika':'Confidence'}: ${s.confidence}%</span>
-            <button class="del-btn" onclick="deleteScan('${s.id}')">🗑️ ${currentLang==='sw'?'Futa':'Delete'}</button>
+            <span style="font-size:12px;color:var(--gray);">${currentLang==='sw'?'Uhakika':'Confidence'}: ${s.confidence}%</span>
+            <button class="del-btn" onclick="deleteScan('${s.id}')">${currentLang==='sw'?'Futa':'Delete'}</button>
           </div>
         </div>
       </div>`).join('');
-  }catch(e){body.innerHTML='<div class="empty"><div class="empty-ico">❌</div>Could not load history.</div>';}
+  }catch(e){body.innerHTML='<div class="empty"><div class="empty-ico"></div>Could not load history.</div>';}
 }
 function toggleHist(id){document.getElementById('hb-'+id).classList.toggle('open');}
 async function deleteScan(id){
@@ -1050,10 +1202,10 @@ async function openDashboard(){
 }
 async function loadStats(){
   const body=document.getElementById('dashboardBody');
-  body.innerHTML='<div class="empty"><div class="empty-ico">⏳</div>Loading...</div>';
+  body.innerHTML='<div class="empty"><div class="empty-ico"></div>Loading...</div>';
   const res=await fetch('/stats'),d=await res.json();
-  if(d.error){body.innerHTML='<div class="empty"><div class="empty-ico">🔒</div>Please login first.</div>';return;}
-  if(!d.total){body.innerHTML=`<div class="empty"><div class="empty-ico">📊</div>${currentLang==='sw'?'Hakuna data bado.':'No data yet. Scan some plants first!'}</div>`;return;}
+  if(d.error){body.innerHTML='<div class="empty"><div class="empty-ico"></div>Please login first.</div>';return;}
+  if(!d.total){body.innerHTML=`<div class="empty"><div class="empty-ico"></div>${currentLang==='sw'?'Hakuna data bado.':'No data yet. Scan some plants first!'}</div>`;return;}
   const hp=Math.round((d.healthy/d.total)*100);
   body.innerHTML=`
     <div class="stats-grid">
@@ -1062,15 +1214,15 @@ async function loadStats(){
       <div class="stat-tile r"><div class="stat-num">${d.diseased}</div><div class="stat-lbl">${currentLang==='sw'?'Mimea Mgonjwa':'Diseased'}</div></div>
       <div class="stat-tile a"><div class="stat-num">${hp}%</div><div class="stat-lbl">${currentLang==='sw'?'Kiwango cha Afya':'Health Rate'}</div></div>
     </div>
-    ${d.diseases.length?`<div class="chart-wrap"><div class="chart-title">🦠 ${currentLang==='sw'?'Magonjwa ya Kawaida':'Most Common Diseases'}</div>${d.diseases.map(x=>`<div class="bar-row"><div class="bar-lbl">${x.name}</div><div class="bar-bg"><div class="bar-fill" style="width:${Math.round((x.count/d.diseased)*100)}%"><span class="bar-count">${x.count}</span></div></div></div>`).join('')}</div>`:''}
-    ${d.plants.length?`<div class="chart-wrap"><div class="chart-title">🌿 ${currentLang==='sw'?'Mimea Iliyochunguzwa':'Most Scanned Plants'}</div>${d.plants.map(x=>`<div class="bar-row"><div class="bar-lbl">${x.name}</div><div class="bar-bg"><div class="bar-fill" style="width:${Math.round((x.count/d.total)*100)}%"><span class="bar-count">${x.count}</span></div></div></div>`).join('')}</div>`:''}`;
+    ${d.diseases.length?`<div class="chart-wrap"><div class="chart-title">ðŸ¦  ${currentLang==='sw'?'Magonjwa ya Kawaida':'Most Common Diseases'}</div>${d.diseases.map(x=>`<div class="bar-row"><div class="bar-lbl">${x.name}</div><div class="bar-bg"><div class="bar-fill" style="width:${Math.round((x.count/d.diseased)*100)}%"><span class="bar-count">${x.count}</span></div></div></div>`).join('')}</div>`:''}
+    ${d.plants.length?`<div class="chart-wrap"><div class="chart-title">ðŸŒ¿ ${currentLang==='sw'?'Mimea Iliyochunguzwa':'Most Scanned Plants'}</div>${d.plants.map(x=>`<div class="bar-row"><div class="bar-lbl">${x.name}</div><div class="bar-bg"><div class="bar-fill" style="width:${Math.round((x.count/d.total)*100)}%"><span class="bar-count">${x.count}</span></div></div></div>`).join('')}</div>`:''}`;
 }
 
 async function openMap(){
   if(!currentFarmer){alert(currentLang==='sw'?'Tafadhali ingia kwanza.':'Please login first.');openAuth();return;}
   openModal('mapModal');
   setTimeout(async()=>{
-    if(!mapInstance){mapInstance=L.map('mapContainer').setView([-0.0236,37.9062],6);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(mapInstance);}
+    if(!mapInstance){mapInstance=L.map('mapContainer').setView([-0.0236,37.9062],6);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'Â© OpenStreetMap'}).addTo(mapInstance);}
     mapInstance.invalidateSize();
     const res=await fetch('/map-data'),scans=await res.json();
     const colors={healthy:'#1a8a4a',diseased:'#dc2626',caution:'#f59e0b'};
@@ -1082,21 +1234,21 @@ async function openMap(){
 async function exportPDF(){
   const res=await fetch('/history'),scans=await res.json(),sd=await fetch('/stats').then(r=>r.json());
   const date=new Date().toLocaleDateString('en-KE',{year:'numeric',month:'long',day:'numeric'});
-  const rows=scans.map(s=>`<tr><td>${s.scanned_at}</td><td>${s.plant}</td><td>${s.condition}</td><td style="color:${s.status==='healthy'?'#065f2e':s.status==='diseased'?'#dc2626':'#92400e'};font-weight:700">${s.status.toUpperCase()}</td><td>${s.severity||'—'}</td><td>${s.confidence}%</td></tr>`).join('');
+  const rows=scans.map(s=>`<tr><td>${s.scanned_at}</td><td>${s.plant}</td><td>${s.condition}</td><td style="color:${s.status==='healthy'?'#065f2e':s.status==='diseased'?'#dc2626':'#92400e'};font-weight:700">${s.status.toUpperCase()}</td><td>${s.severity||'â€”'}</td><td>${s.confidence}%</td></tr>`).join('');
   const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;padding:32px;color:#0a1f12;}h1{color:#0d5c2e;font-size:26px;margin-bottom:4px;}.sub{color:#6b7c72;font-size:13px;margin-bottom:24px;}.farmer{background:#f7f9f7;padding:14px;border-radius:10px;margin-bottom:20px;font-size:13px;}.stats{display:flex;gap:14px;margin-bottom:20px;}.stat{background:#f7f9f7;padding:12px 18px;border-radius:10px;text-align:center;flex:1;}.sn{font-size:26px;font-weight:900;color:#0d5c2e;}.sl{font-size:10px;color:#6b7c72;text-transform:uppercase;letter-spacing:1px;}table{width:100%;border-collapse:collapse;font-size:12px;}th{background:#0d5c2e;color:white;padding:9px 10px;text-align:left;}td{padding:8px 10px;border-bottom:1px solid #e6f7ed;}tr:nth-child(even) td{background:#f7f9f7;}.foot{margin-top:28px;font-size:11px;color:#6b7c72;text-align:center;}</style></head><body>
-  <h1>🌿 Mimea Salama — Scan Report</h1><div class="sub">Generated on ${date}</div>
-  <div class="farmer"><strong>👤 Farmer:</strong> ${currentFarmer?.name||'Unknown'} &nbsp; <strong>📱 Phone:</strong> ${currentFarmer?.phone||'—'} &nbsp; <strong>📊 Total:</strong> ${sd.total}</div>
+  <h1>Mimea Salama â€” Scan Report</h1><div class="sub">Generated on ${date}</div>
+  <div class="farmer"><strong>Farmer:</strong> ${currentFarmer?.name||'Unknown'} &nbsp; <strong>Phone:</strong> ${currentFarmer?.phone||'â€”'} &nbsp; <strong>Total:</strong> ${sd.total}</div>
   <div class="stats"><div class="stat"><div class="sn">${sd.total}</div><div class="sl">Total</div></div><div class="stat"><div class="sn" style="color:#065f2e">${sd.healthy}</div><div class="sl">Healthy</div></div><div class="stat"><div class="sn" style="color:#dc2626">${sd.diseased}</div><div class="sl">Diseased</div></div><div class="stat"><div class="sn" style="color:#92400e">${sd.caution}</div><div class="sl">Caution</div></div></div>
   <table><thead><tr><th>Date</th><th>Plant</th><th>Condition</th><th>Status</th><th>Severity</th><th>Confidence</th></tr></thead><tbody>${rows}</tbody></table>
-  <div class="foot">Mimea Salama · AI Plant Disease Detection · Powered by Groq AI · Made in Kenya 🇰🇪</div></body></html>`;
+  <div class="foot">Mimea Salama Â· AI Plant Disease Detection Â· Powered by Groq AI Â· Made in Kenya</div></body></html>`;
   const w=window.open('','_blank');w.document.write(html);w.document.close();setTimeout(()=>w.print(),500);
 }
 
 function shareWhatsApp(){
   if(!lastResult)return;const r=lastResult;
   const msg=currentLang==='sw'
-    ?`🌿 *Mimea Salama - Ripoti ya Mmea*\n\n🌱 Mmea: ${r.plant}\n🔍 Hali: ${r.condition}\n⚠️ Ukali: ${r.severity}\n🦠 Sababu: ${r.cause}\n\n💊 *Matibabu:*\n${(r.treatment||[]).map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\n🛡️ *Kuzuia:*\n${(r.prevention||[]).map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\n_Imechanganuliwa na Mimea Salama AI 🌍_`
-    :`🌿 *Mimea Salama - Plant Report*\n\n🌱 Plant: ${r.plant}\n🔍 Condition: ${r.condition}\n⚠️ Severity: ${r.severity}\n🦠 Cause: ${r.cause}\n\n💊 *Treatment:*\n${(r.treatment||[]).map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\n🛡️ *Prevention:*\n${(r.prevention||[]).map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\n_Analyzed by Mimea Salama AI 🌍_`;
+    ?`ðŸŒ¿ *Mimea Salama - Ripoti ya Mmea*\n\nðŸŒ± Mmea: ${r.plant}\nðŸ” Hali: ${r.condition}\nâš ï¸ Ukali: ${r.severity}\nðŸ¦  Sababu: ${r.cause}\n\nðŸ’Š *Matibabu:*\n${(r.treatment||[]).map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\nðŸ›¡ï¸ *Kuzuia:*\n${(r.prevention||[]).map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\n_Imechanganuliwa na Mimea Salama AI ðŸŒ_`
+    :`ðŸŒ¿ *Mimea Salama - Plant Report*\n\nðŸŒ± Plant: ${r.plant}\nðŸ” Condition: ${r.condition}\nâš ï¸ Severity: ${r.severity}\nðŸ¦  Cause: ${r.cause}\n\nðŸ’Š *Treatment:*\n${(r.treatment||[]).map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\nðŸ›¡ï¸ *Prevention:*\n${(r.prevention||[]).map((t,i)=>`${i+1}. ${t}`).join('\n')}\n\n_Analyzed by Mimea Salama AI ðŸŒ_`;
   window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');
 }
 function speakResult(r){
@@ -1114,63 +1266,63 @@ async function loadWeather(){
       const res=await fetch(`/weather?lat=${lat}&lng=${lng}`),d=await res.json();
       if(d.error)return;
       const wrap=document.getElementById('weatherWrap');wrap.style.display='block';
-      document.getElementById('weatherStats').innerHTML=`<span class="w-pill">🌡️ ${d.temperature}°C</span><span class="w-pill">💧 ${d.humidity}% RH</span><span class="w-pill">🌧️ ${d.rainfall}mm</span>`;
+      document.getElementById('weatherStats').innerHTML=`<span class="w-pill">${d.temperature}Â°C</span><span class="w-pill">${d.humidity}% RH</span><span class="w-pill">${d.rainfall}mm</span>`;
       document.getElementById('weatherRisks').innerHTML=d.risks.length
-        ?d.risks.map(r=>`<div class="w-risk">⚠️ ${r}</div>`).join('')
-        :`<div class="w-ok">✅ ${currentLang==='sw'?'Hali ya hewa nzuri leo — hatari ya magonjwa ni ndogo':'Weather looks good today — low disease risk'}</div>`;
+        ?d.risks.map(r=>`<div class="w-risk">${r}</div>`).join('')
+        :`<div class="w-ok">${currentLang==='sw'?'Hali ya hewa nzuri leo â€” hatari ya magonjwa ni ndogo':'Weather looks good today â€” low disease risk'}</div>`;
     }catch(e){}
   });
 }
 async function requestNotifications(){
   if(!('Notification'in window))return;
   const p=await Notification.requestPermission();
-  if(p==='granted'){new Notification('🌿 Mimea Salama',{body:currentLang==='sw'?'Umewezeshwa kupokea arifa za magonjwa ya mimea!':'You will now receive plant disease outbreak alerts!',icon:'/static/icon-192.png'});}
+  if(p==='granted'){new Notification('Mimea Salama',{body:currentLang==='sw'?'Umewezeshwa kupokea arifa za magonjwa ya mimea!':'You will now receive plant disease outbreak alerts!',icon:'/static/icon-192.png'});}
 }
 function askNotifications(){if(Notification.permission==='default')setTimeout(requestNotifications,3000);}
-const cropEmojis={maize:'🌽',tomato:'🍅',beans:'🫘',cassava:'🍠',banana:'🍌'};
+const cropEmojis={maize:'',tomato:'',beans:'',cassava:'',banana:''};
 async function openCalendar(){
   openModal('calendarModal');
   const res=await fetch('/crops'),crops=await res.json();
-  document.getElementById('cropGrid').innerHTML=crops.map(c=>`<button class="crop-btn" onclick="loadCalendar('${c.id}',this)">${cropEmojis[c.id]||'🌿'}<br>${c.name.split('/')[0].trim()}</button>`).join('');
+  document.getElementById('cropGrid').innerHTML=crops.map(c=>`<button class="crop-btn" onclick="loadCalendar('${c.id}',this)">${c.name.split('/')[0].trim()}</button>`).join('');
 }
 async function loadCalendar(id,btn){
   document.querySelectorAll('.crop-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
-  const body=document.getElementById('calBody');body.innerHTML='<div class="empty"><div class="empty-ico">⏳</div>Loading...</div>';
+  const body=document.getElementById('calBody');body.innerHTML='<div class="empty"><div class="empty-ico"></div>Loading...</div>';
   const res=await fetch(`/crop-calendar?crop=${id}`),d=await res.json();
-  body.innerHTML=`<h3 style="font-family:'Instrument Serif',serif;color:var(--dark);margin-bottom:14px;">${cropEmojis[id]} ${d.name}</h3>${d.seasons.map(s=>`<div class="cal-row"><div class="cal-mo">📅 ${s.month}</div><div><div class="cal-act">${s.activity}</div><div class="cal-tip">💡 ${s.tip}</div></div></div>`).join('')}`;
+  body.innerHTML=`<h3 style="font-family:'Instrument Serif',serif;color:var(--dark);margin-bottom:14px;">${d.name}</h3>${d.seasons.map(s=>`<div class="cal-row"><div class="cal-mo">${s.month}</div><div><div class="cal-act">${s.activity}</div><div class="cal-tip">${s.tip}</div></div></div>`).join('')}`;
 }
 async function openDealers(){
   openModal('dealerModal');const body=document.getElementById('dealerBody');
-  body.innerHTML=`<div class="empty"><div class="empty-ico">📍</div>${currentLang==='sw'?'Inatafuta maduka karibu nawe...':'Finding shops near you...'}</div>`;
-  if(!navigator.geolocation){body.innerHTML='<div class="empty"><div class="empty-ico">❌</div>Location not available.</div>';return;}
+  body.innerHTML=`<div class="empty"><div class="empty-ico"></div>${currentLang==='sw'?'Inatafuta maduka karibu nawe...':'Finding shops near you...'}</div>`;
+  if(!navigator.geolocation){body.innerHTML='<div class="empty"><div class="empty-ico"></div>Location not available.</div>';return;}
   navigator.geolocation.getCurrentPosition(async pos=>{
     const{latitude:lat,longitude:lng}=pos.coords;
     const res=await fetch(`/agrodealers?lat=${lat}&lng=${lng}`),dealers=await res.json();
-    if(!dealers.length){body.innerHTML='<div class="empty"><div class="empty-ico">🏪</div>No shops found nearby.</div>';return;}
-    body.innerHTML=dealers.map(d=>`<div style="background:var(--cream);border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:700;color:var(--dark);font-size:15px;">🏪 ${d.name}</div><div style="font-size:12px;color:var(--gray);margin-top:3px;">📦 ${d.type}</div></div><a href="https://www.google.com/maps/dir/?api=1&destination=${d.lat},${d.lng}" target="_blank" style="background:var(--g1);color:white;padding:8px 14px;border-radius:10px;font-size:12px;font-weight:700;text-decoration:none;">🗺️ ${currentLang==='sw'?'Elekeo':'Directions'}</a></div>`).join('');
-  },()=>{body.innerHTML='<div class="empty"><div class="empty-ico">❌</div>Could not get your location.</div>';});
+    if(!dealers.length){body.innerHTML='<div class="empty"><div class="empty-ico"></div>No shops found nearby.</div>';return;}
+    body.innerHTML=dealers.map(d=>`<div style="background:var(--cream);border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:700;color:var(--dark);font-size:15px;">${d.name}</div><div style="font-size:12px;color:var(--gray);margin-top:3px;">${d.type}</div></div><a href="https://www.google.com/maps/dir/?api=1&destination=${d.lat},${d.lng}" target="_blank" style="background:var(--g1);color:white;padding:8px 14px;border-radius:10px;font-size:12px;font-weight:700;text-decoration:none;">${currentLang==='sw'?'Elekeo':'Directions'}</a></div>`).join('');
+  },()=>{body.innerHTML='<div class="empty"><div class="empty-ico"></div>Could not get your location.</div>';});
 }
 async function openEncyclopedia(){openModal('encyclopediaModal');await loadEncyclopedia('');}
 async function loadEncyclopedia(plant){
-  const body=document.getElementById('encyclopediaBody');body.innerHTML='<div class="empty"><div class="empty-ico">⏳</div>Loading...</div>';
+  const body=document.getElementById('encyclopediaBody');body.innerHTML='<div class="empty"><div class="empty-ico"></div>Loading...</div>';
   const res=await fetch(plant?`/encyclopedia?plant=${plant}`:'/encyclopedia'),data=await res.json();
   const plants=['','Maize','Tomato','Beans','Cassava','Banana'];
-  const lbls={'':'All','Maize':'🌽 Maize','Tomato':'🍅 Tomato','Beans':'🫘 Beans','Cassava':'🍠 Cassava','Banana':'🍌 Banana'};
+  const lbls={'':'All','Maize':'Maize','Tomato':'Tomato','Beans':'Beans','Cassava':'Cassava','Banana':'Banana'};
   body.innerHTML=`<div class="enc-filters">${plants.map(p=>`<button class="enc-flt ${plant===p?'on':''}" onclick="loadEncyclopedia('${p}')">${lbls[p]}</button>`).join('')}</div>
-  ${data.map(d=>`<div class="dis-card"><div class="dis-head" onclick="this.nextElementSibling.classList.toggle('open')"><span style="font-size:24px">${d.emoji}</span><div><div style="font-weight:700;color:var(--dark);font-size:14px;">${d.name}</div><div style="font-size:12px;color:var(--gray);">${d.plant} · ${d.cause}</div></div><span class="sev-badge sev-${d.severity}">${d.severity}</span></div><div class="dis-body"><div class="info-tile" style="margin-bottom:10px;"><label>Symptoms</label><p>${d.symptoms}</p></div><p style="font-weight:700;font-size:13px;color:var(--dark);margin-bottom:6px;">💊 Treatment</p><ul style="font-size:13px;color:#1a3020;padding-left:16px;margin-bottom:12px;">${d.treatment.map(t=>`<li>${t}</li>`).join('')}</ul><p style="font-weight:700;font-size:13px;color:var(--dark);margin-bottom:6px;">🛡️ Prevention</p><ul style="font-size:13px;color:#1a3020;padding-left:16px;">${d.prevention.map(p=>`<li>${p}</li>`).join('')}</ul></div></div>`).join('')}`;
+  ${data.map(d=>`<div class="dis-card"><div class="dis-head" onclick="this.nextElementSibling.classList.toggle('open')"><div><div style="font-weight:700;color:var(--dark);font-size:14px;">${d.name}</div><div style="font-size:12px;color:var(--gray);">${d.plant} Â· ${d.cause}</div></div><span class="sev-badge sev-${d.severity}">${d.severity}</span></div><div class="dis-body"><div class="info-tile" style="margin-bottom:10px;"><label>Symptoms</label><p>${d.symptoms}</p></div><p style="font-weight:700;font-size:13px;color:var(--dark);margin-bottom:6px;">Treatment</p><ul style="font-size:13px;color:#1a3020;padding-left:16px;margin-bottom:12px;">${d.treatment.map(t=>`<li>${t}</li>`).join('')}</ul><p style="font-weight:700;font-size:13px;color:var(--dark);margin-bottom:6px;">Prevention</p><ul style="font-size:13px;color:#1a3020;padding-left:16px;">${d.prevention.map(p=>`<li>${p}</li>`).join('')}</ul></div></div>`).join('')}`;
 }
-if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/static/sw.js').then(()=>console.log('✅ Offline ready')).catch(e=>console.log('SW:',e));});}
+if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/static/sw.js').then(()=>console.log('Offline ready')).catch(e=>console.log('SW:',e));});}
 function setGreeting(){
   const hour = new Date().getHours();
   const greetings = {
-    en: hour < 12 ? '🌅 Good Morning, Farmer!'
-      : hour < 17 ? '☀️ Good Afternoon, Farmer!'
-      : hour < 21 ? '🌇 Good Evening, Farmer!'
-      : '🌙 Good Night, Farmer!',
-    sw: hour < 12 ? '🌅 Habari za Asubuhi, Mkulima!'
-      : hour < 17 ? '☀️ Habari za Mchana, Mkulima!'
-      : hour < 21 ? '🌇 Habari za Jioni, Mkulima!'
-      : '🌙 Habari za Usiku, Mkulima!'
+    en: hour < 12 ? 'Good Morning, Farmer!'
+      : hour < 17 ? 'Good Afternoon, Farmer!'
+      : hour < 21 ? 'Good Evening, Farmer!'
+      : 'Good Night, Farmer!',
+    sw: hour < 12 ? 'Habari za Asubuhi, Mkulima!'
+      : hour < 17 ? 'Habari za Mchana, Mkulima!'
+      : hour < 21 ? 'Habari za Jioni, Mkulima!'
+      : 'Habari za Usiku, Mkulima!'
   };
   const el = document.getElementById('timeGreeting');
   if (el) el.textContent = greetings[currentLang] || greetings.en;
@@ -1223,7 +1375,7 @@ setTimeout(() => {
   setTimeout(() => {
     document.getElementById("navLogo").style.opacity = "1";
 
-    // 👇 SHOW NAVBAR CONTENT
+    // ðŸ‘‡ SHOW NAVBAR CONTENT
     document.querySelector(".topnav").classList.add("show");
 
     document.getElementById("splash").classList.add("hide");
@@ -1239,3 +1391,4 @@ setTimeout(() => {
 </script>
 </body>
 </html>
+
