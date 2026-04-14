@@ -932,14 +932,14 @@ body.dark {
           <div class="auth-err" id="loginErr"></div>
           <input class="auth-inp" id="loginPhone" type="tel" placeholder="Phone e.g. 0712345678">
           <input class="auth-inp" id="loginPin" type="password" placeholder="PIN (4 digits)" maxlength="6">
-          <button class="auth-sbmt" onclick="doLogin()" data-en="Login â†’" data-sw="Ingia â†’">Login â†’</button>
+          <button class="auth-sbmt" onclick="doLogin()" data-en="Login" data-sw="Ingia">Login</button>
         </div>
         <div class="auth-form hide" id="registerForm">
           <div class="auth-err" id="regErr"></div>
           <input class="auth-inp" id="regName" type="text" placeholder="Full Name">
           <input class="auth-inp" id="regPhone" type="tel" placeholder="Phone e.g. 0712345678">
           <input class="auth-inp" id="regPin" type="password" placeholder="Create PIN (4 digits)" maxlength="6">
-          <button class="auth-sbmt" onclick="doRegister()" data-en="Create Account â†’" data-sw="Fungua Akaunti â†’">Create Account â†’</button>
+          <button class="auth-sbmt" onclick="doRegister()" data-en="Create Account" data-sw="Fungua Akaunti">Create Account</button>
         </div>
       </div>
     </div>
@@ -953,7 +953,7 @@ body.dark {
 <!-- LOADING -->
 <div class="loading" id="loadingOverlay">
   <div class="load-ring-wrap"><div class="load-ring"></div><div class="load-ico"></div></div>
-  <div class="load-text" data-en="Analyzing your plantâ€¦" data-sw="Inachunguza mmea wakoâ€¦">Analyzing your plantâ€¦</div>
+  <div class="load-text" data-en="Analyzing your plant" data-sw="Inachunguza mmea wako">Analyzing your plant¦</div>
   <div class="load-sub" data-en="AI scanning for diseases & deficiencies" data-sw="AI inachunguza magonjwa na upungufu wa virutubisho">AI scanning for diseases & deficiencies</div>
 </div>
 
@@ -962,7 +962,7 @@ body.dark {
 <nav class="botnav">
   <button class="bnav on" id="bn-home" onclick="showPage('home')"><div class="bnav-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1V10z"/></svg></div><div class="bnav-lbl" data-en="Home" data-sw="Nyumbani">Home</div></button>
   <button class="bnav" id="bn-hist" onclick="openHistory()"><div class="bnav-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8v5l4 2 .75-1.23-3.25-1.77V8H12z"/><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16z"/></svg></div><div class="bnav-lbl" data-en="History" data-sw="Historia">History</div></button>
-  <button class="bnav" id="bn-stats" onclick="openDashboard()"><div class="bnav-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 19h3V10H5v9zm5 0h3V4h-3v15zm5 0h3V13h-3v6z"/></svg></div><div class="bnav-lbl" data-en="Stats" data-sw="Takwimu">Stats</div></button>
+  <button class="bnav" id="bn-stats" onclick="openDashboard()"><div class="bnav-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 19h3V10H5v9zm5 0h3V4h-3v15zm5 0h3V13h-3v6z"/></svg></div><div class="bnav-lbl" data-en="Stats" data-sw="Takwimu">Statistics</div></button>
   <button class="bnav" id="bn-about" onclick="showPage('about')"><div class="bnav-ico"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11 7h2v2h-2V7zm0 4h2v6h-2v-6zm1-7C6.48 4 2 8.48 2 14s4.48 10 10 10 10-4.48 10-10S17.52 4 12 4z"/></svg></div><div class="bnav-lbl" data-en="About" data-sw="Kuhusu">About</div></button>
 </nav>
 
