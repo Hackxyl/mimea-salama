@@ -561,6 +561,7 @@ body.dark {
   inset: 0;
   background: #0d5c2e;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 99999;
@@ -568,6 +569,10 @@ body.dark {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+}
+
+.splash-inner {
+  text-align: center;
 }
 
 #splash.hide {
@@ -603,10 +608,11 @@ body.dark {
 #splashLogo {
   width: 100px;
   height: 100px;
+  margin-bottom: 20px;
   transition: all 0.6s ease;
   position: relative;
   z-index: 100000;
-  animation: splashPulse 2s ease-in-out;
+  animation: bounce 1.2s infinite ease-in-out;
   object-fit: contain;
 }
 
@@ -614,6 +620,11 @@ body.dark {
   0% { transform: scale(0.8); opacity: 0; }
   50% { transform: scale(1); opacity: 1; }
   100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
 }
 
 #navLogo {
@@ -647,49 +658,51 @@ body.dark {
   padding: 0;
 }
 
-.progress-box {
-  width: 220px;
-  margin: 20px auto;
-  text-align: center;
-  font-size: 13px;
-  color: #2d6a4f;
+/* Circular progress */
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-bg {
+  fill: none;
+  stroke: rgba(255,255,255,0.1);
+  stroke-width: 8;
 }
 
 .progress-bar {
-  width: 100%;
-  height: 8px;
-  background: #e6f2ea;
-  border-radius: 20px;
-  overflow: hidden;
-  margin-top: 8px;
+  fill: none;
+  stroke: #2ecc71;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 326;
+  stroke-dashoffset: 326;
+  transition: stroke-dashoffset 0.3s ease;
 }
 
-#progressFill {
-  width: 0%;
-  height: 100%;
-  background: linear-gradient(90deg, #1a8a4a, #34d399);
-  transition: width 0.3s ease;
+#progressText {
+  margin-top: 12px;
+  color: white;
+  font-weight: 600;
 }
 
 </style>
 </head>
 <body>
 
-   <!-- SPLASH (shows first) -->
 <!-- SPLASH -->
 <div id="splash">
-  
-  <img id="splashLogo" src="static/logo.png"  alt="Mimea Salama">
+  <div class="splash-inner">
 
-  <div class="splash-content">
-    <h3>Mimea Salama</h3>
+    <img src="static/logo.png" id="splashLogo" alt="Logo">
 
-    <div class="progress-box">
-      <div id="progressText">Loading... 0%</div>
-      <div class="progress-bar">
-        <div id="progressFill"></div>
-      </div>
-    </div>
+    <svg class="progress-ring" width="120" height="120">
+      <circle class="progress-bg" cx="60" cy="60" r="52"></circle>
+      <circle class="progress-bar" cx="60" cy="60" r="52"></circle>
+    </svg>
+
+    <div id="progressText">0%</div>
+
+    <h3 style="color:white; margin-top:10px;">Mimea Salama</h3>
 
   </div>
 </div>
@@ -1530,62 +1543,61 @@ window.addEventListener("load", () => {
   initSplash();
 });
 const splashTasks = [
-  { name: "Theme", fn: applyTheme },
-  { name: "Auth", fn: checkAuth },
-  { name: "Weather", fn: loadWeather },
-  { name: "UI", fn: setGreeting }
+  { fn: checkAuth },
+  { fn: loadWeather },
+  { fn: setGreeting }
 ];
 
 let progress = 0;
 
-function initSplash() {
-  runSplashLoader();
-}
-function safeRun(fn) {
-  try {
-    const result = fn();
-    if (result instanceof Promise) {
-      return result;
-    }
-  } catch (e) {
-    console.log("Splash task error:", e);
-  }
-  return Promise.resolve();
-}
 function updateProgress() {
   const percent = Math.round((progress / splashTasks.length) * 100);
 
-  const fill = document.getElementById("progressFill");
-  const text = document.getElementById("progressText");
+  document.getElementById("progressText").innerText = percent + "%";
 
-  if (fill) fill.style.width = percent + "%";
-  if (text) text.innerText = `Loading... ${percent}%`;
-}
-async function runSplashLoader() {
-  for (let task of splashTasks) {
-    await safeRun(task.fn);
-    progress++;
-    updateProgress();
-  }
+  const circle = document.querySelector(".progress-bar");
+  const radius = 52;
+  const circumference = 2 * Math.PI * radius;
 
-  hideSplash();
+  const offset = circumference - (percent / 100) * circumference;
+  circle.style.strokeDashoffset = offset;
 }
+
+function runSplashLoader() {
+  const circle = document.querySelector(".progress-bar");
+  const radius = 52;
+  const circumference = 2 * Math.PI * radius;
+
+  circle.style.strokeDasharray = circumference;
+  circle.style.strokeDashoffset = circumference;
+
+  (async () => {
+    for (let task of splashTasks) {
+      try {
+        await task.fn();
+      } catch (e) {
+        console.log("Splash task error", e);
+      }
+
+      progress++;
+      updateProgress();
+    }
+
+    hideSplash();
+  })();
+}
+
 function hideSplash() {
   const splash = document.getElementById("splash");
-  if (!splash) return;
-
-  splash.classList.add("hide");
+  splash.style.opacity = "0";
+  splash.style.transition = "0.5s ease";
 
   setTimeout(() => {
     splash.style.display = "none";
   }, 500);
 }
-function applyTheme() {
-  const theme = localStorage.getItem("theme");
-  if (theme === "dark") {
-    document.body.classList.add("dark");
-  }
-}
+
+window.addEventListener("load", runSplashLoader);
 </script>
 </body>
 </html>
