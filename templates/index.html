@@ -616,6 +616,11 @@ body.dark {
   object-fit: contain;
 }
 
+#splash .progress-ring,
+#splash #progressText {
+  display: none;
+}
+
 @keyframes splashPulse {
   0% { transform: scale(0.8); opacity: 0; }
   50% { transform: scale(1); opacity: 1; }
@@ -627,7 +632,8 @@ body.dark {
   50% { transform: translateY(-12px); }
 }
 
-#navLogo {
+#navLogo,
+#mobileLogo {
   width: 40px;
   opacity: 0;
   transform: scale(0.5);
@@ -702,7 +708,7 @@ body.dark {
 
     <div id="progressText">0%</div>
 
-    <h3 style="color:white; margin-top:10px;">Mimea Salama</h3>
+    <h3 style="color:rgb(156, 214, 145); margin-top:10px;">Mimea Salama</h3>
 
   </div>
 </div>
@@ -712,7 +718,7 @@ body.dark {
   <div class="topnav-inner">
     <div class="nav-brand" onclick="goHome()" style="cursor:pointer;">
     <div class="nav-logo">
-    <img src="static/logo.png" id="navLogo" alt="Mimea Salama">
+    <img data-src="static/logo.png" id="navLogo" alt="Mimea Salama">
   </div>
   <div class="nav-name">Mimea <span>Salama</span></div>
 </div>
@@ -749,7 +755,7 @@ body.dark {
   <div class="mobile-menu-header">
     <div class="mobile-menu-brand">
       <div class="nav-logo">
-        <img src="static/logo.png" alt="Mimea Salama">
+        <img data-src="static/logo.png" id="mobileLogo" alt="Mimea Salama">
       </div>
       <div class="nav-name">Mimea <span>Salama</span></div>
     </div>
@@ -1587,6 +1593,20 @@ function runSplashLoader() {
   })();
 }
 
+function showAppLogos() {
+  const navLogo = document.getElementById('navLogo');
+  const mobileLogo = document.getElementById('mobileLogo');
+  [navLogo, mobileLogo].forEach(img => {
+    if (!img) return;
+    const src = img.getAttribute('data-src');
+    if (src && !img.src) {
+      img.src = src;
+    }
+    img.style.opacity = '1';
+    img.style.transform = 'scale(1)';
+  });
+}
+
 function hideSplash() {
   const splash = document.getElementById("splash");
   splash.style.opacity = "0";
@@ -1594,6 +1614,7 @@ function hideSplash() {
 
   setTimeout(() => {
     splash.style.display = "none";
+    showAppLogos();
   }, 500);
 }
 
