@@ -304,8 +304,25 @@ body.dark {
 .h-wa{background:#25D366;color:white;}
 
 /* FOOTER */
-.site-footer{text-align:center;padding:20px 16px 8px;color:var(--gray);font-size:11px;line-height:1.8;}
-.site-footer strong{color:var(--dark);}
+.footer-bottom {
+  background: #0b4d23;
+  color: #ddd;
+  text-align: center;
+  padding: 15px 10px;
+  font-size: 13px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.footer-bottom strong {
+  color: #00ff88;
+}
+
+.footer-bottom span {
+  display: block;
+  margin-top: 5px;
+  opacity: 0.9;
+}
 
 /* BOTTOM NAV */
 .botnav{position:fixed;bottom:0;left:0;right:0;width:100%;background:linear-gradient(135deg, rgba(255,255,255,0.95), rgba(252,253,248,0.98));border-top:2px solid rgba(31,122,83,.18);display:flex;padding:8px 0 10px;height:74px;z-index:1000;box-shadow:0 -8px 28px rgba(16,74,39,.08);backdrop-filter:blur(8px);box-sizing:border-box;flex-wrap:nowrap;overflow-x:auto;}
@@ -988,12 +1005,20 @@ body.dark {
       <span data-en="Start Scanning My Plants" data-sw="Anza Kuchunguza Mimea Yangu">Start Scanning My Plants</span>
     </button>
 
-    <div class="site-footer">
-    <strong>Mimea Salama</strong> Developed by Meshack <br>
-    <span data-en="Empowering farmers with AI" data-sw="Kuwawezesha wakulima kwa AI">Empowering farmers with AI</span>
-  </div>
 
+    <!-- FOOTER -->
+<div class="footer-bottom">
+  <p>
+    © <span id="year"></span> Mimea Salama · 
+    <span data-en="Empowering farmers with AI" data-sw="Kuwawezesha wakulima kwa AI">
+      Empowering farmers with AI
+    </span>
+    <br>
+    Developed by <strong>Meshack Musembi</strong>
+  </p>
+</div>
  </div> 
+ 
 </div><!-- end page-about -->
 
   
@@ -1593,6 +1618,8 @@ function hideSplash() {
 }
 
 window.addEventListener("load", runSplashLoader);
+
+document.getElementById("year").textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
