@@ -305,13 +305,22 @@ body.dark {
 
 /* FOOTER */
 .footer-bottom {
-  background: #0b4d23;
+  max-width: 900px;
+  margin: 30px auto 20px;
+  padding: 18px 15px;
+
+  background: rgba(10, 63, 31, 0.95);
+  backdrop-filter: blur(8px);
+
   color: #ddd;
   text-align: center;
-  padding: 15px 10px;
   font-size: 13px;
-  border-top: 1px solid rgba(255,255,255,0.1);
   font-family: 'Segoe UI', sans-serif;
+
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 136, 0.15);
+
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .footer-bottom strong {
@@ -322,6 +331,13 @@ body.dark {
   display: block;
   margin-top: 5px;
   opacity: 0.9;
+}
+
+/* subtle hover effect */
+.footer-bottom:hover {
+  transform: translateY(-2px);
+  transition: 0.3s ease;
+  box-shadow: 0 6px 25px rgba(0, 255, 136, 0.15);
 }
 
 /* BOTTOM NAV */
