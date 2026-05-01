@@ -165,11 +165,16 @@ body.dark {
   background: radial-gradient(circle at 25% 18%, rgba(255,255,255,0.14) 0%, transparent 35%),
               radial-gradient(circle at 80% 28%, rgba(86,203,134,0.14) 0%, transparent 34%),
               linear-gradient(135deg, #164c34, #1d6d43);
-  padding:32px 5 64px;
+  padding:32px 16px 64px;
   margin:0 -16px;
   position:relative;
   overflow:hidden;
 }
+.hero {
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.14);
+}
+
 .hero::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:42px;background:rgba(252,253,248,0.98);border-radius:32px 32px 0 0;}
 .hero-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
 .hcircle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 68%);animation: float 6s ease-in-out infinite;}
@@ -184,16 +189,16 @@ body.dark {
 .hero-inner{position:relative;z-index:1;}
 .welcome-chip{display:none;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:5px 14px;color:#a7f3cc;font-size:12px;font-weight:600;margin-bottom:12px;width:fit-content;}
 .welcome-chip.show{display:inline-flex;align-items:center;gap:6px;}
-.hero-tag{font-size:13px;color:rgba(255,255,255,.65);font-weight:500;margin-bottom:8px;}
-.hero-title{font-family:'Instrument Serif',serif;font-size:clamp(30px,6vw,48px);color:var(--white);line-height:1.12;margin-bottom:12px;}
-.hero-title em{color:var(--mint);font-style:normal;font-weight:800;2px;text-decoration-skip-ink:none;}
-.hero-desc{font-size:clamp(14px,2.5vw,17px);color:rgba(255,255,255,.92);line-height:1.7;max-width:560px;}
-.hero-steps{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;}
-.hstep{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 14px;color:rgba(255,255,255,.9);font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;}
+.hero-tag{font-size:13px;color:rgba(255,255,255,.85);font-weight:700;margin-bottom:10px;letter-spacing:0.08em;text-transform:uppercase;}
+  .hero-title{font-family:'Instrument Serif',serif;font-size:clamp(32px,6vw,54px);color:var(--white);line-height:1.08;margin-bottom:14px;}
+  .hero-title em{color:var(--mint);font-style:normal;font-weight:900;text-decoration:underline var(--mint) 3px;}
+  .hero-desc{font-size:clamp(15px,2.5vw,18px);color:rgba(255,255,255,.95);line-height:1.75;max-width:620px;}
+  .hero-steps{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
+  .hstep{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);border-radius:24px;padding:10px 18px;color:rgba(255,255,255,.95);font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:0 10px 26px rgba(0,0,0,.12);backdrop-filter:blur(8px);}
 
 /* WEATHER */
 .weather-wrap{display:none;padding:16px 16px 0;}
-.weather-card{background:linear-gradient(135deg, rgba(252,253,248,0.8), rgba(229,244,232,0.6));border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border-left:4px solid var(--g3);}
+.weather-card{background:linear-gradient(135deg, rgba(245,250,240,0.95), rgba(227,243,222,0.9));border-radius:calc(var(--r)+4px);padding:16px 18px;box-shadow:0 18px 38px rgba(16,74,39,.08);border-left:4px solid var(--g3);}
 .w-row{display:flex;gap:8px;flex-wrap:wrap;}
 .w-pill{background:var(--mint);color:var(--g1);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
 .w-risk{margin-top:10px;background:#fffbeb;border-left:3px solid var(--amber);border-radius:8px;padding:8px 12px;font-size:12px;color:#92400e;line-height:1.5;}
@@ -202,7 +207,7 @@ body.dark {
 /* SCAN */
 .scan-wrap{padding:16px 16px 0;}
 .sec-label{font-size:11px;font-weight:800;color:var(--gray);text-transform:uppercase;letter-spacing:1.3px;margin-bottom:10px;}
-.scan-card{background:rgba(255,255,255,.98);border-radius:calc(var(--r) + 2px);box-shadow:0 18px 42px rgba(16,74,39,.08);overflow:hidden;transition:all 0.25s ease-in-out;}
+.scan-card{background:linear-gradient(135deg, rgba(255,255,255,0.97), rgba(238,249,238,0.9));border-radius:calc(var(--r) + 2px);box-shadow:0 18px 42px rgba(16,74,39,.12);overflow:hidden;transition:all 0.25s ease-in-out;}
 .upload-zone{border:2.5px dashed rgba(31,122,83,.22);border-radius:22px;margin:16px;padding:clamp(26px,5vw,44px) 24px;text-align:center;cursor:pointer;transition:all 0.3s ease;background:linear-gradient(180deg, rgba(229,244,232,.96), rgba(246,252,246,.98));position:relative;}
 .upload-zone:hover,.upload-zone.drag-over{border-color:var(--g3);background:linear-gradient(180deg, #eef7eb, #e5f1e4);transform:translateY(-1px);box-shadow:0 18px 40px rgba(16,74,39,.1);}
 .upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
@@ -771,12 +776,12 @@ body.dark {
     <div class="hero-inner">
       <div class="welcome-chip" id="welcomeChip"></div>
       <div class="hero-tag" id="timeGreeting"></div>
-      <div class="hero-title" data-en="Scan your plant,<br><em>know its health</em>" data-sw="Chunguza mmea wako,<br><em>jua afya yake</em>">Scan your plant,<br><em>know its health</em></div>
-      <div class="hero-desc" data-en="AI plant doctor in your pocket. Take a photo and get instant diagnosis, treatment steps, and prevention tips — free." data-sw="Daktari wa mimea wa AI mfukoni mwako. Piga picha upate uchunguzi, hatua za matibabu na vidokezo vya kuzuia bila malipo.">AI plant doctor in your pocket. Take a photo and get instant diagnosis, treatment steps, and prevention tips free.</div>
+      <div class="hero-title" data-en="Scan your plant,<br><em>save your crop</em>" data-sw="Chunguza mmea wako,<br><em>hifadhi mazao yako</em>">Scan your plant,<br><em>save your crop</em></div>
+      <div class="hero-desc" data-en="Fast, simple plant diagnosis for farmers. Snap a photo, get instant disease detection, treatment tips and prevention advice in your language." data-sw="Uchunguzi wa mimea kwa wakulima kwa urahisi. Piga picha, upate ugundaji wa magonjwa, vidokezo vya matibabu na ushauri wa kuzuia kwa lugha yako.">Fast, simple plant diagnosis for farmers. Snap a photo, get instant disease detection, treatment tips and prevention advice in your language.</div>
       <div class="hero-steps">
-        <div class="hstep"><span data-en="Take Photo" data-sw="Piga Picha">Take Photo</span></div>
-        <div class="hstep"><span data-en="AI Analyzes" data-sw="AI Inachunguza">AI Analyzes</span></div>
-        <div class="hstep"><span data-en="Get Treatment" data-sw="Pata Matibabu">Get Treatment</span></div>
+        <div class="hstep"><span data-en="Photo" data-sw="Picha">Photo</span></div>
+        <div class="hstep"><span data-en="Detect" data-sw="Gundua">Detect</span></div>
+        <div class="hstep"><span data-en="Treat" data-sw="Tibu">Treat</span></div>
       </div>
     </div>
   </div>
