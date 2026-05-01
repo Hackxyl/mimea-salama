@@ -592,33 +592,6 @@ body.dark {
 .page-section{animation:fadeIn .3s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 
-#splash {
-  position: fixed;
-  inset: 0;
-  background: #0d5c2e;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 99999;
-  transition: opacity 0.8s ease, visibility 0.8s ease;
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-
-.splash-inner {
-  text-align: center;
-}
-
-#splash.hide {
-  opacity: 0;
-  transition: opacity 0.8s ease, visibility 0.8s ease 0.8s;
-  visibility: hidden;
-  pointer-events: none;
-  z-index: -1;
-}
-
 #app {
   display: flex;
   flex-direction: column;
@@ -639,38 +612,6 @@ body.dark {
   height: 36px;
   width: auto;
   object-fit: contain;
-}
-
-#splashLogo {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 20px;
-  transition: all 0.6s ease;
-  position: relative;
-  z-index: 100000;
-  animation: bounce 1.2s infinite ease-in-out;
-  object-fit: contain;
-}
-
-#splash .progress-ring,
-#splash #progressText {
-  display: block;
-}
-
-#splash .progress-ring {
-  margin: 14px auto 0;
-}
-
-#splash #progressText {
-  font-size: 14px;
-  color: #fff;
-  margin-top: 12px;
-}
-
-@keyframes splashPulse {
-  0% { transform: scale(0.8); opacity: 0; }
-  50% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
 }
 
 @keyframes bounce {
@@ -741,30 +682,12 @@ body.dark {
 </head>
 <body>
 
-<!-- SPLASH -->
-<div id="splash">
-  <div class="splash-inner">
-
-    <img src="static/logo.png" id="splashLogo" alt="Logo">
-
-    <svg class="progress-ring" width="120" height="120">
-      <circle class="progress-bg" cx="60" cy="60" r="52"></circle>
-      <circle class="progress-bar" cx="60" cy="60" r="52"></circle>
-    </svg>
-
-    <div id="progressText">0%</div>
-
-    <h3 style="color:rgb(156, 214, 145); margin-top:10px;">Mimea Salama</h3>
-
-  </div>
-</div>
-
 <div id="app">
 <nav class="topnav">
   <div class="topnav-inner">
     <div class="nav-brand" onclick="goHome()" style="cursor:pointer;">
     <div class="nav-logo">
-    <img data-src="static/logo.png" id="navLogo" alt="Mimea Salama">
+    <img src="static/logo.png" id="navLogo" alt="Mimea Salama">
   </div>
   <div class="nav-name">Mimea <span>Salama</span></div>
 </div>
@@ -801,7 +724,7 @@ body.dark {
   <div class="mobile-menu-header">
     <div class="mobile-menu-brand">
       <div class="nav-logo">
-        <img data-src="static/logo.png" id="mobileLogo" alt="Mimea Salama">
+        <img src="static/logo.png" id="mobileLogo" alt="Mimea Salama">
       </div>
       <div class="nav-name">Mimea <span>Salama</span></div>
     </div>
@@ -1373,14 +1296,23 @@ async function doLogin(){
   currentFarmer={name:d.name,phone};updateAuthUI();closeModal('authModal');
 }
 async function doRegister(){
+  console.log('doRegister called');
   const name=document.getElementById('regName').value.trim(),phone=document.getElementById('regPhone').value.trim(),pin=document.getElementById('regPin').value.trim(),err=document.getElementById('regErr');
   err.classList.remove('show');
   if(!name||!phone||!pin){err.textContent='All fields are required.';err.classList.add('show');return;}
   if(pin.length<4){err.textContent='PIN must be at least 4 digits.';err.classList.add('show');return;}
-  const res=await fetch('/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,phone,pin})});
-  const d=await res.json();
-  if(d.error){err.textContent=d.error;err.classList.add('show');return;}
-  currentFarmer={name:d.name,phone};updateAuthUI();closeModal('authModal');
+  try {
+    const res=await fetch('/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,phone,pin})});
+    console.log('fetch response:', res);
+    const d=await res.json();
+    console.log('response data:', d);
+    if(d.error){err.textContent=d.error;err.classList.add('show');return;}
+    currentFarmer={name:d.name,phone};updateAuthUI();closeModal('authModal');
+  } catch (e) {
+    console.error('Error in doRegister:', e);
+    err.textContent='Network error. Please try again.';
+    err.classList.add('show');
+  }
 }
 async function doLogout(){await fetch('/logout',{method:'POST'});currentFarmer=null;updateAuthUI();closeModal('authModal');}
 
@@ -1575,78 +1507,6 @@ function toggleDarkMode() {
     document.body.classList.remove("fade-theme");
   }, 400);
 }
-
-const splashTasks = [
-  { fn: checkAuth },
-  { fn: loadWeather },
-  { fn: setGreeting }
-];
-
-let progress = 0;
-
-function updateProgress() {
-  const percent = Math.round((progress / splashTasks.length) * 100);
-
-  document.getElementById("progressText").innerText = percent + "%";
-
-  const circle = document.querySelector(".progress-bar");
-  const radius = 52;
-  const circumference = 2 * Math.PI * radius;
-
-  const offset = circumference - (percent / 100) * circumference;
-  circle.style.strokeDashoffset = offset;
-}
-
-function runSplashLoader() {
-  const circle = document.querySelector(".progress-bar");
-  const radius = 52;
-  const circumference = 2 * Math.PI * radius;
-
-  circle.style.strokeDasharray = circumference;
-  circle.style.strokeDashoffset = circumference;
-
-  (async () => {
-    for (let task of splashTasks) {
-      try {
-        await task.fn();
-      } catch (e) {
-        console.log("Splash task error", e);
-      }
-
-      progress++;
-      updateProgress();
-    }
-
-    hideSplash();
-  })();
-}
-
-function showAppLogos() {
-  const navLogo = document.getElementById('navLogo');
-  const mobileLogo = document.getElementById('mobileLogo');
-  [navLogo, mobileLogo].forEach(img => {
-    if (!img) return;
-    const src = img.getAttribute('data-src');
-    if (src && !img.src) {
-      img.src = src;
-    }
-    img.style.opacity = '1';
-    img.style.transform = 'scale(1)';
-  });
-}
-
-function hideSplash() {
-  const splash = document.getElementById("splash");
-  splash.style.opacity = "0";
-  splash.style.transition = "0.5s ease";
-
-  setTimeout(() => {
-    splash.style.display = "none";
-    showAppLogos();
-  }, 500);
-}
-
-window.addEventListener("load", runSplashLoader);
 
 document.getElementById("year").textContent = new Date().getFullYear();
 </script>
