@@ -32,6 +32,21 @@ body.dark {
   color: #e0e0e;
 }
 
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
 img, svg, video, canvas {
   max-width: 100%;
   height: auto;
@@ -233,6 +248,7 @@ img, svg, video, canvas {
   max-width: 1240px;
   margin: 0 auto;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 .page-section {
   display: none;
@@ -249,7 +265,7 @@ img, svg, video, canvas {
               radial-gradient(circle at 85% 28%, rgba(102,232,196,0.22) 0%, transparent 34%),
               linear-gradient(135deg, #235c3a, #2d7a56 30%, #5bb391 100%);
   padding:38px 20px 70px;
-  margin:0 -16px;
+  margin:0;
   position:relative;
   overflow:hidden;
   border:1px solid rgba(255,255,255,0.18);
