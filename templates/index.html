@@ -47,6 +47,60 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+.startup-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: linear-gradient(180deg, #eff7e7, #d7edd9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px;
+  text-align: center;
+  transition: opacity .25s ease, visibility .25s ease;
+}
+.startup-splash.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.startup-splash .splash-logo {
+  width: 120px;
+  height: 120px;
+  border-radius: 26px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(248,226,169,.96), rgba(176,214,177,.97));
+  box-shadow: 0 18px 40px rgba(16,74,39,.16);
+}
+.startup-splash .splash-logo img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
+.startup-splash .splash-title {
+  font-size: clamp(18px, 3vw, 24px);
+  font-weight: 800;
+  color: #11432f;
+}
+.startup-splash .splash-sub {
+  font-size: clamp(13px, 2.5vw, 15px);
+  color: #4b6b57;
+  max-width: 280px;
+}
+.startup-splash .splash-spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid rgba(17,67,47,.16);
+  border-top-color: #38b281;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
 img, svg, video, canvas {
   max-width: 100%;
   height: auto;
@@ -801,6 +855,15 @@ img, svg, video, canvas {
 </style>
 </head>
 <body>
+
+<div class="startup-splash" id="startupSplash">
+  <div class="splash-logo">
+    <img src="/static/Mimea-Salama logo.png" alt="Mimea Salama">
+  </div>
+  <div class="splash-title">Mimea Salama</div>
+  <div class="splash-sub">Loading your plant health assistant...</div>
+  <div class="splash-spinner"></div>
+</div>
 
 <div id="app">
 <nav class="topnav">
@@ -1649,6 +1712,12 @@ function toggleDarkMode() {
     document.body.classList.remove("fade-theme");
   }, 400);
 }
+
+window.addEventListener('load', function(){
+  const splash = document.getElementById('startupSplash');
+  if (!splash) return;
+  setTimeout(()=> splash.classList.add('hidden'), 700);
+});
 
 document.getElementById("year").textContent = new Date().getFullYear();
 </script>
