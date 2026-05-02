@@ -27,10 +27,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:radial-gradient(circl
 body {
   transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
 }
-body.dark {
-  background-color: #121212;
-  color: #e0e0e;
-}
 
 html {
   scrollbar-width: none;
@@ -374,7 +370,7 @@ img, svg, video, canvas {
   .hstep:hover{background:rgba(255,255,255,.22);transform:translateY(-2px);box-shadow:0 18px 36px rgba(0,0,0,.18);border-color:rgba(255,255,255,.3);}
   .hstep svg{width:16px;height:16px;fill:#f8f3c1;opacity:0.9;transition:fill .3s ease;}
   .hstep:hover svg{fill:#a7f3cc;opacity:1;transform:scale(1.1);}
-  .hero-badge{display:flex;align-items:center;gap:8px;margin-top:24px;padding:10px 18px;background:linear-gradient(135deg, rgba(255,244,214,.95), rgba(234,245,227,.92));border:1px solid rgba(255,255,255,.65);border-radius:24px;color:var(--dark);font-size:12px;font-weight:700;backdrop-filter:blur(12px);box-shadow:0 12px 26px rgba(16,74,39,.14);animation:badgeShine 6s ease-in-out infinite;}
+  .hero-badge{position:absolute;top:18px;right:18px;display:flex;align-items:center;gap:8px;padding:10px 18px;background:linear-gradient(135deg, rgba(255,244,214,.95), rgba(234,245,227,.92));border:1px solid rgba(255,255,255,.65);border-radius:24px;color:var(--dark);font-size:12px;font-weight:700;backdrop-filter:blur(12px);box-shadow:0 12px 26px rgba(16,74,39,.14);animation:badgeShine 6s ease-in-out infinite;}
   @keyframes badgeShine {
     0%, 100% { box-shadow: 0 8px 20px rgba(0,0,0,.08); }
     50% { box-shadow: 0 8px 25px rgba(248,243,193,.15), 0 8px 20px rgba(0,0,0,.08); }
@@ -677,6 +673,9 @@ img, svg, video, canvas {
   .cam-btn {padding:18px 28px; font-size:16px; max-width:400px; margin:0 auto;}
   .scan-btns {max-width:500px; margin:0 auto;}
 }
+@media(min-width:1025px){
+  .nav-links {display:none !important;}
+}
 @media(max-width:360px){
   .nav-name{font-size:17px;}
   .lbtn{padding:4px 8px;font-size:11px;}
@@ -898,7 +897,6 @@ img, svg, video, canvas {
         <button class="lbtn active" onclick="setLang('en')">EN</button>
         <button class="lbtn" onclick="setLang('sw')">SW</button>
       </div>
-      <button onclick="toggleDarkMode()" class="icon-btn desktop-only" title="Toggle dark mode"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
       <button class="icon-btn desktop-only" onclick="toggleTools()" id="toolsBtn" title="Tools"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7zm8.94 3.5a7.96 7.96 0 00-.16-1.44l1.93-1.5-1.5-2.6-2.23.9a7.96 7.96 0 00-1.23-.7l-.34-2.32h-3l-.34 2.32c-.44.18-.86.42-1.23.7l-2.23-.9-1.5 2.6 1.93 1.5a7.96 7.96 0 000 2.88l-1.93 1.5 1.5 2.6 2.23-.9c.37.29.79.52 1.23.7l.34 2.32h3l.34-2.32c.44-.18.86-.42 1.23-.7l2.23.9 1.5-2.6-1.93-1.5c.1-.46.16-.94.16-1.44z"/></svg></button>
       <button class="icon-btn profile-btn desktop-only" id="authBtn" onclick="openAuth()" title="Account"><div class="profile-avatar" id="profileAvatar"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z"/></svg></div></button>
       <button class="hamburger-btn mobile-only" onclick="toggleMobileMenu(event)" id="hamburgerBtn" title="Menu">
@@ -1713,15 +1711,6 @@ function setGreeting(){
 }
 checkAuth();loadWeather();setGreeting();
 
-function toggleDarkMode() {
-  document.body.classList.add("fade-theme");
-
-  document.body.classList.toggle("dark");
-
-  setTimeout(() => {
-    document.body.classList.remove("fade-theme");
-  }, 400);
-}
 
 window.addEventListener('load', function(){
   const splash = document.getElementById('startupSplash');
